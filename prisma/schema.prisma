@@ -11,13 +11,16 @@ datasource db {
 }
 
 model Lautta {
-  id String @id
+  id String @id @default(cuid())
   name String
   location String
   capacity Int
   pricemin Int
-  pricemax Int
+  pricemax Int?
   equipment String[]
   images String[]
   mainImage String
+  email String?
+  phone String?
+  url String?
 }

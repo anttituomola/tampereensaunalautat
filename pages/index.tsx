@@ -15,7 +15,15 @@ interface Props {
 const Home: NextPage<Props> = ({ saunas }) => {
   const [filters, setFilters] = useState({
     location: '',
-    capacity: 0,
+    capacity: 10,
+  })
+
+  // Show saunas based on filters
+  const filteredSaunas = saunas.filter(sauna => {
+    return (
+      filters.location === sauna.location || filters.location === "" &&
+      sauna.capacity >= filters.capacity
+    )
   })
 
   return (
@@ -26,7 +34,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
         <Filters setFilters={setFilters} filters={filters}/>
-        {saunas.map(sauna => (
+        {filteredSaunas.map(sauna => (
           <LauttaEl key={sauna.id} sauna={sauna} />
         ))}
       </div>

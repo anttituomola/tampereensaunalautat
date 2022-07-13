@@ -21,3 +21,14 @@ a {
   padding: 1em;
   text-align: center;
 }
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  margin-bottom: 2em;
+}
+
+.slider {
+  min-width: 200px;
+}
