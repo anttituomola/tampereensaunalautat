@@ -32,3 +32,14 @@ a {
 .slider {
   min-width: 200px;
 }
+
+.saunaContainer {
+  max-width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2em;
+}
+
+.lauttaEl {
+  width: 400px;
+}

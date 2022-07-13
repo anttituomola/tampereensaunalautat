@@ -33,10 +33,12 @@ const Home: NextPage<Props> = ({ saunas }) => {
       </Head>
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
-        <Filters setFilters={setFilters} filters={filters}/>
-        {filteredSaunas.map(sauna => (
-          <LauttaEl key={sauna.id} sauna={sauna} />
-        ))}
+        <Filters setFilters={setFilters} filters={filters} />
+        <div className="saunaContainer">
+          {filteredSaunas.map(sauna => (
+            <LauttaEl key={sauna.id} sauna={sauna} />
+          ))}
+        </div>
       </div>
     </div>
   )
