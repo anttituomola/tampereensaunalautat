@@ -4,19 +4,18 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { prisma } from '../lib/prisma'
 import { Lautta } from "../types"
+import LauttaEl from "../components/LauttaEl"
+import Filters from 'components/Filters'
+import { useState } from 'react'
 
 interface Props {
   saunas: Lautta[]
 }
 
 const Home: NextPage<Props> = ({ saunas }) => {
-  console.log(saunas)
-  const renderSaunas = saunas.map(sauna => {
-    return (
-      <div key={sauna.id}>
-        <h1>{sauna.name}</h1>
-      </div>
-    )
+  const [filters, setFilters] = useState({
+    location: '',
+    capacity: 0,
   })
 
   return (
@@ -26,7 +25,10 @@ const Home: NextPage<Props> = ({ saunas }) => {
       </Head>
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
-        {renderSaunas}
+        <Filters setFilters={setFilters} filters={filters}/>
+        {saunas.map(sauna => (
+          <LauttaEl key={sauna.id} sauna={sauna} />
+        ))}
       </div>
     </div>
   )
