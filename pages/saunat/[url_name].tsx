@@ -1,6 +1,7 @@
 import prisma from 'lib/prisma'
 import { Lautta } from 'types'
 import dayjs from 'dayjs'
+import styles from 'styles/[url_name].module.css'
 
 type Props = {
   sauna: Lautta
@@ -9,7 +10,7 @@ type Props = {
 const name = ({ sauna }: Props) => {
   const pricing = sauna.pricemin === sauna.pricemax ? sauna.pricemin : `${sauna.pricemin} - ${sauna.pricemax}`
   return (
-    <div>
+    <div className={styles.container}>
       <img src={sauna.mainImage} alt={`Image of saunalautta ${sauna.name}`} />
       <h1>{sauna.name}</h1>
       <h3>{sauna.location}</h3>
