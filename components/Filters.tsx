@@ -23,10 +23,10 @@ const Filters = (props: Props) => {
         })
     }
 
-    const capacitySelector = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const capacitySelector = (event: Event, value: number | number[], activeThumb: number) => {
         props.setFilters({
             ...props.filters,
-            capacity: Number(event.target.value)
+            capacity: parseInt(event.target.value)
         })
     }
 
