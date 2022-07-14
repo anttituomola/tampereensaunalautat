@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import { prisma } from '../lib/prisma'
 import { Lautta } from "../types"
@@ -40,11 +40,15 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <Filters setFilters={setFilters} filters={filters} />
         <div className="saunaContainer">
           {filteredSaunas.map(sauna => (
-            <LauttaEl key={sauna.id} sauna={sauna} />
+            <Link href={`/saunat/${sauna.name}`} key={sauna.id}>
+              <a>
+                <LauttaEl key={sauna.id} sauna={sauna} />
+              </a>
+            </Link>
           ))}
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

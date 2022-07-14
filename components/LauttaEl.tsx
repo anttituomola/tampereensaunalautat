@@ -6,7 +6,7 @@ type Props = {
 const LauttaEl = ({ sauna }: Props) => {
     return (
         <div className="lauttaEl">
-            <img src={sauna.mainImage} alt={sauna.name} width="90%"/>
+            <img src={sauna.mainImage} alt={sauna.name} height="200px" />
             <h2>{sauna.name}</h2>
             <p>{sauna.location}</p>
             <p>Alkaen {sauna.pricemin} € / 3h</p>
