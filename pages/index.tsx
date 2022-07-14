@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
-import { prisma } from '../lib/prisma'
+import prisma from '../lib/prisma'
 import { Lautta } from "../types"
 import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
