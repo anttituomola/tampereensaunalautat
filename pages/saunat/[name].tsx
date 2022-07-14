@@ -31,7 +31,7 @@ export const getStaticPaths = async () => {
   };
 } 
 
-export const getStaticProps = async (context) => {
+export const getStaticProps = async (context: any) => {
   const name: string = context.params.name
   const sauna = await prisma.lautta.findUnique({
     where: {
