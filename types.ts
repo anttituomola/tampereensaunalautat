@@ -1,6 +1,7 @@
 export interface Lautta {
     id: string,
     name: string,
+    url_name: string,
     location: string,
     capacity: number,
     pricemin: number

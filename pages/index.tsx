@@ -40,7 +40,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <Filters setFilters={setFilters} filters={filters} />
         <div className="saunaContainer">
           {filteredSaunas.map(sauna => (
-            <Link href={`/saunat/${sauna.name}`} key={sauna.id}>
+            <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
               <a>
                 <LauttaEl key={sauna.id} sauna={sauna} />
               </a>

@@ -5,7 +5,7 @@ type Props = {
   sauna: Lautta
 }
 
-const name = ({sauna}: Props) => {
+const name = ({ sauna }: Props) => {
   return (
     <div>
       <h1>{sauna.name}</h1>
@@ -18,9 +18,10 @@ export default name
 
 export const getStaticPaths = async () => {
   const saunas = await prisma.lautta.findMany()
+
   const paths = saunas.map(sauna => ({
     params: {
-      name: sauna.name,
+      url_name: sauna.url_name,
     },
 
   }))
@@ -28,14 +29,13 @@ export const getStaticPaths = async () => {
   return {
     paths,
     fallback: false
-  };
-} 
+  }
+}
 
 export const getStaticProps = async (context: any) => {
-  const name: string = context.params.name
   const sauna = await prisma.lautta.findUnique({
     where: {
-      name: context.params.name,
+      url_name: context.params.url_name,
     },
   })
   return {

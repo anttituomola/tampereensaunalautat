@@ -12,7 +12,8 @@ datasource db {
 
 model Lautta {
   id String @id @default(cuid())
-  name String @unique
+  name String
+  url_name String? @unique
   location String
   capacity Int
   pricemin Int
