@@ -20,10 +20,14 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
   // Show saunas based on filters
   const filteredSaunas = saunas.filter(sauna => {
-    return (
-      filters.location === sauna.location || filters.location === "ei_valia" &&
-      sauna.capacity >= filters.capacity
-    )
+    if (filters.location === "ei väliä") {
+      return sauna.capacity >= filters.capacity
+    } else {
+      return (
+        sauna.location.toLowerCase().includes(filters.location.toLowerCase()) &&
+        sauna.capacity >= filters.capacity
+      )
+    }
   })
 
   return (
