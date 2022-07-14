@@ -113,4 +113,8 @@
     width: 100%;
     flex-direction: column;
   }
+  .main, .container {
+    margin: 0;
+    padding: 0;
+  }
 }

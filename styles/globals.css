@@ -43,3 +43,10 @@ a {
 .lauttaEl {
   width: 400px;
 }
+
+@media screen and (max-width: 600px) {
+  .saunaContainer {
+    grid-template-columns: 1fr;
+    max-width: fit-content;
+  }
+}
