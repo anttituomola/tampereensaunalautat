@@ -7,5 +7,9 @@ export interface Lautta {
     pricemax: number,
     equipment: string[]
     images: string[]
-    mainImage: string
+    mainImage: string,
+    email?: String,
+    phone?: String,
+    url?: String,
+    notes?: String,
   }

@@ -10,6 +10,7 @@ const LauttaEl = ({ sauna }: Props) => {
             <h2>{sauna.name}</h2>
             <p>{sauna.location}</p>
             <p>Alkaen {sauna.pricemin} € / 3h</p>
+            <small>{sauna.notes}</small>
         </div>
     )
 }

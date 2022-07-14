@@ -23,4 +23,5 @@ model Lautta {
   email String?
   phone String?
   url String?
+  notes String?
 }

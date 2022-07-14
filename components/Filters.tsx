@@ -37,13 +37,13 @@ const Filters = (props: Props) => {
                     <FormLabel id="location">Sijainti</FormLabel>
                     <RadioGroup
                         aria-labelledby="location"
-                        defaultValue="Näsijärvi"
+                        defaultValue="ei_valia"
                         name="location-selector"
                         onChange={locationSelector}
                     >
                         <FormControlLabel value="Näsijärvi" control={<Radio />} label="Näsijärvi" />
                         <FormControlLabel value="Pyhäjärvi" control={<Radio />} label="Pyhäjärvi" />
-                        <FormControlLabel value="" control={<Radio />} label="Ei väliä" />
+                        <FormControlLabel value="ei_valia" control={<Radio />} label="Ei väliä" />
 
                     </RadioGroup>
                 </FormControl>
@@ -53,7 +53,7 @@ const Filters = (props: Props) => {
                 <Slider
                     aria-label="capacity"
                     aria-labelledby="capacity"
-                    defaultValue={30}
+                    defaultValue={10}
                     valueLabelDisplay="auto"
                     step={1}
                     marks
