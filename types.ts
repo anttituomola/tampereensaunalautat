@@ -9,8 +9,8 @@ export interface Lautta {
     equipment: string[]
     images: string[]
     mainImage: string,
-    email?: String,
-    phone?: String,
-    url?: String,
-    notes?: String,
+    email?: string,
+    phone?: string,
+    url?: string,
+    notes?: string,
   }

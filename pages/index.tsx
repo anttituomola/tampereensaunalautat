@@ -15,7 +15,7 @@ interface Props {
 const Home: NextPage<Props> = ({ saunas }) => {
   const [filters, setFilters] = useState({
     location: '',
-    capacity: 10,
+    capacity: 0,
   })
 
   // Show saunas based on filters
