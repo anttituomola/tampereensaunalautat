@@ -13,6 +13,7 @@ interface Props {
 }
 
 const Home: NextPage<Props> = ({ saunas }) => {
+
   const [filters, setFilters] = useState({
     location: '',
     capacity: 0,
@@ -58,13 +59,14 @@ const Home: NextPage<Props> = ({ saunas }) => {
   const filteredSaunasWithEquipment = sortedSaunas.filter(sauna => {
     return selectedEquipment.every(equipment => sauna.equipment.includes(equipment.name))
   })
-  
+
 
   return (
     <div className={styles.container}>
       <Head>
         <title>Tampereen saunalautat</title>
       </Head>
+      
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
         <Filters setFilters={setFilters} filters={filters} />

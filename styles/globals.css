@@ -2,8 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Albert Sans', sans-serif;
 }
 
 a {
@@ -28,6 +27,7 @@ a {
   gap: 2em;
   margin-bottom: 2em;
   max-height: 300px;
+  font-weight: 100;
 }
 
 .varusteet {

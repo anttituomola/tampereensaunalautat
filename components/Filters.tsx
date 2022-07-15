@@ -62,18 +62,17 @@ const Filters = (props: Props) => {
         <div className="filters">
             <div>
                 <FormControl>
-                    <FormLabel id="location">Sijainti</FormLabel>
-                    <RadioGroup
-                        aria-labelledby="location"
-                        defaultValue="ei väliä"
-                        name="location-selector"
-                        onChange={locationSelector}
-                    >
-                        <FormControlLabel value="Näsijärvi" control={<Radio />} label="Näsijärvi" />
-                        <FormControlLabel value="Pyhäjärvi" control={<Radio />} label="Pyhäjärvi" />
-                        <FormControlLabel value="ei väliä" control={<Radio />} label="Ei väliä" />
-
-                    </RadioGroup>
+                        <FormLabel id="location">Sijainti</FormLabel>
+                        <RadioGroup
+                            aria-labelledby="location"
+                            defaultValue="ei väliä"
+                            name="location-selector"
+                            onChange={locationSelector}
+                        >
+                            <FormControlLabel value="Näsijärvi" control={<Radio />} label="Näsijärvi" />
+                            <FormControlLabel value="Pyhäjärvi" control={<Radio />} label="Pyhäjärvi" />
+                            <FormControlLabel value="ei väliä" control={<Radio />} label="Ei väliä" />
+                        </RadioGroup>
                 </FormControl>
             </div>
             <div className='slider'>
@@ -105,7 +104,7 @@ const Filters = (props: Props) => {
                 </FormControl>
             </div>
             <div>
-                <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+                <FormControl component="fieldset" variant="standard">
                     <FormLabel component="legend">Haluamasi varusteet</FormLabel>
                     <FormGroup className="varusteet">
                         <FormControlLabel
@@ -176,10 +175,10 @@ const Filters = (props: Props) => {
                             }
                             label="Mikro"
                         />
-                </FormGroup>
-                <FormHelperText>Valitse kaikki haluamasi</FormHelperText>
-            </FormControl>
-        </div>
+                    </FormGroup>
+                    <FormHelperText>Valitse kaikki haluamasi</FormHelperText>
+                </FormControl>
+            </div>
         </div >
     )
 }
