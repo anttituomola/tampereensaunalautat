@@ -7,13 +7,15 @@ import { Lautta } from "../types"
 import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
 import { useState } from 'react'
+import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse';
 
 interface Props {
   saunas: Lautta[]
 }
 
 const Home: NextPage<Props> = ({ saunas }) => {
-
+  const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
     location: '',
     capacity: 0,
@@ -66,19 +68,27 @@ const Home: NextPage<Props> = ({ saunas }) => {
       <Head>
         <title>Tampereen saunalautat</title>
       </Head>
-      
+
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
-        <Filters setFilters={setFilters} filters={filters} />
-        <div className="saunaContainer">
-          {filteredSaunasWithEquipment.map(sauna => (
-            <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
-              <a>
-                <LauttaEl key={sauna.id} sauna={sauna} />
-              </a>
-            </Link>
-          ))}
-        </div>
+
+        {/* Show filters on click */}
+        <Button sx={{ mb: 5 }} color={`${showFilters ? "error" : "primary"}`} variant="outlined" onClick={() => setShowFilters(!showFilters)}>Järjestä / suodata</Button>
+        <Collapse in={showFilters}>
+        {showFilters && <Filters setFilters={setFilters} filters={filters} />}
+        </Collapse>
+
+        <main>
+          <div className="saunaContainer">
+            {filteredSaunasWithEquipment.map(sauna => (
+              <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
+                <a>
+                  <LauttaEl key={sauna.id} sauna={sauna} />
+                </a>
+              </Link>
+            ))}
+          </div>
+        </main>
       </div>
     </div >
   )
