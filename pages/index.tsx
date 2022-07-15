@@ -17,7 +17,19 @@ const Home: NextPage<Props> = ({ saunas }) => {
     location: '',
     capacity: 0,
     sort: "",
-    equipment: [""]
+    equipment: [
+      { name: "WC", checked: false },
+      { name: "Suihku", checked: false },
+      { name: "Pukuhuone", checked: false },
+      { name: "Kattoterassi", checked: false },
+      { name: "Palju", checked: false },
+      { name: "Poreallas", checked: false },
+      { name: "Jääkaappi", checked: false },
+      { name: "Grilli", checked: false },
+      { name: "TV", checked: false },
+      { name: "Äänentoisto", checked: false },
+      { name: "Mikro", checked: false },
+    ]
   })
 
   // Show saunas based on filters
@@ -41,6 +53,13 @@ const Home: NextPage<Props> = ({ saunas }) => {
     }
   })
 
+  // Show only saunas with checked equipment
+  const selectedEquipment = filters.equipment.filter(equipment => equipment.checked)
+  const filteredSaunasWithEquipment = sortedSaunas.filter(sauna => {
+    return selectedEquipment.every(equipment => sauna.equipment.includes(equipment.name))
+  })
+  
+
   return (
     <div className={styles.container}>
       <Head>
@@ -50,7 +69,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <h1>Tampereen saunalautat</h1>
         <Filters setFilters={setFilters} filters={filters} />
         <div className="saunaContainer">
-          {sortedSaunas.map(sauna => (
+          {filteredSaunasWithEquipment.map(sauna => (
             <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
               <a>
                 <LauttaEl key={sauna.id} sauna={sauna} />

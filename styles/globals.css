@@ -27,6 +27,13 @@ a {
   flex-direction: row;
   gap: 2em;
   margin-bottom: 2em;
+  max-height: 300px;
+}
+
+.varusteet {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  max-height: 300px;
 }
 
 .slider {
