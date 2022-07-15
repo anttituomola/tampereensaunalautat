@@ -4,5 +4,4 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 ## TODO
 - Layout
 - Get data from Tyyne
-- Prevent vertical movement
-- Fonts
+- Hide filters behing a toggle
