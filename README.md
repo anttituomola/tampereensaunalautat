@@ -4,4 +4,3 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 ## TODO
 - Layout
 - Get data from Tyyne
-- Hide filters behing a toggle
