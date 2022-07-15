@@ -16,6 +16,8 @@ const Home: NextPage<Props> = ({ saunas }) => {
   const [filters, setFilters] = useState({
     location: '',
     capacity: 0,
+    sort: "",
+    equipment: [""]
   })
 
   // Show saunas based on filters
@@ -30,6 +32,15 @@ const Home: NextPage<Props> = ({ saunas }) => {
     }
   })
 
+  // Sort saunas based on pricemin or capacity
+  const sortedSaunas = filteredSaunas.sort((a, b) => {
+    if (filters.sort === "koko") {
+      return b.capacity - a.capacity
+    } else {
+      return a.pricemin - b.pricemin
+    }
+  })
+
   return (
     <div className={styles.container}>
       <Head>
@@ -39,7 +50,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <h1>Tampereen saunalautat</h1>
         <Filters setFilters={setFilters} filters={filters} />
         <div className="saunaContainer">
-          {filteredSaunas.map(sauna => (
+          {sortedSaunas.map(sauna => (
             <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
               <a>
                 <LauttaEl key={sauna.id} sauna={sauna} />
