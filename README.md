@@ -3,4 +3,5 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 
 ## TODO
 - Layout
-- Get data from Tyyne
+- Check equipment for all saunas
+- Figure out a way to use Next Image
