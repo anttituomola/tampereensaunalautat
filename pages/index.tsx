@@ -77,20 +77,19 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <Collapse in={showFilters}>
           {showFilters && <Filters setFilters={setFilters} filters={filters} />}
         </Collapse>
-
-        <main>
-          <div className="saunaContainer">
-            {filteredSaunasWithEquipment.map(sauna => (
-              <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
-                <a>
-                  <LauttaEl key={sauna.id} sauna={sauna} />
-                </a>
-              </Link>
-            ))}
-          </div>
-        </main>
       </div>
-    </div >
+      <main>
+        <div className="saunaContainer">
+          {filteredSaunasWithEquipment.map(sauna => (
+            <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
+              <a>
+                <LauttaEl key={sauna.id} sauna={sauna} />
+              </a>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </div>
   )
 }
 

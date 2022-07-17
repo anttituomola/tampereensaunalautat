@@ -75,21 +75,26 @@ a {
 
 .saunaContainer {
   width: 80%;
+  max-width: fit-content;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2em;
+  margin: 0 auto;
+  justify-items: center;
 }
 
 @media screen and (max-width: 960px) {
   .saunaContainer {
+    width: 100%;
     grid-template-columns: 1fr;
     margin: 0 auto;
   }
 
   .lauttaEl {
-    width: 100%;
+    width: 90vh;
     height: fit-content;
     justify-content: center;
+    margin: 0 1em;
   }
 }
 
