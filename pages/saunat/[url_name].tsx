@@ -3,6 +3,7 @@ import { Lautta } from 'types'
 import dayjs from 'dayjs'
 import styles from 'styles/[url_name].module.css'
 import Image from 'next/image'
+import Head from 'next/head'
 
 type Props = {
   sauna: Lautta
@@ -13,6 +14,11 @@ const name = ({ sauna }: Props) => {
   const sortedEquipment = sauna.equipment.sort((a, b) => a.localeCompare(b))
 
   return (
+    <>
+    <Head key={sauna.name}>
+      <title>Tampereen saunalautat: {sauna.name}, {sauna.location}</title>
+      <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
+    </Head>
     <div className={styles.container}>
       <h1>Tampereen saunalautat: {sauna.name}</h1>
       <div className="mainImageHolder">
@@ -35,6 +41,7 @@ const name = ({ sauna }: Props) => {
         <p>{sauna.equipment.map(thing => <li key={thing}>{thing}</li>)}</p>
       </div>
     </div>
+    </>
   )
 }
 
