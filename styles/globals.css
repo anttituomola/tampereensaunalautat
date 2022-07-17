@@ -5,6 +5,8 @@ body {
   margin-bottom: 3em;
   font-family: 'Albert Sans', sans-serif;
   width: 100vw;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 a {
@@ -25,10 +27,19 @@ a {
   height: 450px;
 }
 
+.lauttaEl:hover {
+  border: 1px solid black;
+  background-color: aliceblue;
+}
+
+.lauttaEl:active {
+  transform: scale(0.98);
+}
+
 .imageHolder {
   position: relative;
   max-width: 100%;
-  height: 250px;
+  height: 220px;
 }
 
 .mainImageHolder {
@@ -42,7 +53,7 @@ a {
 }
 
 .mainImage {
-  object-fit: none;
+  object-fit: contain;
 }
 
 .filters {

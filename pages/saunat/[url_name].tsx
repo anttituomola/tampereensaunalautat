@@ -12,11 +12,12 @@ const name = ({ sauna }: Props) => {
   const pricing = sauna.pricemin === sauna.pricemax ? sauna.pricemin : `${sauna.pricemin} - ${sauna.pricemax}`
   return (
     <div className={styles.container}>
+      <h1>Tampereen saunalautat: {sauna.name}</h1>
       <div className="mainImageHolder">
         <Image className="mainImage" src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" />
       </div>
-      <h1>{sauna.name}</h1>
       <h3>{sauna.location}</h3>
+      <small>{sauna.name} pystyy kuljettamaan risteilyllä maksimissaan {sauna.capacity} henkilöä.</small>
       <div className="pricing">
         <h2>Hinnoittelu</h2>
         <p>Vuonna {dayjs().format("YYYY")} tyypillinen kolmen tunnin risteily saunalautalla {sauna.name} maksaa <strong>noin {pricing} €</strong>. {sauna.notes}</p>
