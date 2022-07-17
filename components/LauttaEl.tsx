@@ -1,12 +1,16 @@
 import { Lautta } from "../types"
+import Image from "next/image"
 
 type Props = {
     sauna: Lautta
 }
 const LauttaEl = ({ sauna }: Props) => {
+    console.log()
     return (
         <div className="lauttaEl">
-            <img src={sauna.mainImage} alt={sauna.name} height="200px" />
+            <div className="imageHolder">
+                <Image className="theImage" src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" />
+            </div>
             <h2>{sauna.name}</h2>
             <p>{sauna.location}</p>
             <p>Alkaen {sauna.pricemin} € / 3h</p>

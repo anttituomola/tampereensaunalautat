@@ -8,7 +8,7 @@ import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
 import { useState } from 'react'
 import Button from '@mui/material/Button'
-import Collapse from '@mui/material/Collapse';
+import Collapse from '@mui/material/Collapse'
 
 interface Props {
   saunas: Lautta[]
@@ -75,7 +75,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         {/* Show filters on click */}
         <Button sx={{ mb: 5 }} color={`${showFilters ? "error" : "primary"}`} variant="outlined" onClick={() => setShowFilters(!showFilters)}>Järjestä / suodata</Button>
         <Collapse in={showFilters}>
-        {showFilters && <Filters setFilters={setFilters} filters={filters} />}
+          {showFilters && <Filters setFilters={setFilters} filters={filters} />}
         </Collapse>
 
         <main>
