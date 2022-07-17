@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: www.tampereensaunalautat.fi
+
+# Sitemaps
+Sitemap: www.tampereensaunalautat.fi/sitemap.xml

@@ -1,8 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
-const config = {
-    siteUrl: process.env.SITE_URL,
-    generateRobotsTxt: true,
-}
 module.exports = {
-    config,
+  siteUrl: "https://www.tampereensaunalautat.fi",
+  generateRobotsTxt: true, // (optional)
 }
