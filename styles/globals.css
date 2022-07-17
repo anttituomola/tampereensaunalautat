@@ -4,7 +4,6 @@ body {
   margin: 0;
   margin-bottom: 3em;
   font-family: 'Albert Sans', sans-serif;
-  width: 100vh;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -16,98 +15,4 @@ a {
 
 * {
   box-sizing: border-box;
-}
-
-.lauttaEl {
-  border: 1px solid grey;
-  border-radius: 5px;
-  padding: 1em;
-  text-align: center;
-  width: 400px;
-  height: 450px;
-}
-
-.lauttaEl:hover {
-  border: 1px solid black;
-  background-color: aliceblue;
-}
-
-.lauttaEl:active {
-  transform: scale(0.98);
-}
-
-.imageHolder {
-  position: relative;
-  max-width: 100%;
-  height: 220px;
-}
-
-.mainImageHolder {
-  position: relative;
-  max-width: 100%;
-  height: 450px;
-}
-
-.theImage {
-  object-fit: cover;
-}
-
-.mainImage {
-  object-fit: contain;
-}
-
-.filters {
-  display: flex;
-  flex-direction: row;
-  gap: 2em;
-  margin-bottom: 2em;
-  font-weight: 100;
-}
-
-.varusteet {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-.slider {
-  min-width: 200px;
-}
-
-.saunaContainer {
-  width: 80%;
-  max-width: fit-content;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 2em;
-  margin: 0 auto;
-  justify-items: center;
-}
-
-@media screen and (max-width: 960px) {
-  .saunaContainer {
-    width: 100%;
-    grid-template-columns: 1fr;
-    margin: 0 auto;
-  }
-
-  .lauttaEl {
-    width: 90vh;
-    height: fit-content;
-    justify-content: center;
-    margin: 0 1em;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .filters {
-    flex-direction: column;
-    height: auto;
-  }
-}
-
-@media screen and (max-width: 1280px) and (min-width: 961px) {
-  .saunaContainer {
-    grid-template-columns: 1fr 1fr;
-    max-width: fit-content;
-  }
 }

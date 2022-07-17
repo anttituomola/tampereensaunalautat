@@ -21,8 +21,8 @@ const name = ({ sauna }: Props) => {
     </Head>
     <div className={styles.container}>
       <h1>Tampereen saunalautat: {sauna.name}</h1>
-      <div className="mainImageHolder">
-        <Image className="mainImage" src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
+      <div className={styles.mainImageHolder}>
+        <Image className={styles.mainImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
       </div>
       <h3>{sauna.location}</h3>
       <small>{sauna.name} pystyy kuljettamaan risteilyllä maksimissaan {sauna.capacity} henkilöä.</small>

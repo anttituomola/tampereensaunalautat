@@ -79,7 +79,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         </Collapse>
       </div>
       <main>
-        <div className="saunaContainer">
+        <div className={styles.saunaContainer}>
           {filteredSaunasWithEquipment.map(sauna => (
             <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
               <a>

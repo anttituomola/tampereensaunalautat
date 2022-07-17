@@ -4,6 +4,7 @@
     justify-content: flex-end;
     gap: 2em;
     margin-right: 3em;
+    width: 100vw;
 }
 
 .navigation li {
@@ -24,7 +25,6 @@
     .navigation {
         background-color: aliceblue;
         margin: 0;
-        width: 100vh;
     }
 
     .navigation ul {

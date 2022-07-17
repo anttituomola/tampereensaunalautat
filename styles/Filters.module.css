@@ -1,0 +1,23 @@
+.filters {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    margin-bottom: 2em;
+    font-weight: 100;
+  }
+  
+  .varusteet {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  
+  .slider {
+    min-width: 200px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .filters {
+      flex-direction: column;
+      height: auto;
+    }
+  }

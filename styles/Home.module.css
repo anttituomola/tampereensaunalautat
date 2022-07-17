@@ -10,9 +10,34 @@
   align-items: center;
 }
 
-@media (max-width: 600px) {
+.saunaContainer {
+  width: 80%;
+  max-width: fit-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2em;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+@media screen and (max-width: 960px) {
+  .saunaContainer {
+    grid-template-columns: 1fr;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 1280px) and (min-width: 961px) {
+  .saunaContainer {
+    grid-template-columns: 1fr 1fr;
+    max-width: fit-content;
+  }
+}
+
+/* @media (max-width: 600px) {
   .main, .container {
     margin: 0;
     padding: 0;
   }
 }
+ */

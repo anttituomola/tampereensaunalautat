@@ -10,3 +10,13 @@
     color: inherit;
     text-decoration: underline;
 }
+
+.mainImageHolder {
+    position: relative;
+    max-width: 100%;
+    height: 450px;
+  }
+
+  .mainImage {
+    object-fit: contain;
+  }

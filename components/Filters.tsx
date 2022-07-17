@@ -7,6 +7,7 @@ import Slider from '@mui/material/Slider'
 import FormGroup from '@mui/material/FormGroup'
 import FormHelperText from '@mui/material/FormHelperText'
 import Checkbox from '@mui/material/Checkbox'
+import styles from '/styles/Filters.module.css'
 
 type Filters = {
     location: string
@@ -59,7 +60,7 @@ const Filters = (props: Props) => {
     }
 
     return (
-        <div className="filters">
+        <div className={styles.filters}>
             <div>
                 <FormControl>
                         <FormLabel id="location">Sijainti</FormLabel>
@@ -75,7 +76,7 @@ const Filters = (props: Props) => {
                         </RadioGroup>
                 </FormControl>
             </div>
-            <div className='slider'>
+            <div className={styles.slider}>
                 <FormLabel id="capacity">Matkustajien lukumäärä</FormLabel>
                 <Slider
                     aria-label="capacity"
@@ -106,7 +107,7 @@ const Filters = (props: Props) => {
             <div>
                 <FormControl component="fieldset" variant="standard">
                     <FormLabel component="legend">Haluamasi varusteet</FormLabel>
-                    <FormGroup className="varusteet">
+                    <FormGroup className={styles.varusteet}>
                         <FormControlLabel
                             control={
                                 <Checkbox checked={props.filters.equipment[0].checked} onChange={checkboxHandler} name="WC" />
