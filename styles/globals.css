@@ -4,7 +4,7 @@ body {
   margin: 0;
   margin-bottom: 3em;
   font-family: 'Albert Sans', sans-serif;
-  width: 100vw;
+  width: 100vh;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
