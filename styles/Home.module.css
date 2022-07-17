@@ -10,6 +10,10 @@
   align-items: center;
 }
 
+.main h1 {
+  text-align: center;
+}
+
 .saunaContainer {
   width: 80%;
   max-width: fit-content;
@@ -34,10 +38,9 @@
   }
 }
 
-/* @media (max-width: 600px) {
+@media (max-width: 600px) {
   .main, .container {
     margin: 0;
     padding: 0;
   }
 }
- */
