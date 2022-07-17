@@ -4,5 +4,5 @@ const config = {
     generateRobotsTxt: true,
 }
 module.exports = {
-    // options
+    config,
 }
