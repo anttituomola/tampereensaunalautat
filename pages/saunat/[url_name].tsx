@@ -10,6 +10,8 @@ type Props = {
 
 const name = ({ sauna }: Props) => {
   const pricing = sauna.pricemin === sauna.pricemax ? sauna.pricemin : `${sauna.pricemin} - ${sauna.pricemax}`
+  const sortedEquipment = sauna.equipment.sort((a, b) => a.localeCompare(b))
+  
   return (
     <div className={styles.container}>
       <h1>Tampereen saunalautat: {sauna.name}</h1>
