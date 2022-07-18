@@ -19,3 +19,8 @@ test('renders sauna location', () => {
     expect(screen.getByText(`${mockSauna.location}`)).toBeInTheDocument()
 })
 
+test("renders sauna image", () => {
+    render(<LauttaEl sauna={mockSauna} />)
+    expect(screen.getByAltText(`${mockSauna.name}`)).toBeInTheDocument()
+})
+

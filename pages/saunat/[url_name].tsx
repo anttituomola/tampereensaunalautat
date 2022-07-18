@@ -12,11 +12,14 @@ type Props = {
 const name = ({ sauna }: Props) => {
   const pricing = sauna.pricemin === sauna.pricemax ? sauna.pricemin : `${sauna.pricemin} - ${sauna.pricemax}`
   const sortedEquipment = sauna.equipment.sort((a, b) => a.localeCompare(b))
+  const saunaName = sauna.name
+  const saunaLocation = sauna.location
+  const title = `Tampereen saunalautat: ${saunaName}, ${saunaLocation}`
 
   return (
     <>
     <Head key={sauna.name}>
-      <title>Tampereen saunalautat: {sauna.name}, {sauna.location}</title>
+      <title>{title}</title>
       <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
     </Head>
     <div className={styles.container}>
