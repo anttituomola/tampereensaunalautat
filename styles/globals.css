@@ -6,6 +6,7 @@ body {
   font-family: 'Albert Sans', sans-serif;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  width: 100vw;
 }
 
 a {

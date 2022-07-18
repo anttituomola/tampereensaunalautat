@@ -31,7 +31,7 @@
   }
 }
 
-@media screen and (max-width: 1280px) and (min-width: 961px) {
+@media screen and (max-width: 1445px) and (min-width: 961px) {
   .saunaContainer {
     grid-template-columns: 1fr 1fr;
     max-width: fit-content;
