@@ -27,7 +27,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
       { name: "Kattoterassi", checked: false },
       { name: "Palju", checked: false },
       { name: "Poreallas", checked: false },
-      { name: "Jääkaappi", checked: false },
+      { name: "Kylmäsäilytys", checked: false },
       { name: "Grilli", checked: false },
       { name: "TV", checked: false },
       { name: "Äänentoisto", checked: false },

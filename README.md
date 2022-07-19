@@ -8,13 +8,4 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - remove all filters button
 - comparison feature
 - ability to send email to selected venues
-
-Based on the feedback from the entrepreneurs, do the following:
-- mahdollista laajempi personalisaatio muuttamalla kovakoodatut lauseet tietokantapohjaisiin
-- muuta filtteri jääkaapista kylmäsäilytykseksi
-- muuta nettiosoite arrayksi ja mahdollista useampi osoite
-- lisää varusteisiin kylmäarkku tms, ja lisää se kylmäsäilytysfiltteriin jääkaapin kanssa
-
-- saunalauttatampere: ei jääkaappia, vaan kylmäboksi
-- tyyne: kemiallinen WC, ei jääkaappia vaan kylmäboksi, lisää IG-linkki
-- vesijettivuokraus: hinta per 4 h, ei 3. Lisää jääkaappi.
+- add another page explaining saunalautta experience in general
