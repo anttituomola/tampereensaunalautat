@@ -6,13 +6,9 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - Postgres DB on Railway
 - Prisma as ORM
 - Material-UI components
-
+- Testing with Jest and Testing-Library
 
 ## TODO
-- proper responsive testing and fixing edge cases
-- send email to entrepreneurs and ask to check the data and for more images
-- show the number of hidden saunas
-- remove all filters button
 - comparison feature
 - ability to send email to selected venues
 - add another page explaining saunalautta experience in general

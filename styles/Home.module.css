@@ -24,6 +24,10 @@
   justify-items: center;
 }
 
+.hiddenSaunas {
+  text-align: center;
+}
+
 @media screen and (max-width: 960px) {
   .saunaContainer {
     grid-template-columns: 1fr;
