@@ -14,7 +14,7 @@ const Layout = ({ children }: any) => {
                 <meta property="og:url" content="https://www.tampereensaunalautat.fi/" />
                 <meta property="og:title" content="Tampereen saunalautat" />
                 <meta property="og:description" content="Katso ja vertaile kaikkia Tampereen saunalauttoja ja löydä porukallesi sopivin! Sivusto listaa jokaisen saunalautan Tampereen Näsijärvellä ja Pyhäjärvellä!" />
-                <meta property="og:image" content="/1102px-Näsinneula_view_18.jpg" />
+                <meta property="og:image" content="/images/laineilla_1.jpg" />
             </Head>
             <Header />
             <main>{children}</main>
