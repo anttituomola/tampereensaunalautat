@@ -62,7 +62,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
   const filteredSaunasWithEquipment = sortedSaunas.filter(sauna => {
     return selectedEquipment.every(equipment => sauna.equipment.includes(equipment.name))
   })
-  const hiddenSaunas = sortedSaunas.length - filteredSaunasWithEquipment.length
+  const hiddenSaunas = saunas.length - filteredSaunasWithEquipment.length
 
 
   return (
