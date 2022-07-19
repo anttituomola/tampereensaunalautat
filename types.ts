@@ -13,5 +13,6 @@ export interface Lautta {
     email?: string,
     phone?: string,
     url?: string,
+    urlArray: string[],
     notes?: string,
   }
