@@ -18,32 +18,32 @@ const name = ({ sauna }: Props) => {
 
   return (
     <>
-    <Head key={sauna.name}>
-      <title>{title}</title>
-      <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
-    </Head>
-    <div className={styles.container}>
-      <h1>Tampereen saunalautat: {sauna.name}</h1>
-      <div className={styles.mainImageHolder}>
-        <Image className={styles.mainImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
+      <Head key={sauna.name}>
+        <title>{title}</title>
+        <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
+      </Head>
+      <div className={styles.container}>
+        <h1>Tampereen saunalautat: {sauna.name}</h1>
+        <div className={styles.mainImageHolder}>
+          <Image className={styles.mainImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
+        </div>
+        <h3>{sauna.location}</h3>
+        <small>{sauna.name} pystyy {sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "saunottamaan" : "kuljettamaan risteilyllä"} maksimissaan {sauna.capacity} henkilöä.</small>
+        <div className="pricing">
+          <h2>Hinnoittelu</h2>
+          <p>Vuonna {dayjs().format("YYYY")} tyypillinen <strong>{sauna.eventLength} tunnin {sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "sauna" : "risteily"}</strong> saunalautalla {sauna.name} maksaa <strong>noin {pricing} €</strong>. {sauna.notes}</p>
+        </div>
+        <div className="contact">
+          <h2>Yhteystiedot</h2>
+          <p>Kotisivut: {sauna.urlArray.map(url => <span key={url}><a href={url}>{url}</a>, </span>)}</p>
+          <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
+          <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
+        </div>
+        <div className="equipment">
+          <h2>Varusteet</h2>
+          <p>{sauna.equipment.map(thing => <li key={thing}>{thing}</li>)}</p>
+        </div>
       </div>
-      <h3>{sauna.location}</h3>
-      <small>{sauna.name} pystyy kuljettamaan risteilyllä maksimissaan {sauna.capacity} henkilöä.</small>
-      <div className="pricing">
-        <h2>Hinnoittelu</h2>
-        <p>Vuonna {dayjs().format("YYYY")} tyypillinen kolmen tunnin risteily saunalautalla {sauna.name} maksaa <strong>noin {pricing} €</strong>. {sauna.notes}</p>
-      </div>
-      <div className="contact">
-        <h2>Yhteystiedot</h2>
-        <p>Kotisivut: {sauna.urlArray.map(url => <span key={url}><a href={url}>{url}</a>, </span>)}</p>
-        <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
-        <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
-      </div>
-      <div className="equipment">
-        <h2>Varusteet</h2>
-        <p>{sauna.equipment.map(thing => <li key={thing}>{thing}</li>)}</p>
-      </div>
-    </div>
     </>
   )
 }

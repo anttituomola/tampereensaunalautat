@@ -14,7 +14,7 @@ const LauttaEl = ({ sauna }: Props) => {
             </div>
             <h2>{sauna.name}</h2>
             <p>{sauna.location}</p>
-            <p>Alkaen {sauna.pricemin} € / 3h</p>
+            <p>Alkaen {sauna.pricemin} € / {sauna.eventLength} h</p>
             <small>{sauna.notes}</small>
         </div>
     )
