@@ -1,0 +1,16 @@
+.emailForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1em;
+}
+
+@media screen and (max-width: 1024px) {
+    #paper {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+}
