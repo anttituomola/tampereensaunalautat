@@ -34,14 +34,17 @@ const Home: NextPage<Props> = ({ saunas }) => {
     ]
   }
 
-  if (typeof window !== "undefined") {
-    localStorage.getItem('saunasOnState') ? JSON.parse(localStorage.getItem('saunasOnState') || '[]') : []
-  } 
-
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
   const [saunasOnState, setSaunasOnState] = useState<Lautta[]>([])
-    
+  
+  // Get initial saunasOnState from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.getItem('saunasOnState') ? setSaunasOnState(JSON.parse(localStorage.getItem('saunasOnState') || '[]')) : []
+    }
+  }
+  , [])
 
   // Save saunasOnState to localStorage
   useEffect(() => {
