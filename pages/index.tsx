@@ -5,7 +5,7 @@ import prisma from '../lib/prisma'
 import { Lautta } from "../types"
 import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import SelectedSaunas from 'components/SelectedSaunas'
@@ -33,9 +33,21 @@ const Home: NextPage<Props> = ({ saunas }) => {
       { name: "Mikro", checked: false },
     ]
   }
+
+  if (typeof window !== "undefined") {
+    localStorage.getItem('saunasOnState') ? JSON.parse(localStorage.getItem('saunasOnState') || '[]') : []
+  } 
+
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
   const [saunasOnState, setSaunasOnState] = useState<Lautta[]>([])
+    
+
+  // Save saunasOnState to localStorage
+  useEffect(() => {
+    localStorage.setItem('saunasOnState', JSON.stringify(saunasOnState))
+  }
+    , [saunasOnState])
 
   // Show saunas based on filters
   const filteredSaunas = saunas.filter(sauna => {
@@ -95,7 +107,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
           ))}
         </div>
 
-        <SelectedSaunas saunasOnState={saunasOnState} />
+        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} /> }
       </main>
     </div>
   )
