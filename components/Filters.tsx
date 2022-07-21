@@ -63,17 +63,17 @@ const Filters = (props: Props) => {
         <div className={styles.filters}>
             <div>
                 <FormControl>
-                        <FormLabel id="location">Sijainti</FormLabel>
-                        <RadioGroup
-                            aria-labelledby="location"
-                            defaultValue="ei väliä"
-                            name="location-selector"
-                            onChange={locationSelector}
-                        >
-                            <FormControlLabel value="Näsijärvi" control={<Radio />} label="Näsijärvi" />
-                            <FormControlLabel value="Pyhäjärvi" control={<Radio />} label="Pyhäjärvi" />
-                            <FormControlLabel value="ei väliä" control={<Radio />} label="Ei väliä" />
-                        </RadioGroup>
+                    <FormLabel id="location">Sijainti</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="location"
+                        defaultValue="ei väliä"
+                        name="location-selector"
+                        onChange={locationSelector}
+                    >
+                        <FormControlLabel value="Näsijärvi" control={<Radio />} label="Näsijärvi" />
+                        <FormControlLabel value="Pyhäjärvi" control={<Radio />} label="Pyhäjärvi" />
+                        <FormControlLabel value="ei väliä" control={<Radio />} label="Ei väliä" />
+                    </RadioGroup>
                 </FormControl>
             </div>
             <div className={styles.slider}>

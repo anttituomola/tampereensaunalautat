@@ -8,7 +8,7 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch"
+    "test": "set DEBUG_PRINT_LIMIT=100000 && jest --watch"
   },
   "dependencies": {
     "@cloudinary/react": "^1.4.1",

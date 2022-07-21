@@ -16,11 +16,4 @@ describe('Home', () => {
             fireEvent.click(screen.getByRole("button", { name: "Järjestä / suodata" }))
             expect(screen.getByLabelText("Näsijärvi")).toBeInTheDocument()
         })
-        it("when clicking Näsijärvi location, it renders 'remove filters' button", async () => {
-            render(<Home saunas={[]} />)
-            fireEvent.click(screen.getByRole("button", { name: "Järjestä / suodata" }))
-            fireEvent.click(screen.getByLabelText("Näsijärvi"))
-            const button = await screen.findByRole("button", { name: "Näytä kaikki saunat" })
-            expect(button).toBeInTheDocument()
-        })
 })
