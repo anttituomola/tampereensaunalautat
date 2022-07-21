@@ -6,6 +6,7 @@
     text-align: center;
     width: 400px;
     height: 450px;
+    position: relative;
   }
   
   .lauttaEl:hover {
@@ -30,6 +31,12 @@
 
   .mainImage {
     object-fit: none;
+  }
+
+  .lisaaPostitukseen {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
   }
 
   @media screen and (max-width: 960px) {
