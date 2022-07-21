@@ -8,11 +8,17 @@ import Link from 'next/link'
 
 type Props = {
     sauna: Lautta,
-    setSelectedSaunas: React.Dispatch<React.SetStateAction<Lautta[]>>,
-    selectedSaunas: Lautta[]
+    setSaunasOnState: React.Dispatch<React.SetStateAction<Lautta[]>>,
+    saunasOnState: Lautta[]
 }
-const LauttaEl = ({ sauna, setSelectedSaunas, selectedSaunas }: Props) => {
-    console.log()
+const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
+    const addSaunaToState = (sauna: Lautta) => {
+        if (saunasOnState.find(s => s.id === sauna.id)) {
+            return
+        }
+        setSaunasOnState([...saunasOnState, sauna])
+    }
+
     return (
         <>
             <div className={styles.lauttaEl} >
@@ -28,7 +34,7 @@ const LauttaEl = ({ sauna, setSelectedSaunas, selectedSaunas }: Props) => {
                 <p>Alkaen {sauna.pricemin} € / {sauna.eventLength} h</p>
                 <small>{sauna.notes}</small>
                 <div>
-                    <Fab className={styles.lisaaPostitukseen} color="primary" size="small" aria-label="add" onClick={() => setSelectedSaunas([...selectedSaunas, sauna])}>
+                    <Fab className={styles.lisaaPostitukseen} color="primary" size="small" aria-label="add" onClick={() => addSaunaToState(sauna)}>
                         <AddIcon />
                     </Fab>
 

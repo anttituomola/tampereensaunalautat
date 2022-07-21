@@ -8,6 +8,7 @@ import Filters from 'components/Filters'
 import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
+import SelectedSaunas from 'components/SelectedSaunas'
 
 interface Props {
   saunas: Lautta[]
@@ -34,8 +35,8 @@ const Home: NextPage<Props> = ({ saunas }) => {
   }
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
-  const [selectedSaunas, setSelectedSaunas] = useState<Lautta[]>([])
-  
+  const [saunasOnState, setSaunasOnState] = useState<Lautta[]>([])
+
   // Show saunas based on filters
   const filteredSaunas = saunas.filter(sauna => {
     if (filters.location === "ei väliä") {
@@ -88,11 +89,13 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
         <div className={styles.saunaContainer}>
           {filteredSaunasWithEquipment.map(sauna => (
-            
-                <LauttaEl key={sauna.id} sauna={sauna} selectedSaunas={selectedSaunas} setSelectedSaunas={setSelectedSaunas}/>
-              
+
+            <LauttaEl key={sauna.id} sauna={sauna} saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} />
+
           ))}
         </div>
+
+        <SelectedSaunas saunasOnState={saunasOnState} />
       </main>
     </div>
   )
