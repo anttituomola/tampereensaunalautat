@@ -9,13 +9,12 @@
     position: relative;
   }
   
-  .lauttaEl:hover {
-    border: 1px solid black;
-    background-color: aliceblue;
+  .lauttaEl a:hover > .imageHolder {
+    transform: scale(1.01);
   }
   
-  .lauttaEl:active {
-    transform: scale(0.98);
+  .lauttaEl a:active > .imageHolder {
+    transform: scale(0.99);
   }
   
 .imageHolder {

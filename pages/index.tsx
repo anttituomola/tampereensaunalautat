@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import prisma from '../lib/prisma'
 import { Lautta } from "../types"
@@ -88,11 +87,9 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
         <div className={styles.saunaContainer}>
           {filteredSaunasWithEquipment.map(sauna => (
-            <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
-              <a>
+            
                 <LauttaEl key={sauna.id} sauna={sauna} />
-              </a>
-            </Link>
+              
           ))}
         </div>
       </main>
