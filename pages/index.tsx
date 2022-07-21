@@ -34,7 +34,8 @@ const Home: NextPage<Props> = ({ saunas }) => {
   }
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
-
+  const [selectedSaunas, setSelectedSaunas] = useState<Lautta[]>([])
+  
   // Show saunas based on filters
   const filteredSaunas = saunas.filter(sauna => {
     if (filters.location === "ei väliä") {
@@ -88,7 +89,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
         <div className={styles.saunaContainer}>
           {filteredSaunasWithEquipment.map(sauna => (
             
-                <LauttaEl key={sauna.id} sauna={sauna} />
+                <LauttaEl key={sauna.id} sauna={sauna} selectedSaunas={selectedSaunas} setSelectedSaunas={setSelectedSaunas}/>
               
           ))}
         </div>
