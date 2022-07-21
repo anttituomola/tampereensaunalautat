@@ -33,8 +33,8 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 <p>{sauna.location}</p>
                 <p>Alkaen {sauna.pricemin} € / {sauna.eventLength} h</p>
                 <small>{sauna.notes}</small>
-                <div>
-                    <Fab className={styles.lisaaPostitukseen} color="primary" size="small" aria-label="add" onClick={() => addSaunaToState(sauna)}>
+                <div className={styles.lisaaPostitukseen}>
+                    <Fab color="primary" size="small" aria-label="add" onClick={() => addSaunaToState(sauna)}>
                         <AddIcon />
                     </Fab>
 

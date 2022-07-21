@@ -110,7 +110,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
           ))}
         </div>
 
-        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} /> }
+        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} /> }
       </main>
     </div>
   )
