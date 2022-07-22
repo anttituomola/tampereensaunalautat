@@ -9,13 +9,7 @@ import { Button } from '@mui/material'
 import styles from "styles/EmailForm.module.css"
 import { Lautta } from "types"
 import dayjs from 'dayjs'
-
-interface Data {
-    email: string
-    date: string
-    time: string
-    pax: number
-}
+import * as EmailValidator from 'email-validator'
 
 type Props = {
     saunas: Lautta[]
@@ -39,7 +33,14 @@ const EmailForm = (props: Props) => {
                     sauna: sauna.name || ""
                 }
             }
-            if (data.message.date && data.message.time) {
+            if (!data.message.date || !data.message.time) {
+                console.log("Päivämäärä ja lähtöaika ovat pakollisia")
+                return
+            }
+            if (!EmailValidator.validate(data.customerEmail)) {
+                console.log("Sähköposti ei ole oikea")
+                return
+            }
                 fetch('/api/email', {
                     method: 'POST',
                     headers: {
@@ -52,10 +53,7 @@ const EmailForm = (props: Props) => {
                         console.log(res)
                     }
                     )
-                } else {
-                    console.log("Päivämäärä ja lähtöaika ovat pakollisia")
-                }
-            })
+        })
     }
 
 
