@@ -92,9 +92,6 @@ const EmailForm = (props: Props) => {
                     id="outlined-number"
                     label="Osallistujien lukumäärä"
                     type="number"
-                    InputLabelProps={{
-                        shrink: false,
-                    }}
                     onChange={(event) => {
                         setPax(parseInt(event.target.value))
                     }}

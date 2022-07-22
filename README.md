@@ -12,6 +12,5 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - comparison feature
 - ability to send email to selected venues
 - add another page explaining saunalautta experience in general
-- remove selected saunas from the list
 - add email validation
 - add captcha
