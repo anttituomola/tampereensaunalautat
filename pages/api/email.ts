@@ -1,8 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
 import aws from "aws-sdk"
-var ses = new aws.SES({ region: "us-east-1" })
 import dayjs from "dayjs"
+
+aws.config.update({
+  accessKeyId: process.env.ACCESS_KEY,
+  secretAccessKey: process.env.SECRET_KEY,
+  region: process.env.REGION,
+})
+
+var ses = new aws.SES({ region: "us-east-1" })
 
 type Data = {
   response: string
