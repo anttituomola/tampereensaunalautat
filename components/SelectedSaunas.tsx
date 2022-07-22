@@ -17,16 +17,19 @@ const SelectedSaunas = (props: Props) => {
 
     return (
         <div className={styles.selectedSaunas}>
-            <h2>Valitut saunat</h2>
+            <h2>Lähetä tarjouspyyntö valituille saunalautoille</h2>
+
             {props.saunasOnState.map(sauna => {
                 return <>
-                    <div key={sauna.id}>{sauna.name}
-                        <Button variant="text" size="small" color="error" startIcon={<DeleteIcon />} onClick={() => removeSauna(sauna)} />
+                    <div key={sauna.id}>
+                        <li>{sauna.name}
+                            <Button variant="text" size="small" color="error" startIcon={<DeleteIcon />} onClick={() => removeSauna(sauna)} />
+                        </li>
                     </div>
 
                 </>
             })}
-            <EmailForm saunas={props.saunasOnState}/>
+            <EmailForm saunas={props.saunasOnState} />
         </div>
     )
 }

@@ -27,7 +27,6 @@ const EmailForm = (props: Props) => {
 
     const sendEmail = () => {
         props.saunas.map(sauna => {
-            console.log(sauna.email)
             const data = {
                 emailTo: "anttituomola8@gmail.com",
                 emailFrom: "info@tampereensaunalautat.fi",
@@ -58,7 +57,6 @@ const EmailForm = (props: Props) => {
 
     return (
         <div className={styles.emailForm}>
-            <h2>Lähetä tarjouspyyntö valituille saunalautoille</h2>
             <Paper id={styles.paper}>
                 <TextField id="outlined-basic" type="email" label="Sähköpostiosoitteesi" variant="outlined" onChange={(event) => {
                     setEmail(event.target.value)
