@@ -16,7 +16,7 @@ type Props = {
 }
 const EmailForm = (props: Props) => {
     const [email, setEmail] = useState('')
-    const [date, setDate] = useState('' || null)
+    const [date, setDate] = useState("" || null)
     const [time, setTime] = useState('' || null)
     const [pax, setPax] = useState(10 || null)
 
@@ -56,8 +56,6 @@ const EmailForm = (props: Props) => {
         })
     }
 
-
-
     return (
         <div className={styles.emailForm}>
             <Paper id={styles.paper}>
@@ -70,8 +68,8 @@ const EmailForm = (props: Props) => {
                         label="Päivämäärä"
                         inputFormat="DD/MM/YYYY"
                         value={date}
-                        onChange={(newValue) => {
-                            setDate(newValue)
+                        onChange={(newDate: any) => {
+                            setDate(newDate)
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />

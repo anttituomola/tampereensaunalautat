@@ -10,6 +10,6 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 
 ## TODO
 - comparison feature
-- ability to send email to selected venues
+- ability to send email to selected venues (in production)
 - add another page explaining saunalautta experience in general
 - add captcha
