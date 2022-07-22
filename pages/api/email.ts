@@ -10,7 +10,12 @@ import dayjs from "dayjs"
   region: process.env.REGION,
 }) */
 
-const credentials = {
+interface Credentials {
+  accessKeyId: any
+  secretAccessKey: any
+}
+
+const credentials: Credentials = {
   accessKeyId: process.env.AWS_SDK_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SDK_SECRET_ACCESS_KEY,
 }
