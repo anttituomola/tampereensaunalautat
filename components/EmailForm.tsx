@@ -31,10 +31,12 @@ const EmailForm = (props: Props) => {
             const data = {
                 emailTo: "anttituomola8@gmail.com",
                 emailFrom: "info@tampereensaunalautat.fi",
+                customerEmail: email,
                 message: {
                     date: date || null,
                     time: time || null,
-                    pax: pax || null
+                    pax: pax || null,
+                    sauna: sauna.name || ""
                 }
             }
             fetch('/api/email', {

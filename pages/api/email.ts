@@ -11,10 +11,12 @@ type Data = {
 type Req = {
   emailTo: string
   emailFrom: string
+  customerEmail: string
   message: {
     date: string
     time: string
     pax: number
+    sauna: string
   }
 }
 
@@ -22,10 +24,10 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { emailTo, emailFrom, message }: Req = req.body
+  const { emailTo, emailFrom, customerEmail, message }: Req = req.body
   console.log("req", req.body)
 
-  sesTest(emailTo, emailFrom, message)
+  sesTest(emailTo, emailFrom, customerEmail, message)
     .then((val) => {
       console.log("Response from Amazon SES", val)
       res.status(200).json({ response: "Successfully Sent Email" })
@@ -39,10 +41,12 @@ export default function handler(
 function sesTest(
   emailTo: string,
   emailFrom: string,
+  customerEmail: string,
   message: {
     date: string
     time: string
     pax: number
+    sauna: string
   }
 ) {
   var params = {
@@ -52,12 +56,16 @@ function sesTest(
     Message: {
       Body: {
         Text: {
-          Data: `Olet saanut tarjouspyynnön: ${dayjs(message.date).format("DD.MM.YYYY")} klo ${dayjs(message.time).format("HH:mm")}, mukana ${message.pax} osallistujaa.`,
+          Data: `${message.sauna} on saanut tarjouspyynnön: 
+          
+          Asiakas haluaisi saunoa ${dayjs(message.date).format("DD.MM.YYYY")} klo ${dayjs(message.time).format("HH:mm")}, mukana ${message.pax} osallistujaa.
+          
+          Vastaa asiakkaalle osoitteeseen ${customerEmail}, kertomalla sopiiko tämä aika saunasi kalenteriin ja mikä olisi tilaisuuden hinta.`,
         },
       },
       Subject: { Data: "Tarjouspyyntö: " + dayjs(message.date).format("DD.MM.YYYY") },
     },
-        ReplyToAddresses: [emailFrom],
+        ReplyToAddresses: [customerEmail],
      Source: "info@tampereensaunalautat.fi",
   }
 
