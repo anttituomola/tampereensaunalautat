@@ -7,13 +7,51 @@ import { useState } from 'react'
 import { MobileTimePicker } from '@mui/x-date-pickers'
 import { Button } from '@mui/material'
 import styles from "styles/EmailForm.module.css"
+import { Lautta } from "types"
 
-type Props = {}
+interface Data {
+    email: string
+    date: string
+    time: string
+    pax: number
+}
+
+type Props = {
+    saunas: Lautta[]
+}
 const EmailForm = (props: Props) => {
     const [email, setEmail] = useState('')
     const [date, setDate] = useState('' || null)
     const [time, setTime] = useState('' || null)
     const [pax, setPax] = useState(10 || null)
+
+    const sendEmail = () => {
+        props.saunas.map(sauna => {
+            console.log(sauna.email)
+            const data = {
+                emailTo: "anttituomola8@gmail.com",
+                emailFrom: "info@tampereensaunalautat.fi",
+                message: {
+                    date: date || null,
+                    time: time || null,
+                    pax: pax || null
+                }
+            }
+            fetch('/api/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                }
+                )
+        })
+    }
+
 
 
     return (
@@ -56,7 +94,7 @@ const EmailForm = (props: Props) => {
                 />
             </Paper>
             <div>
-                <Button size="large" variant="contained" onClick={() => console.log(email, date, time, pax)}>LÄHETÄ</Button>
+                <Button size="large" variant="contained" onClick={() => sendEmail()}>LÄHETÄ</Button>
             </div>
         </div >
     )

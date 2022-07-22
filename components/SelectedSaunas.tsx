@@ -26,7 +26,7 @@ const SelectedSaunas = (props: Props) => {
 
                 </>
             })}
-            <EmailForm />
+            <EmailForm saunas={props.saunasOnState}/>
         </div>
     )
 }
