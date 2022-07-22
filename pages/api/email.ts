@@ -21,7 +21,7 @@ const credentials: Credentials = {
 }
 
 const sesClient = new SESClient({
-  region: "us-east-1",
+  region: process.env.AWS_SDK_REGION,
   credentials: credentials,
 })
 
