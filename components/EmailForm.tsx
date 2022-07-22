@@ -8,6 +8,7 @@ import { MobileTimePicker } from '@mui/x-date-pickers'
 import { Button } from '@mui/material'
 import styles from "styles/EmailForm.module.css"
 import { Lautta } from "types"
+import dayjs from 'dayjs'
 
 interface Data {
     email: string
@@ -38,19 +39,23 @@ const EmailForm = (props: Props) => {
                     sauna: sauna.name || ""
                 }
             }
-            fetch('/api/email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => res.json())
-                .then(res => {
-                    console.log(res)
+            if (data.message.date && data.message.time) {
+                fetch('/api/email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        console.log(res)
+                    }
+                    )
+                } else {
+                    console.log("Päivämäärä ja lähtöaika ovat pakollisia")
                 }
-                )
-        })
+            })
     }
 
 
@@ -58,11 +63,12 @@ const EmailForm = (props: Props) => {
     return (
         <div className={styles.emailForm}>
             <Paper id={styles.paper}>
-                <TextField id="outlined-basic" type="email" label="Sähköpostiosoitteesi" variant="outlined" onChange={(event) => {
+                <TextField required id="outlined-basic" type="email" label="Sähköpostiosoitteesi" variant="outlined" onChange={(event) => {
                     setEmail(event.target.value)
                 }} />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <MobileDatePicker
+                        minDate={dayjs()}
                         label="Päivämäärä"
                         inputFormat="DD/MM/YYYY"
                         value={date}
@@ -82,11 +88,12 @@ const EmailForm = (props: Props) => {
                     />
                 </LocalizationProvider>
                 <TextField
+                    required
                     id="outlined-number"
                     label="Osallistujien lukumäärä"
                     type="number"
                     InputLabelProps={{
-                        shrink: true,
+                        shrink: false,
                     }}
                     onChange={(event) => {
                         setPax(parseInt(event.target.value))

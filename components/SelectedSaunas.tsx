@@ -3,6 +3,7 @@ import styles from "styles/SelectedSaunas.module.css"
 import EmailForm from "components/EmailForm"
 import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
+import Link from "next/link"
 
 type Props = {
     saunasOnState: Lautta[],
@@ -22,7 +23,10 @@ const SelectedSaunas = (props: Props) => {
             {props.saunasOnState.map(sauna => {
                 return <>
                     <div key={sauna.id}>
-                        <li>{sauna.name}
+                        <li>
+                            <Link href={`/saunat/${sauna.url_name}`}>
+                                <a target="_blank" >{sauna.name}</a>
+                            </Link>
                             <Button variant="text" size="small" color="error" startIcon={<DeleteIcon />} onClick={() => removeSauna(sauna)} />
                         </li>
                     </div>
