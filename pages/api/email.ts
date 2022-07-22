@@ -7,6 +7,7 @@ aws.config.update({
   accessKeyId: process.env.ACCESS_KEY,
   secretAccessKey: process.env.SECRET_KEY,
   region: process.env.REGION,
+  signatureVersion: 'v4',
 })
 
 var ses = new aws.SES({ region: "us-east-1" })
