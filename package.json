@@ -11,6 +11,7 @@
     "test": "set DEBUG_PRINT_LIMIT=100000 && jest --watch"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.131.0",
     "@cloudinary/react": "^1.4.1",
     "@cloudinary/url-gen": "^1.8.0",
     "@emotion/react": "^11.9.3",
