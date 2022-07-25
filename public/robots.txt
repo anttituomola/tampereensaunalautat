@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: www.tampereensaunalautat.fi
+Host: https://www.tampereensaunalautat.fi
 
 # Sitemaps
-Sitemap: www.tampereensaunalautat.fi/sitemap.xml
+Sitemap: https://www.tampereensaunalautat.fi/sitemap.xml
