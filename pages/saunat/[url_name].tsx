@@ -37,8 +37,8 @@ const name = ({ sauna }: Props) => {
         <div className="contact">
           <h2>Yhteystiedot</h2>
           <p>Kotisivut: </p>
-          {sauna?.urlArray.map(url => <p key={url}>{url}</p>)}
-          <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
+{/*           {sauna?.urlArray.map(url => <p key={url}>{url}</p>)}
+ */}          <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
           <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
         </div>
         <div className="equipment">
