@@ -17,3 +17,15 @@ describe("See if tenders work", () => {
     cy.get('.SelectedSaunas_selectedSaunas__wIeLc').contains("Vertical") // check if sauna is in selection
   })
 })
+
+describe("Try to visit individual sauna's page", () => {
+  it("should be able to visit individual sauna's page", () => {
+    cy.visit("localhost:3000")
+    cy.get(':nth-child(2) > a > h2').click() // click on sauna
+    cy.url().should('include', '/saunat/') // check if url is correct
+    cy.get('.pricing > h2').should('be.visible') // check if pricing data is visible
+    cy.get('.Header_navigation__6LSpR > ul > :nth-child(1)').click() // go back to main page
+    cy.get('button').contains("Järjestä / suodata").should('be.visible') // check if filters are visible
+  }
+  )
+})
