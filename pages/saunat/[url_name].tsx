@@ -36,16 +36,16 @@ const name = ({ sauna }: Props) => {
         <div className="contact">
           <h2>Yhteystiedot</h2>
           <p>Kotisivut: </p>
-            {sauna.urlArray.map(url => {
+            {/* {sauna.urlArray.map(url => {
               return <li key={url}><a href={url}>{url}</a></li>
-            })}
+            })} */}
           <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
           <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
         </div>
         <div className="equipment">
           <h2>Varusteet</h2>
-{/*           <p>{sauna.equipment.map(thing => <li key={thing}>{thing}</li>)}</p>
- */}        </div>
+          <p>{sauna.equipment.map(thing => <li key={thing}>{thing}</li>)}</p>
+        </div>
       </div>
     </>
   )
