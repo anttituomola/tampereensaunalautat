@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import styles from 'styles/[url_name].module.css'
 import Image from 'next/image'
 import Head from 'next/head'
-import cuid from 'cuid'
+import { useEffect } from 'react'
 
 type Props = {
   sauna: Lautta
@@ -16,10 +16,7 @@ const name = ({ sauna }: Props) => {
   const saunaName = sauna.name
   const saunaLocation = sauna.location
   const title = `Tampereen saunalautat: ${saunaName}, ${saunaLocation}`
-  const urls = sauna?.urlArray.map(url => {
-    return <li key={url}><a href={url}>{url}</a></li>
-  })
-  console.log(urls)
+
   return (
     <>
       <Head key={sauna.name}>
@@ -40,7 +37,7 @@ const name = ({ sauna }: Props) => {
         <div className="contact">
           <h2>Yhteystiedot</h2>
           <p>Kotisivut: </p>
-          <ul>{urls && urls}</ul>
+          {sauna?.urlArray.map(url => <p key={url}>{url}</p>)}
           <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
           <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
         </div>
