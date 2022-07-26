@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 
 describe("See if filters work", () => {
   it('should click checkboxes and have remove filters button', () => {
@@ -10,7 +11,7 @@ describe("See if filters work", () => {
   )
 })
 
-describe("See if tenders work", () => {
+describe("See if selecting saunas work", () => {
   it("should be able to add some saunas to selection see them there", () => {
     cy.visit("localhost:3000")
     cy.get('[data-cy="addButton-Vertical"] > [data-testid="AddIcon"]').click() // add sauna to selection
