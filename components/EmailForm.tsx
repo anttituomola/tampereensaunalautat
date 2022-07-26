@@ -24,7 +24,7 @@ const EmailForm = (props: Props) => {
     const sendEmail = () => {
         props.saunas.map(sauna => {
             const data = {
-                emailTo: "anttituomola8@gmail.com",
+                emailTo: sauna.email,
                 emailFrom: "info@tampereensaunalautat.fi",
                 customerEmail: email,
                 message: {
