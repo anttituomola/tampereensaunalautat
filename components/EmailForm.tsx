@@ -19,6 +19,7 @@ const EmailForm = (props: Props) => {
     const [date, setDate] = useState("" || null)
     const [time, setTime] = useState('' || null)
     const [pax, setPax] = useState(10 || null)
+    const [apiResponse, setApiResponse] = useState("")
 
     const sendEmail = () => {
         props.saunas.map(sauna => {
@@ -41,19 +42,36 @@ const EmailForm = (props: Props) => {
                 console.log("Sähköposti ei ole oikea")
                 return
             }
-                fetch('/api/email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        console.log(res)
-                    }
-                    )
+            fetch('/api/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(res => {
+                    setApiResponse(res.status)
+                }
+                )
+
         })
+    }
+    
+    if (apiResponse === "success") {
+        return <div>
+            <h1>Tarjouspyyntö lähetetty!</h1>
+            <p>Lähetit tarjouspyynnön päivälle {dayjs(date).format("DD.MM.YYYY")} klo {dayjs(time).format("HH:mm")}</p>
+            <p>Saat tarjoukset suoraan sähköpostiisi {email}.</p>
+            <p>Kiitos kun käytit tampereensaunalautat.fi -sivusto!</p>
+        </div>
+    }
+
+    if (apiResponse === "error") {
+        return <div>
+            <h1>Tarjouspyyntö epäonnistui!</h1>
+            <p>Jokin meni pieleen. Yritä myöhemmin uudelleen.</p>
+        </div>
     }
 
     return (

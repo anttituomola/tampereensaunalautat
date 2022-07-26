@@ -4,12 +4,6 @@ import { SESClient } from "@aws-sdk/client-ses"
 import { SendEmailCommand } from "@aws-sdk/client-ses"
 import dayjs from "dayjs"
 
-/* aws.config.update({
-  accessKeyId: process.env.ACCESS_KEY,
-  secretAccessKey: process.env.SECRET_KEY,
-  region: process.env.REGION,
-}) */
-
 interface Credentials {
   accessKeyId: any
   secretAccessKey: any
@@ -26,7 +20,8 @@ const sesClient = new SESClient({
 })
 
 type Data = {
-  message: string
+  message: string,
+  status: string,
 }
 
 type Req = {
@@ -51,6 +46,7 @@ export default function handler(
   var params = {
     Destination: {
       ToAddresses: [emailTo],
+      BccAddresses: [emailFrom],
     },
     Message: {
       Body: {
@@ -63,7 +59,10 @@ export default function handler(
             message.pax
           } osallistujaa.
           
-          Vastaa asiakkaalle osoitteeseen ${customerEmail}, kertomalla sopiiko tämä aika saunasi kalenteriin ja mikä olisi tilaisuuden hinta.`,
+          Vastaa tähän viestiin asiakkaalle osoitteeseen ${customerEmail}, kertomalla sopiiko tämä aika saunasi kalenteriin ja mikä olisi tilaisuuden hinta.
+          
+          Terveisin,
+          tampereensaunalautat.fi | info@tampereensaunalautat.fi | +358456798818`,
         },
       },
       Subject: {
@@ -79,11 +78,13 @@ export default function handler(
     .then(() => {
       res.status(200).json({
         message: "Message sent.",
+        status: "success",
       })
     })
     .catch((error) => {
       res.status(500).json({
         message: `Error occured: ${error}`,
+        status: "error",
       })
     })
 }
