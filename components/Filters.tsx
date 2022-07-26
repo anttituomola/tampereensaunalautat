@@ -129,7 +129,7 @@ const Filters = (props: Props) => {
 
                         <FormControlLabel
                             control={
-                                <Checkbox checked={props.filters.equipment[3].checked} onChange={checkboxHandler} name="Kattoterassi" />
+                                <Checkbox className='katto' checked={props.filters.equipment[3].checked} onChange={checkboxHandler} name="Kattoterassi" />
                             }
                             label="Kattoterassi"
                         />

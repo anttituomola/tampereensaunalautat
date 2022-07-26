@@ -1,14 +1,14 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import prisma from '../lib/prisma'
 import { Lautta } from "../types"
 import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
+import SelectedSaunas from 'components/SelectedSaunas'
 
 interface Props {
   saunas: Lautta[]
@@ -33,8 +33,24 @@ const Home: NextPage<Props> = ({ saunas }) => {
       { name: "Mikro", checked: false },
     ]
   }
+
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
+  const [saunasOnState, setSaunasOnState] = useState<Lautta[]>([])
+  
+  // Get initial saunasOnState from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.getItem('saunasOnState') ? setSaunasOnState(JSON.parse(localStorage.getItem('saunasOnState') || '[]')) : []
+    }
+  }
+  , [])
+
+  // Save saunasOnState to localStorage
+  useEffect(() => {
+    localStorage.setItem('saunasOnState', JSON.stringify(saunasOnState))
+  }
+    , [saunasOnState])
 
   // Show saunas based on filters
   const filteredSaunas = saunas.filter(sauna => {
@@ -64,6 +80,10 @@ const Home: NextPage<Props> = ({ saunas }) => {
   })
   const hiddenSaunas = saunas.length - filteredSaunasWithEquipment.length
 
+  // Show only saunas not in saunasOnState
+  const filteredSaunasNotInSaunasOnState = filteredSaunasWithEquipment.filter(sauna => {
+    return !saunasOnState.some(s => s.id === sauna.id)
+  })
 
   return (
     <div className={styles.container}>
@@ -73,6 +93,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
+        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} /> }
 
         {/* Show filters on click */}
         <Button sx={{ mb: 5 }} color={`${showFilters ? "error" : "primary"}`} variant="outlined" onClick={() => setShowFilters(!showFilters)}>Järjestä / suodata</Button>
@@ -87,14 +108,13 @@ const Home: NextPage<Props> = ({ saunas }) => {
       <main>
 
         <div className={styles.saunaContainer}>
-          {filteredSaunasWithEquipment.map(sauna => (
-            <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
-              <a>
-                <LauttaEl key={sauna.id} sauna={sauna} />
-              </a>
-            </Link>
+          {filteredSaunasNotInSaunasOnState.map(sauna => (
+
+            <LauttaEl key={sauna.id} sauna={sauna} saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} />
+
           ))}
         </div>
+
       </main>
     </div>
   )
