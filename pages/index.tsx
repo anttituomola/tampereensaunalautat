@@ -93,6 +93,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
       <div className={styles.main}>
         <h1>Tampereen saunalautat</h1>
+        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} /> }
 
         {/* Show filters on click */}
         <Button sx={{ mb: 5 }} color={`${showFilters ? "error" : "primary"}`} variant="outlined" onClick={() => setShowFilters(!showFilters)}>Järjestä / suodata</Button>
@@ -114,7 +115,6 @@ const Home: NextPage<Props> = ({ saunas }) => {
           ))}
         </div>
 
-        {saunasOnState.length > 0 && <SelectedSaunas saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} /> }
       </main>
     </div>
   )
