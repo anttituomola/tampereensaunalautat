@@ -36,6 +36,7 @@ const EmailForm = (props: Props) => {
             }
             if (!data.message.date || !data.message.time) {
                 console.log("Päivämäärä ja lähtöaika ovat pakollisia")
+                // TODO maybe alert?
                 return
             }
             if (!EmailValidator.validate(data.customerEmail)) {

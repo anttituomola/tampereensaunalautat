@@ -1,8 +1,8 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
 import { SESClient } from "@aws-sdk/client-ses"
 import { SendEmailCommand } from "@aws-sdk/client-ses"
 import dayjs from "dayjs"
+import { withSentry } from '@sentry/nextjs';
 
 interface Credentials {
   accessKeyId: any
@@ -36,7 +36,7 @@ type Req = {
   }
 }
 
-export default function handler(
+export async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -73,18 +73,19 @@ export default function handler(
     Source: "info@tampereensaunalautat.fi",
   }
 
-  return sesClient
-    .send(new SendEmailCommand(params))
-    .then(() => {
-      res.status(200).json({
-        message: "Message sent.",
-        status: "success",
-      })
+  try {
+    await sesClient
+      .send(new SendEmailCommand(params))
+    res.status(200).json({
+      message: "Message sent.",
+      status: "success",
     })
-    .catch((error) => {
-      res.status(500).json({
-        message: `Error occured: ${error}`,
-        status: "error",
-      })
+  } catch (error) {
+    res.status(500).json({
+      message: `Error occured: ${error}`,
+      status: "error",
     })
+  }
 }
+
+export default withSentry(handler);

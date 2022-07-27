@@ -16,6 +16,10 @@ const name = ({ sauna }: Props) => {
   const saunaLocation = sauna.location
   const title = `Tampereen saunalautat: ${saunaName}, ${saunaLocation}`
 
+  const urls = sauna.urlArray.map(url => {
+    return <li key={url}><a href={url}>{url}</a></li>
+  })
+
   return (
     <>
       <Head key={sauna.name}>
@@ -35,7 +39,8 @@ const name = ({ sauna }: Props) => {
         </div>
         <div className="contact">
           <h2>Yhteystiedot</h2>
-          <p>Kotisivut: {sauna.url}</p>
+          {/* <p>Kotisivut: {sauna.url}</p> */}
+          <ul>{urls}</ul>
           <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
           <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
         </div>

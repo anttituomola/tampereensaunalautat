@@ -2,14 +2,15 @@
 Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään voi keskitetysti tutustua lauttatarjontaan, joten päätin kerätä datan kaikista Tampereen saunalautoista ja keskittää sen yhdelle sivustolle. Olkaa hyvät.
 
 ## Tech stack
-- Next & TypeScript
+- Next & TypeScript: blazingly fast server-side rendered site
 - Postgres DB on Railway
 - Prisma as ORM
 - Material-UI components
-- Testing with Jest and Testing-Library
+- Component testing with Jest and Testing-Library
+- End-to-end testing with Cypress
+- Email sending with Amazon SES
 
 ## TODO
-- comparison feature
-- ability to send email to selected venues (in production)
 - add another page explaining saunalautta experience in general
-- add captcha
+- add captcha to email sending form
+- Instead of hiding selected saunas, add an indicator showing that the sauna is selected, but keep it visible
