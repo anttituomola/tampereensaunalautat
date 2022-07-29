@@ -7,9 +7,9 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - Prisma as ORM
 - Material-UI components
 - Testing with Jest and Testing-Library
+- End-to-end testing with Cypress
+- Email sending with Amazon SES
 
 ## TODO
-- comparison feature
-- ability to send email to selected venues (in production)
 - add another page explaining saunalautta experience in general
 - add captcha
