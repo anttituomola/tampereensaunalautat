@@ -14,7 +14,7 @@ const name = ({ sauna }: Props) => {
   const sortedEquipment = sauna.equipment.sort((a, b) => a.localeCompare(b))
   const saunaName = sauna.name
   const saunaLocation = sauna.location
-  const title = `Tampereen saunalautat: ${saunaName}, ${saunaLocation}`
+  const title = `Saunalautta Tampere: ${saunaName}, ${saunaLocation}`
 
   return (
     <>
@@ -23,7 +23,7 @@ const name = ({ sauna }: Props) => {
         <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
       </Head>
       <div className={styles.container}>
-        <h1>Tampereen saunalautat: {sauna.name}</h1>
+        <h1>Saunalautta Tampere: {sauna.name}</h1>
         <div className={styles.mainImageHolder}>
           <Image className={styles.mainImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
         </div>
