@@ -6,7 +6,7 @@ const mockSauna = mockSaunas[0]
 
 test('renders sauna name', () => {
     render(<LauttaEl sauna={mockSauna} />)
-    expect(screen.getByText(`Tampereen saunalautat: ${mockSauna.name}`)).toBeInTheDocument()
+    expect(screen.getByText(`Saunalautta Tampere: ${mockSauna.name}`)).toBeInTheDocument()
 })
 
 test('renders sauna capacity', () => {

@@ -8,7 +8,9 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "test": "set DEBUG_PRINT_LIMIT=100000 && jest --watch"
+    "test": "set DEBUG_PRINT_LIMIT=100000 && jest --watch",
+    "jest": "jest",
+    "cypress": "cypress run"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.131.0",
