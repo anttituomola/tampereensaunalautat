@@ -1,20 +1,20 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import prisma from '../lib/prisma'
-import { Lautta } from "../types"
 import LauttaEl from "../components/LauttaEl"
 import Filters from 'components/Filters'
 import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import SelectedSaunas from 'components/SelectedSaunas'
+import { saunas } from './saunat/saunadata'
+import { Saunalautta } from './saunat/saunadata'
 
 interface Props {
-  saunas: Lautta[]
+  saunas: Saunalautta[]
 }
 
-const Home: NextPage<Props> = ({ saunas }) => {
+const Home: NextPage<Props> = () => {
   const initialState = {
     location: '',
     capacity: 0,
@@ -36,7 +36,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
 
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState(initialState)
-  const [saunasOnState, setSaunasOnState] = useState<Lautta[]>([])
+  const [saunasOnState, setSaunasOnState] = useState<Saunalautta[]>([])
   
   // Get initial saunasOnState from localStorage
   useEffect(() => {
@@ -121,12 +121,3 @@ const Home: NextPage<Props> = ({ saunas }) => {
 }
 
 export default Home
-
-export async function getStaticProps() {
-  const saunas = await prisma.lautta.findMany()
-  return {
-    props: {
-      saunas,
-    },
-  }
-}

@@ -3,8 +3,7 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 
 ## Tech stack
 - Next & TypeScript
-- Postgres DB on Railway
-- Prisma as ORM
+- Local JSON file as a DB: used to be Postgres DB on Railway with Prisma ORM, but I decided to simplify the stack
 - Material-UI components
 - Testing with Jest and Testing-Library
 - End-to-end testing with Cypress

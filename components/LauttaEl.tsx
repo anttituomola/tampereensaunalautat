@@ -4,15 +4,15 @@ import styles from "/styles/LauttaEl.module.css"
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import Link from 'next/link'
-
+import { Saunalautta } from "../pages/saunat/saunadata"
 
 type Props = {
-    sauna: Lautta,
-    setSaunasOnState: React.Dispatch<React.SetStateAction<Lautta[]>>,
-    saunasOnState: Lautta[]
+    sauna: Saunalautta,
+    setSaunasOnState: React.Dispatch<React.SetStateAction<Saunalautta[]>>,
+    saunasOnState: Saunalautta[]
 }
 const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
-    const addSaunaToState = (sauna: Lautta) => {
+    const addSaunaToState = (sauna: Saunalautta) => {
         if (saunasOnState.find(s => s.id === sauna.id)) {
             return
         }

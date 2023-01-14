@@ -4,14 +4,15 @@ import EmailForm from "components/EmailForm"
 import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Link from "next/link"
+import { Saunalautta } from "pages/saunat/saunadata"
 
 type Props = {
-    saunasOnState: Lautta[],
-    setSaunasOnState: (saunasOnState: Lautta[]) => void
+    saunasOnState: Saunalautta[] | [],
+    setSaunasOnState: (saunasOnState: Saunalautta[]) => void
 }
 
 const SelectedSaunas = (props: Props) => {
-    const removeSauna = (sauna: Lautta) => {
+    const removeSauna = (sauna: Saunalautta) => {
         const newSaunasOnState = props.saunasOnState.filter(s => s.id !== sauna.id)
         props.setSaunasOnState(newSaunasOnState)
     }

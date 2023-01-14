@@ -1,12 +1,12 @@
-import prisma from 'lib/prisma'
-import { Lautta } from 'types'
 import dayjs from 'dayjs'
 import styles from 'styles/[url_name].module.css'
 import Image from 'next/image'
 import Head from 'next/head'
+import { Saunalautta } from 'pages/saunat/saunadata'
+import { saunas } from 'pages/saunat/saunadata'
 
 type Props = {
-  sauna: Lautta
+  sauna: Saunalautta
 }
 
 const name = ({ sauna }: Props) => {
@@ -53,8 +53,6 @@ const name = ({ sauna }: Props) => {
 export default name
 
 export const getStaticPaths = async () => {
-  const saunas = await prisma.lautta.findMany()
-
   const paths = saunas.map(sauna => ({
     params: {
       url_name: sauna.url_name,
@@ -69,11 +67,7 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context: any) => {
-  const sauna = await prisma.lautta.findUnique({
-    where: {
-      url_name: context.params.url_name,
-    },
-  })
+  const sauna = saunas.find(sauna => sauna.url_name === context.params.url_name)
 
   return {
     props: {

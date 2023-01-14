@@ -10,9 +10,10 @@ import styles from "styles/EmailForm.module.css"
 import { Lautta } from "types"
 import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
+import { Saunalautta } from "pages/saunat/saunadata"
 
 type Props = {
-    saunas: Lautta[]
+    saunas: Saunalautta[]
 }
 const EmailForm = (props: Props) => {
     const [email, setEmail] = useState('')
