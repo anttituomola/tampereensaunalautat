@@ -25,7 +25,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
                     <a>
                         <div className={styles.imageHolder}>
-                            <Image className={styles.theImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" />
+                            <Image className={styles.theImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority/>
                         </div>
                         <h2>{sauna.name}</h2>
                     </a>
