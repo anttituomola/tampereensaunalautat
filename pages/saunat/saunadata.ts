@@ -40,7 +40,7 @@ export const saunas = [
             "Kylmäsäilytys"
         ],
         "images": [
-            "public\\images\\ms_blackbox_1.jpg"
+            "ms_blackbox_1.jpg"
         ],
         "mainImage": "ms_blackbox_1.jpg",
         "email": "info@saunalauttaristeilyt.fi",
@@ -76,7 +76,7 @@ export const saunas = [
             ""
         ],
         "images": [
-            "public\\images\\ms_palju_1.jpg"
+            "ms_palju_1.jpg"
         ],
         "mainImage": "ms_palju_1.jpg",
         "email": "info@paljulautta.fi",
@@ -108,7 +108,7 @@ export const saunas = [
             "Pukuhuone"
         ],
         "images": [
-            "public\\images\\vertical_1.jpg"
+            "vertical_1.jpg"
         ],
         "mainImage": "vertical_1.jpg",
         "email": "info@saunalauttaristeilyt.fi",
@@ -138,7 +138,7 @@ export const saunas = [
             "Kylmäsäilytys"
         ],
         "images": [
-            "\\images\\saunalautta_1.jpg"
+            "saunalautta_1.jpg"
         ],
         "mainImage": "saunalautta_1.jpg",
         "email": "info@tampereenvesijettivuokraus.fi",
@@ -172,7 +172,7 @@ export const saunas = [
             "Kattoterassi"
         ],
         "images": [
-            "public\\images\\ms_suvanto_1.jpg"
+            "ms_suvanto_1.jpg"
         ],
         "mainImage": "ms_suvanto_1.jpg",
         "email": "jukka.oksala7@gmail.com",
@@ -237,7 +237,16 @@ export const saunas = [
             "Kahvinkeitin"
         ],
         "images": [
-            "publicimageslaineilla_1.jpg"
+            "laineilla_1.jpg",
+            "laineilla_fi_saunalautta_tampere.jpg",
+            "laineilla_fi_saunalautta_tampere2.jpg",
+            "laineilla_fi_saunalautta_tampere3.jpg",
+            "laineilla_fi_saunalautta_tampere4.jpg",
+            "laineilla_fi_saunalautta_tampere5.jpg",
+            "laineilla_fi_saunalautta_tampere6.jpg",
+            "laineilla_fi_saunalautta_tampere7.jpg",
+            "laineilla_fi_saunalautta_tampere8.jpg",
+            "laineilla_fi_saunalautta_tampere9.jpg",
         ],
         "mainImage": "laineilla_1.jpg",
         "email": "santeri@laineille.fi",
@@ -266,7 +275,7 @@ export const saunas = [
             "Pukuhuone"
         ],
         "images": [
-            "public\\images\\tampereen_saunalautta.jpg"
+            "tampereen_saunalautta.jpg"
         ],
         "mainImage": "tampereen_saunalautta.jpg",
         "email": "info@saunalauttatampere.fi",
@@ -292,7 +301,7 @@ export const saunas = [
             "Kattoterassi"
         ],
         "images": [
-            "public\\images\\tampereen_saunalautta_hiltunen.jpg"
+            "tampereen_saunalautta_hiltunen.jpg"
         ],
         "mainImage": "tampereen_saunalautta_hiltunen.jpg",
         "email": "tmi.hiltunen.lari@gmail.com",
@@ -320,7 +329,7 @@ export const saunas = [
             "Kattoterassi"
         ],
         "images": [
-            "public\\images\\saunakatamaraani.jpg"
+            "saunakatamaraani.jpg"
         ],
         "mainImage": "saunakatamaraani.jpg",
         "email": "kippari@suomenkatamaraani.fi",
@@ -350,7 +359,7 @@ export const saunas = [
             "Äänentoisto"
         ],
         "images": [
-            "public\\images\\saunalautta_tyyne.png"
+            "saunalautta_tyyne.png"
         ],
         "mainImage": "saunalautta_tyyne.png",
         "email": "korentoartofficial@gmail.com",

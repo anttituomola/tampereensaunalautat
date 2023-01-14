@@ -12,3 +12,4 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 ## TODO
 - add another page explaining saunalautta experience in general
 - add captcha
+- create an API from sauna data
