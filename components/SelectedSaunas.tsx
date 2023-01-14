@@ -4,7 +4,7 @@ import EmailForm from "components/EmailForm"
 import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Link from "next/link"
-import { Saunalautta } from "pages/saunat/saunadata"
+import { Saunalautta } from "saunadata"
 
 type Props = {
     saunasOnState: Saunalautta[] | [],

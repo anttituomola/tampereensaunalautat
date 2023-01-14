@@ -10,7 +10,7 @@ import styles from "styles/EmailForm.module.css"
 import { Lautta } from "types"
 import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
-import { Saunalautta } from "pages/saunat/saunadata"
+import { Saunalautta } from "saunadata"
 
 type Props = {
     saunas: Saunalautta[]
@@ -58,7 +58,7 @@ const EmailForm = (props: Props) => {
 
         })
     }
-    
+
     if (apiResponse === "success") {
         return <div>
             <h1>Tarjouspyyntö lähetetty!</h1>

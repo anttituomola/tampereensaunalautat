@@ -4,7 +4,7 @@ import styles from "/styles/LauttaEl.module.css"
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import Link from 'next/link'
-import { Saunalautta } from "../pages/saunat/saunadata"
+import { Saunalautta } from "../saunadata"
 
 type Props = {
     sauna: Saunalautta,

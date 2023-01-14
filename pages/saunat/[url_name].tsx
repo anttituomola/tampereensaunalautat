@@ -3,8 +3,8 @@ import dayjs from 'dayjs'
 import styles from 'styles/[url_name].module.css'
 import Image from 'next/image'
 import Head from 'next/head'
-import { Saunalautta } from 'pages/saunat/saunadata'
-import { saunas } from 'pages/saunat/saunadata'
+import { Saunalautta } from 'saunadata'
+import { saunas } from 'saunadata'
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Modal from '@mui/material/Modal';
@@ -95,7 +95,7 @@ const Name = ({ sauna }: Props) => {
                         aria-describedby="modal-modal-description"
                     >
                         <Box sx={style}>
-                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <img src={`/images/${modalImage}`} alt={modalImage} width="300px" />
                             </div>
                         </Box>
