@@ -1,6 +1,7 @@
 import Footer from './Footer'
 import Head from 'next/head'
 import Header from './Header'
+import { AnalyticsWrapper } from "../analytics"
 
 const Layout = ({ children }: any) => {
     return (
@@ -17,7 +18,10 @@ const Layout = ({ children }: any) => {
                 <meta property="og:image" content="/images/laineilla_1.jpg" />
             </Head>
             <Header />
-            <main>{children}</main>
+            <main>
+                {children}
+                <AnalyticsWrapper />
+            </main>
             <Footer />
         </>
     )
