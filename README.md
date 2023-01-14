@@ -13,3 +13,5 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - add another page explaining saunalautta experience in general
 - add captcha
 - create an API from sauna data
+- better data validation on frontend
+- send confirm email to user
