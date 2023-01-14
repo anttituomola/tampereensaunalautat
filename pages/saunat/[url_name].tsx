@@ -43,12 +43,11 @@ const Name = ({ sauna }: Props) => {
     const title = `Saunalautta Tampere: ${saunaName}, ${saunaLocation}`
 
     return (
-        <>
+        <div className={styles.container}>
             <Head key={sauna.name}>
                 <title>{title}</title>
                 <meta name="description" content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`} />
             </Head>
-            <div className={styles.container}>
                 <h1>Saunalautta Tampere: {sauna.name}</h1>
                 <div className={styles.mainImageHolder}>
                     <Image className={styles.mainImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
@@ -102,7 +101,6 @@ const Name = ({ sauna }: Props) => {
                     </Modal>
                 </div>
             </div>
-        </>
     )
 }
 

@@ -1,4 +1,3 @@
-import { Lautta } from "types"
 import styles from "styles/SelectedSaunas.module.css"
 import EmailForm from "components/EmailForm"
 import Button from '@mui/material/Button'
