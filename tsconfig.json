@@ -16,7 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next-sitemap.config.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next-sitemap.config.js", "components/analytics.jsx"],
   "exclude": ["node_modules"],
   "types": ["node", "jest", "@testing-library/jest-dom"],
 }

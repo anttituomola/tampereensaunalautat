@@ -248,7 +248,7 @@ export const saunas = [
             "laineilla_fi_saunalautta_tampere8.jpg",
             "laineilla_fi_saunalautta_tampere9.jpg",
         ],
-        "mainImage": "laineilla_1.jpg",
+        "mainImage": "laineilla_fi_saunalautta_tampere9.jpg",
         "email": "santeri@laineille.fi",
         "phone": "+358442122757",
         "url": "https://laineille.fi/",

@@ -10,8 +10,9 @@ import ImageListItem from '@mui/material/ImageListItem';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
+import { NextPage } from 'next'
 
-type Props = {
+interface Props {
     sauna: Saunalautta
 }
 
@@ -27,7 +28,7 @@ const style = {
     p: 4,
 };
 
-const Name = ({ sauna }: Props) => {
+const Name: NextPage<Props> = ({ sauna }) => {
     const [open, setOpen] = useState(false);
     const [modalImage, setModalImage] = useState("")
     const handleOpen = (image: string) => {
@@ -81,6 +82,7 @@ const Name = ({ sauna }: Props) => {
                                         alt={image}
                                         loading="lazy"
                                         onClick={() => handleOpen(image)}
+                                        style={{ cursor: 'pointer' }}
                                     />
                                 </ImageListItem>
                             ))
