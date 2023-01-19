@@ -1,10 +1,10 @@
-import { Lautta } from "../types"
 import Image from "next/image"
 import styles from "/styles/LauttaEl.module.css"
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import Link from 'next/link'
 import { Saunalautta } from "../saunadata"
+import Tooltip from '@mui/material/Tooltip'
 
 type Props = {
     sauna: Saunalautta,
@@ -25,7 +25,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
                     <a>
                         <div className={styles.imageHolder}>
-                            <Image className={styles.theImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority/>
+                            <Image className={styles.theImage} src={`/images/${sauna.mainImage}`} alt={sauna.name} layout="fill" priority />
                         </div>
                         <h2>{sauna.name}</h2>
                     </a>
@@ -34,10 +34,11 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 <p>Alkaen {sauna.pricemin} € / {sauna.eventLength} h</p>
                 <small>{sauna.notes}</small>
                 <div className={styles.lisaaPostitukseen}>
-                    <Fab data-cy={`addButton-${sauna.name}`} color="primary" size="small" aria-label="add" onClick={() => addSaunaToState(sauna)}>
-                        <AddIcon />
-                    </Fab>
-
+                    <Tooltip title="Lisää tarjouspyyntöön" aria-label="add">
+                        <Fab data-cy={`addButton-${sauna.name}`} color="primary" size="small" aria-label="add" onClick={() => addSaunaToState(sauna)}>
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
                 </div>
             </div>
 
