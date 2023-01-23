@@ -21,8 +21,10 @@ const EmailForm = (props: Props) => {
     const [time, setTime] = useState('' || null)
     const [pax, setPax] = useState(10 || null)
     const [apiResponse, setApiResponse] = useState("")
+    const [isDisabled, setIsDisabled] = useState(false)
 
     const sendEmail = () => {
+        setIsDisabled(true)
         props.saunas.map(sauna => {
             const data = {
                 emailTo: sauna.email,
@@ -37,10 +39,12 @@ const EmailForm = (props: Props) => {
             }
             if (!data.message.date || !data.message.time) {
                 console.log("Päivämäärä ja lähtöaika ovat pakollisia")
+                setIsDisabled(false)
                 return
             }
             if (!EmailValidator.validate(data.customerEmail)) {
                 console.log("Sähköposti ei ole oikea")
+                setIsDisabled(false)
                 return
             }
             fetch('/api/email', {
@@ -113,7 +117,7 @@ const EmailForm = (props: Props) => {
                 />
             </Paper>
             <div>
-                <Button size="large" variant="contained" onClick={() => sendEmail()}>LÄHETÄ</Button>
+                <Button size="large" disabled={isDisabled} variant="contained" onClick={() => sendEmail()}>LÄHETÄ</Button>
             </div>
         </div >
     )
