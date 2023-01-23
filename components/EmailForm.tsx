@@ -5,12 +5,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import TextField from '@mui/material/TextField'
 import { useState } from 'react'
 import { MobileTimePicker } from '@mui/x-date-pickers'
-import { Button } from '@mui/material'
+import { Alert, Button } from '@mui/material'
 import styles from "styles/EmailForm.module.css"
-import { Lautta } from "types"
+import Snackbar from '@mui/material/Snackbar';
 import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
 import { Saunalautta } from "saunadata"
+import { set } from 'cypress/types/lodash'
 
 type Props = {
     saunas: Saunalautta[]
@@ -22,6 +23,8 @@ const EmailForm = (props: Props) => {
     const [pax, setPax] = useState(10 || null)
     const [apiResponse, setApiResponse] = useState("")
     const [isDisabled, setIsDisabled] = useState(false)
+    const [alertOpen, setAlertOpen] = useState(false)
+    const [alertMessage, setAlertMessage] = useState("")
 
     const sendEmail = () => {
         setIsDisabled(true)
@@ -38,12 +41,20 @@ const EmailForm = (props: Props) => {
                 }
             }
             if (!data.message.date || !data.message.time) {
-                console.log("Päivämäärä ja lähtöaika ovat pakollisia")
+                setAlertMessage("Päivämäärä ja lähtöaika ovat pakollisia")
+                setAlertOpen(true)
                 setIsDisabled(false)
                 return
             }
             if (!EmailValidator.validate(data.customerEmail)) {
-                console.log("Sähköposti ei ole oikea")
+                setAlertMessage("Sähköposti ei ole oikea. Tarkista sähköpostiosoite.")
+                setAlertOpen(true)
+                setIsDisabled(false)
+                return
+            }
+            if (data.message.pax === null || data.message.pax < 1) {
+                setAlertMessage("Osallistujien lukumäärä ei voi olla pienempi kuin 1")
+                setAlertOpen(true)
                 setIsDisabled(false)
                 return
             }
@@ -81,6 +92,11 @@ const EmailForm = (props: Props) => {
 
     return (
         <div className={styles.emailForm}>
+            <Snackbar open={alertOpen} autoHideDuration={6000} onClose={() => setAlertOpen(false)}>
+                <Alert onClose={() => setAlertOpen(false)} severity="error" sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
             <Paper id={styles.paper}>
                 <TextField required id="outlined-basic" type="email" label="Sähköpostiosoitteesi" variant="outlined" onChange={(event) => {
                     setEmail(event.target.value)
