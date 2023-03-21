@@ -1,21 +1,5 @@
-export interface Saunalautta {
-    id: string
-    name: string
-    location: string
-    capacity: number
-    pricemin: number
-    pricemax: number
-    equipment: string[]
-    images: string[]
-    mainImage: string
-    email: string
-    phone: string
-    url: string
-    notes?: string
-    url_name: string
-    eventLength: number
-    urlArray: string[]
-}
+import { Saunalautta } from "types";
+
 
 export const saunas = [
     {
@@ -396,6 +380,46 @@ export const saunas = [
             "https://www.instagram.com/saunalauttaauroora/"
         ],
         "notes": ""
+    },
+    {
+        "id": "clfi4b80v000008l811nq768x",
+        "name": "Manta5",
+        "url_name": "manta5",
+        "location": "Näsijärvi",
+        "capacity": 10,
+        "eventLength": 3,
+        "pricemin": 460,
+        "pricemax": 460,
+        "equipment": [
+            "Kylmäsäilytys",
+            "WC",
+            "Äänentoisto",
+            "Grilli",
+            "Kattoterassi",
+            "Pukuhuone",
+            "Suihku",
+            "TV"
+        ],
+        "images": [
+            "manta5_1.jpg",
+            "manta5_2.jpg",
+            "manta5_3.jpg",
+            "manta5_4.jpg",
+            "manta5_5.jpg",
+            "manta5_6.jpg",
+            "manta5_7.jpg",
+            "manta5_8.jpg",
+            "manta5_main.jpg"
+        ],
+        "mainImage": "manta5_main.jpg",
+        "email": "info@manta5.fi",
+        "phone": "+358 50 3415444",
+        "url": "http://www.manta5.fi/extreme",
+        "urlArray": [
+            "http://www.manta5.fi/extreme",
+            "http://www.vello.fi/manta5"
+        ],
+        "notes": "Uusi lautta, mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu)."
     }
 ] as Saunalautta[]
 

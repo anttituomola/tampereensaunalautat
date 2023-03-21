@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import SelectedSaunas from 'components/SelectedSaunas'
 import { saunas } from '../saunadata'
-import { Saunalautta } from '../saunadata'
+import { Saunalautta } from '../types'
 
 interface Props {
     saunas: Saunalautta[]

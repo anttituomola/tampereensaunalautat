@@ -1,18 +1,18 @@
-export interface Lautta {
-    id: string,
-    name: string,
-    url_name: string[],
-    location: string,
-    capacity: number,
+export interface Saunalautta {
+    id: string
+    name: string
+    location: string
+    capacity: number
     pricemin: number
-    pricemax: number,
-    eventLength: number,
+    pricemax: number
     equipment: string[]
     images: string[]
-    mainImage: string,
-    email?: string,
-    phone?: string,
-    url?: string,
-    urlArray: string[],
-    notes?: string,
-  }
+    mainImage: string
+    email: string
+    phone: string
+    url: string
+    notes?: string
+    url_name: string
+    eventLength: number
+    urlArray: string[]
+}
