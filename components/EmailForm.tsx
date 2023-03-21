@@ -10,8 +10,7 @@ import styles from "styles/EmailForm.module.css"
 import Snackbar from '@mui/material/Snackbar';
 import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
-import { Saunalautta } from "saunadata"
-import { set } from 'cypress/types/lodash'
+import { Saunalautta } from "types"
 
 type Props = {
     saunas: Saunalautta[]
