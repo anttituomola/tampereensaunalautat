@@ -3,7 +3,7 @@ import styles from "/styles/LauttaEl.module.css"
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import Link from 'next/link'
-import { Saunalautta } from "../saunadata"
+import { Saunalautta } from "types"
 import Tooltip from '@mui/material/Tooltip'
 
 type Props = {

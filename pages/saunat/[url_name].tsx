@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import styles from 'styles/[url_name].module.css'
 import Image from 'next/image'
 import Head from 'next/head'
-import { Saunalautta } from 'saunadata'
+import { Saunalautta } from 'types'
 import { saunas } from 'saunadata'
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
