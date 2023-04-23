@@ -9,7 +9,7 @@ export const saunas = [
         "location": "Pyhäjärvi",
         "capacity": 15,
         "eventLength": 3,
-        "pricemin": 525,
+        "pricemin": 600,
         "pricemax": 600,
         "equipment": [
             "Kattoterassi",
@@ -78,7 +78,7 @@ export const saunas = [
         "location": "Pyhäjärvi",
         "capacity": 20,
         "eventLength": 3,
-        "pricemin": 675,
+        "pricemin": 750,
         "pricemax": 750,
         "equipment": [
             "Kahvinkeitin",
