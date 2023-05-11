@@ -11,6 +11,7 @@ import Snackbar from '@mui/material/Snackbar';
 import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
 import { Saunalautta } from "types"
+import 'dayjs/locale/fi'
 
 type Props = {
     saunas: Saunalautta[]
@@ -100,7 +101,7 @@ const EmailForm = (props: Props) => {
                 <TextField required id="outlined-basic" type="email" label="Sähköpostiosoitteesi" variant="outlined" onChange={(event) => {
                     setEmail(event.target.value)
                 }} />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fi'>
                     <MobileDatePicker
                         minDate={dayjs()}
                         label="Päivämäärä"
