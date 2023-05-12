@@ -62,7 +62,7 @@ const Name: NextPage<Props> = ({ sauna }) => {
                 <div className="contact">
                     <h2>Yhteystiedot</h2>
                     {sauna.urlArray.map(url => (
-                        <li key={url}><a key={url} href={url}>{url}</a></li>
+                        <li key={url}><a key={url} href={url}>{url.length > 50 ? url.slice(0,50) + '...' : url}</a></li>
                     ))}
                     <p>Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a></p>
                     <p>Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a></p>
