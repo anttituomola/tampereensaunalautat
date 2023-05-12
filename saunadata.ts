@@ -367,17 +367,27 @@ export const saunas = [
         "equipment": [
             "Kattoterassi",
             "Palju",
-            "Grilli"
+            "Grilli",
+            "WC",
+            "Suihku",
+            "Kylmäsäilytys",
+            "Pukuhuone",
+            "TV",
+            "Äänentoisto",
+            "Mikroaaltouuni",
+            "Kahvinkeitin",
+            "Ilmastointi"
         ],
         "images": [],
         "mainImage": "saunalautta_auroora.jpg",
         "email": "info@saunalauttaauroora.fi",
         "phone": "+358452078899",
-        "url": "http://www.saunalauttaauroora.fi/index.html",
+        "url": "https://saunalauttaauroora.fi/",
         "urlArray": [
-            "http://www.saunalauttaauroora.fi/index.html",
+            "https://saunalauttaauroora.fi/",
             "https://www.facebook.com/saunalauttaauroora/",
-            "https://www.instagram.com/saunalauttaauroora/"
+            "https://www.instagram.com/saunalauttaauroora/",
+            "https://evaraus.fi/saunalautta_auroora/"
         ],
         "notes": ""
     },
