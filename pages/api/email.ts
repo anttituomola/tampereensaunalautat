@@ -3,6 +3,12 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { SESClient } from "@aws-sdk/client-ses"
 import { SendEmailCommand } from "@aws-sdk/client-ses"
 import dayjs from "dayjs"
+import utc from 'dayjs/plugin/utc' 
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(timezone)
+dayjs.extend(utc)
+import 'dayjs/locale/fi'
+dayjs.locale('fi')
 
 interface Credentials {
   accessKeyId: any
@@ -53,9 +59,9 @@ export default function handler(
         Text: {
           Data: `${message.sauna} on saanut tarjouspyynnön: 
           
-          Asiakas haluaisi saunoa ${dayjs(message.date).format(
+          Asiakas haluaisi saunoa ${dayjs(dayjs(message.date).tz('Europe/Helsinki')).format(
             "DD.MM.YYYY"
-          )} klo ${dayjs(message.time).format("HH:mm")}, mukana ${
+          )} klo ${dayjs(message.time).tz('Europe/Helsinki').format("HH:mm")}, mukana ${
             message.pax
           } osallistujaa.
           
@@ -66,7 +72,7 @@ export default function handler(
         },
       },
       Subject: {
-        Data: "Tarjouspyyntö: " + dayjs(message.date).format("DD.MM.YYYY"),
+        Data: "Tarjouspyyntö: " + dayjs(message.date).tz('Europe/Helsinki').format("DD.MM.YYYY"),
       },
     },
     ReplyToAddresses: [customerEmail],
@@ -86,5 +92,6 @@ export default function handler(
         message: `Error occured: ${error}`,
         status: "error",
       })
+      console.log(error)
     })
 }

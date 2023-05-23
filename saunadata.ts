@@ -430,6 +430,42 @@ export const saunas = [
             "http://www.vello.fi/manta5"
         ],
         "notes": "Uusi lautta, mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu)."
-    }
+    },
+    {
+        "id": "cli0jk219000108jo1j3jceib",
+        "name": "Antin testilautta",
+        "url_name": "antin-testilautta",
+        "location": "Pyhäjärvi",
+        "capacity": 12,
+        "eventLength": 3,
+        "pricemin": 500,
+        "pricemax": 500,
+        "equipment": [
+            "Kattoterassi",
+            "Palju",
+            "Grilli",
+            "WC",
+            "Suihku",
+            "Kylmäsäilytys",
+            "Pukuhuone",
+            "TV",
+            "Äänentoisto",
+            "Mikroaaltouuni",
+            "Kahvinkeitin",
+            "Ilmastointi"
+        ],
+        "images": [],
+        "mainImage": "saunalautta_auroora.jpg",
+        "email": "anttituomola8@gmail.com",
+        "phone": "+358452078899",
+        "url": "https://saunalauttaauroora.fi/",
+        "urlArray": [
+            "https://saunalauttaauroora.fi/",
+            "https://www.facebook.com/saunalauttaauroora/",
+            "https://www.instagram.com/saunalauttaauroora/",
+            "https://evaraus.fi/saunalautta_auroora/"
+        ],
+        "notes": ""
+    },
 ] as Saunalautta[]
 

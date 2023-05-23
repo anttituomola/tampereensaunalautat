@@ -12,6 +12,10 @@ import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
 import { Saunalautta } from "types"
 import 'dayjs/locale/fi'
+import utc from 'dayjs/plugin/utc' 
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(timezone)
+dayjs.extend(utc)
 
 type Props = {
     saunas: Saunalautta[]
@@ -29,17 +33,19 @@ const EmailForm = (props: Props) => {
     const sendEmail = () => {
         setIsDisabled(true)
         props.saunas.map(sauna => {
+            console.log(sauna)
             const data = {
                 emailTo: sauna.email,
                 emailFrom: "info@tampereensaunalautat.fi",
                 customerEmail: email,
                 message: {
-                    date: date || null,
-                    time: time || null,
+                    date: dayjs(date).tz('Europe/Helsinki') || null,
+                    time: dayjs(time).tz('Europe/Helsinki') || null,
                     pax: pax || null,
                     sauna: sauna.name || ""
                 }
             }
+            console.log(data)
             if (!data.message.date || !data.message.time) {
                 setAlertMessage("Päivämäärä ja lähtöaika ovat pakollisia")
                 setAlertOpen(true)
