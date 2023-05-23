@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import * as EmailValidator from 'email-validator'
 import { Saunalautta } from "types"
 import 'dayjs/locale/fi'
-import utc from 'dayjs/plugin/utc' 
+import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 dayjs.extend(timezone)
 dayjs.extend(utc)
@@ -32,8 +32,7 @@ const EmailForm = (props: Props) => {
 
     const sendEmail = () => {
         setIsDisabled(true)
-        props.saunas.map(sauna => {
-            console.log(sauna)
+        const emailPromises = props.saunas.map(sauna => {
             const data = {
                 emailTo: sauna.email,
                 emailFrom: "info@tampereensaunalautat.fi",
@@ -64,7 +63,7 @@ const EmailForm = (props: Props) => {
                 setIsDisabled(false)
                 return
             }
-            fetch('/api/email', {
+            return fetch('/api/email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -74,10 +73,33 @@ const EmailForm = (props: Props) => {
                 .then(res => res.json())
                 .then(res => {
                     setApiResponse(res.status)
-                }
-                )
-
+                })
         })
+
+        Promise.all(emailPromises)
+            .then(() => {
+                const saunaNames = props.saunas.map(sauna => sauna.name);
+                const confirmationData = {
+                    customerEmail: email,
+                    tenderSummary: {
+                        date: dayjs(date).tz('Europe/Helsinki'),
+                        time: dayjs(time).tz('Europe/Helsinki'),
+                        saunaNames: saunaNames
+                    }
+                }
+                return fetch('/api/confirmatioEmailToCustomer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(confirmationData)
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                console.log('Confirmation email status:', res.status)
+            })
+            .catch(err => console.log(err))
     }
 
     if (apiResponse === "success") {
