@@ -431,7 +431,7 @@ export const saunas = [
         ],
         "notes": "Uusi lautta, mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu)."
     },
-    {
+    /* {
         "id": "cli0jk219000108jo1j3jceib",
         "name": "Antin testilautta",
         "url_name": "antin-testilautta",
@@ -466,6 +466,6 @@ export const saunas = [
             "https://evaraus.fi/saunalautta_auroora/"
         ],
         "notes": ""
-    },
+    }, */
 ] as Saunalautta[]
 
