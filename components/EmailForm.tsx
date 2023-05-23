@@ -106,7 +106,7 @@ const EmailForm = (props: Props) => {
         return <div>
             <h1>Tarjouspyyntö lähetetty!</h1>
             <p>Lähetit tarjouspyynnön päivälle {dayjs(date).format("DD.MM.YYYY")} klo {dayjs(time).format("HH:mm")}</p>
-            <p>Saat tarjoukset suoraan sähköpostiisi {email}.</p>
+            <p>Saat vahvistuksen ja tarjoukset suoraan sähköpostiisi {email}.</p>
             <p>Kiitos kun käytit tampereensaunalautat.fi -sivusto!</p>
         </div>
     }
