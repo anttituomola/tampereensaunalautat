@@ -112,8 +112,8 @@ export const saunas = [
         "location": "Pyhäjärvi",
         "capacity": 16,
         "eventLength": 4,
-        "pricemin": 300,
-        "pricemax": 300,
+        "pricemin": 250,
+        "pricemax": 250,
         "equipment": [
             "Grilli",
             "WC",
