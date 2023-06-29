@@ -111,7 +111,7 @@ export const saunas = [
         "url_name": "saunalautta-tampereen-vesijettivuokraus",
         "location": "Pyhäjärvi",
         "capacity": 16,
-        "eventLength": 4,
+        "eventLength": 3,
         "pricemin": 250,
         "pricemax": 250,
         "equipment": [
