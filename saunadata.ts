@@ -459,6 +459,8 @@ export const saunas = [
         "url": "https://www.huvilalautta.fi/",
         "urlArray": [
             "https://www.huvilalautta.fi/",
+            "https://www.instagram.com/huvilalautta_tampere/",
+            "https://www.facebook.com/groups/748266035286482/",
         ],
         "notes": ""
     },
