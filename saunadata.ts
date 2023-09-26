@@ -431,6 +431,37 @@ export const saunas = [
         ],
         "notes": "Uusi lautta, mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu)."
     },
+    {
+        "id": "cln08k9ii000308mkaqy8e984",
+        "name": "Huvilautta",
+        "url_name": "huvilautta",
+        "location": "Pyhäjärvi",
+        "capacity": 20,
+        "eventLength": 3,
+        "pricemin": 400,
+        "pricemax": 400,
+        "equipment": [
+            "Kattoterassi",
+            "Grilli",
+            "WC",
+            "Suihku",
+            "Kylmäsäilytys",
+            "Pukuhuone",
+        ],
+        "images": [
+            "huvilautta1.jpg",
+            "huvilautta2.jpg",
+            "huvilautta3.jpg",
+        ],
+        "mainImage": "huvilautta1.jpg",
+        "email": "mika.hirvinen@hotmail.com",
+        "phone": "+358408287974",
+        "url": "https://www.huvilalautta.fi/",
+        "urlArray": [
+            "https://www.huvilalautta.fi/",
+        ],
+        "notes": ""
+    },
     /* {
         "id": "cli0jk219000108jo1j3jceib",
         "name": "Antin testilautta",
