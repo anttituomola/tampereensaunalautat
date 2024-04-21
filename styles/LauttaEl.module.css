@@ -32,6 +32,10 @@
     object-fit: none;
   }
 
+  .grayScaleImage {
+	filter: grayscale(70%);
+  }
+
   .lisaaPostitukseen {
     position: absolute;
     bottom: 1em;

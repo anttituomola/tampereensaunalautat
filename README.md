@@ -14,4 +14,4 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - add captcha
 - create an API from sauna data
 - better data validation on frontend
-- send confirm email to user
+- Show toast when adding sauna to tender

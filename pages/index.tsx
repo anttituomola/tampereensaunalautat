@@ -80,11 +80,6 @@ const Home: NextPage<Props> = () => {
     })
     const hiddenSaunas = saunas.length - filteredSaunasWithEquipment.length
 
-    // Show only saunas not in saunasOnState
-    const filteredSaunasNotInSaunasOnState = filteredSaunasWithEquipment.filter(sauna => {
-        return !saunasOnState.some(s => s.id === sauna.id)
-    })
-
     return (
         <div className={styles.container}>
             <Head>
@@ -108,7 +103,7 @@ const Home: NextPage<Props> = () => {
             <main>
 
                 <div className={styles.saunaContainer}>
-                    {filteredSaunasNotInSaunasOnState.map(sauna => (
+                    {filteredSaunasWithEquipment.map(sauna => (
 
                         <LauttaEl key={sauna.id} sauna={sauna} saunasOnState={saunasOnState} setSaunasOnState={setSaunasOnState} />
 
