@@ -15,3 +15,6 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - create an API from sauna data
 - better data validation on frontend
 - Show toast when adding sauna to tender
+
+## NEXT
+- fix image gallery rendering
