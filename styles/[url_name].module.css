@@ -3,6 +3,15 @@
   overflow-x: hidden;
 }
 
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 50vh;
+}
+
 .mainContent {
   padding: 2rem;
   border-radius: 12px;
@@ -49,12 +58,6 @@
   border-bottom: 2px solid #e2e8f0;
 }
 
-.contactList,
-.equipmentList {
-  padding: 0;
-  margin: 0;
-}
-
 .contactItem,
 .equipmentItem {
   padding: 0.5rem 0;
@@ -79,4 +82,117 @@
   text-decoration: underline;
 }
 
-/* Rest of the CSS remains the same */
+.galleryItem {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.galleryItem:hover {
+  transform: scale(1.02);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.modalContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modalImageWrapper {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.closeButton {
+  position: absolute !important;
+  top: 1rem;
+  right: 1rem;
+  color: white !important;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.navButton {
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white !important;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.navButton:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.prevButton {
+  left: 1rem;
+}
+
+.nextButton {
+  right: 1rem;
+}
+
+.imageCounter {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .modalImageWrapper {
+    width: 95%;
+    height: 95%;
+  }
+
+  .navButton {
+    padding: 0.5rem;
+  }
+}
