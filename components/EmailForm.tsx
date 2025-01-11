@@ -185,14 +185,13 @@ const EmailForm = (props: Props) => {
                   setDate(newDate);
                   if (errors.date) setErrors({ ...errors, date: "" });
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={!!errors.time}
-                    helperText={errors.time}
-                  />
-                )}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.date,
+                    helperText: errors.date,
+                  },
+                }}
               />
               <MobileTimePicker
                 label="Lähtöaika *"
@@ -202,14 +201,13 @@ const EmailForm = (props: Props) => {
                   setTime(newValue);
                   if (errors.time) setErrors({ ...errors, time: "" });
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={!!errors.time}
-                    helperText={errors.time}
-                  />
-                )}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.time,
+                    helperText: errors.time,
+                  },
+                }}
               />
             </Stack>
           </LocalizationProvider>
