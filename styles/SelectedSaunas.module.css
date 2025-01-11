@@ -1,4 +1,5 @@
 .selectedSaunas {
+<<<<<<< HEAD
     width: 100%;
     max-width: 800px;
     margin: 2rem auto;
@@ -43,4 +44,16 @@
         margin: 1rem auto;
         padding: 1rem;
     }
+=======
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+}
+
+.selectedSaunas a {
+    text-decoration: underline;
+    color: #000;
+>>>>>>> origin/main
 }

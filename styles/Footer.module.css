@@ -1,15 +1,27 @@
 .footer {
     display: flex;
+<<<<<<< HEAD
     justify-content: center;
     align-items: center;
     padding: 2rem;
     text-align: center;
     margin-top: auto;
+=======
+    justify-content: flex-end;
+    margin-right: 3em;
+    margin-top: 2em;
+    margin-left: 2em;
+>>>>>>> origin/main
 }
 
 @media screen and (max-width: 600px) {
     .footer {
+<<<<<<< HEAD
         padding: 1rem;
+=======
+        margin: 2rem 0 0 0;
+        padding: 0 2rem;
+>>>>>>> origin/main
         background-color: lightgrey;
     }
 }

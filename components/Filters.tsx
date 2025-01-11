@@ -11,8 +11,8 @@ import {
   Divider,
   Grid,
   Box,
-} from '@mui/material';
-import styles from '/styles/Filters.module.css';
+} from "@mui/material";
+import styles from "/styles/Filters.module.css";
 
 type Filters = {
   location: string;
@@ -34,7 +34,11 @@ const Filters = (props: Props) => {
     });
   };
 
-  const capacitySelector = (event: Event, value: number | number[], activeThumb: number) => {
+  const capacitySelector = (
+    event: Event,
+    value: number | number[],
+    activeThumb: number
+  ) => {
     props.setFilters({
       ...props.filters,
       capacity: value as number,

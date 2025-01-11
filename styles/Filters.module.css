@@ -1,4 +1,5 @@
 .filters {
+<<<<<<< HEAD
   padding: 2rem;
   margin-bottom: 2rem;
   background-color: white;
@@ -35,3 +36,27 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+=======
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    margin-bottom: 2em;
+    font-weight: 100;
+  }
+  
+  .varusteet {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  
+  .slider {
+    min-width: 200px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .filters {
+      flex-direction: column;
+      height: auto;
+    }
+  }
+>>>>>>> origin/main

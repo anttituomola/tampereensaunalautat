@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .appBar {
   background-color: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(10px);
@@ -53,4 +54,49 @@
   .logo {
     font-size: 1.25rem;
   }
+=======
+.navigation ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 2em;
+    padding-right: 3em;
+    width: 100vw;
+}
+
+.navigation li {
+    border: 1px solid lightgrey;
+    padding: 0.25em 1em;
+    border-radius: 0.25em;
+}
+
+.navigation li:hover {
+    background-color: rgb(214, 247, 214);
+}
+
+.navigation li:active {
+    transform: scale(0.96);
+}
+
+@media screen and (max-width: 600px) {
+    .navigation {
+        background-color: aliceblue;
+        margin: 0;
+    }
+
+    .navigation ul {
+        margin: 0;
+        gap: 0.25em;
+        justify-content: center;
+    }
+    .navigation li {
+        border: none;
+        padding: 0.5em 1em;
+        border-radius: 0.25em;
+    }
+    .navigation li:hover {
+        font-weight: bold;
+        background-color: inherit;
+    }
+>>>>>>> origin/main
 }

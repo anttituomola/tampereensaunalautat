@@ -1,4 +1,5 @@
 .emailForm {
+<<<<<<< HEAD
     width: 100%;
     max-width: 600px;
     margin: 2rem auto;
@@ -47,3 +48,22 @@
         padding: 1rem;
     }
 }
+=======
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1em;
+    margin-top: 2em;
+    padding: 1rem;
+}
+
+@media screen and (max-width: 1024px) {
+    #paper {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+}
+>>>>>>> origin/main

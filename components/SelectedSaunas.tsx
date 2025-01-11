@@ -1,6 +1,13 @@
 import styles from "styles/SelectedSaunas.module.css";
 import EmailForm from "components/EmailForm";
-import { IconButton, Paper, List, ListItem, ListItemText, ListItemSecondaryAction } from "@mui/material";
+import {
+  IconButton,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Link from "next/link";
 import { Saunalautta } from "types";
@@ -25,13 +32,14 @@ const SelectedSaunas = (props: Props) => {
       <h2>Lähetä tarjouspyyntö valituille saunalautoille</h2>
       <List className={styles.saunaList}>
         {props.saunasOnState.map((sauna) => (
-          <ListItem
-            key={sauna.id}
-            className={styles.saunaItem}
-          >
+          <ListItem key={sauna.id} className={styles.saunaItem}>
             <ListItemText
               primary={
-                <Link href={`/saunat/${sauna.url_name}`} target="_blank" className={styles.saunaLink}>
+                <Link
+                  href={`/saunat/${sauna.url_name}`}
+                  target="_blank"
+                  className={styles.saunaLink}
+                >
                   {sauna.name}
                 </Link>
               }

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Saunalautta } from "types";
 import { Button, Chip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { toast } from 'react-toastify';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { toast } from "react-toastify";
 
 type Props = {
   sauna: Saunalautta;
@@ -20,16 +20,22 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
       return;
     }
     setSaunasOnState([...saunasOnState, sauna]);
-    toast.success(`${sauna.name} lisätty tarjouspyyntöön, lomake sivun ylälaidassa`);
+    toast.success(
+      `${sauna.name} lisätty tarjouspyyntöön, lomake sivun ylälaidassa`
+    );
   };
 
   return (
-    <div className={`${styles.lauttaEl} ${isSaunaOnState ? styles.selected : ''}`}>
+    <div
+      className={`${styles.lauttaEl} ${isSaunaOnState ? styles.selected : ""}`}
+    >
       <div className={styles.content}>
         <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
           <div className={styles.imageHolder}>
             <img
-              className={`${styles.theImage} ${isSaunaOnState ? styles.grayScaleImage : ''}`}
+              className={`${styles.theImage} ${
+                isSaunaOnState ? styles.grayScaleImage : ""
+              }`}
               src={`/images/${sauna.mainImage}`}
               alt={sauna.name}
             />

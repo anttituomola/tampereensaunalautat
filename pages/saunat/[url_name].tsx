@@ -1,14 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import styles from "styles/[url_name].module.css";
 import Head from "next/head";
 import { Saunalautta } from "types";
 import { saunas } from "saunadata";
-import { ImageList, ImageListItem, Modal, Box, Paper, Typography, Container, IconButton } from "@mui/material";
+import {
+  ImageList,
+  ImageListItem,
+  Modal,
+  Box,
+  Paper,
+  Typography,
+  Container,
+  IconButton,
+} from "@mui/material";
 import { NextPage } from "next";
-import CloseIcon from '@mui/icons-material/Close';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CloseIcon from "@mui/icons-material/Close";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 interface Props {
   sauna: Saunalautta;
@@ -26,8 +35,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleOpen = (image: string) => {
@@ -43,7 +52,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex = (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
+    const newIndex =
+      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
     setCurrentImageIndex(newIndex);
     setModalImage(sauna.images[newIndex]);
   };
@@ -57,24 +67,25 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (open) {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === "ArrowLeft") {
         handlePrevImage(e as unknown as React.MouseEvent);
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === "ArrowRight") {
         handleNextImage(e as unknown as React.MouseEvent);
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         handleClose();
       }
     }
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, currentImageIndex]);
 
-  const pricing = sauna.pricemin === sauna.pricemax
-    ? sauna.pricemin
-    : `${sauna.pricemin} - ${sauna.pricemax}`;
+  const pricing =
+    sauna.pricemin === sauna.pricemax
+      ? sauna.pricemin
+      : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   const title = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
 
@@ -167,15 +178,15 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             <Typography variant="h2" className={styles.sectionTitle}>
               Kuvia
             </Typography>
-            <ImageList 
+            <ImageList
               cols={columns}
               gap={8}
               sx={{
-                gridAutoFlow: 'dense',
-                '& .MuiImageListItem-root': {
-                  overflow: 'hidden',
-                  borderRadius: 1
-                }
+                gridAutoFlow: "dense",
+                "& .MuiImageListItem-root": {
+                  overflow: "hidden",
+                  borderRadius: 1,
+                },
               }}
             >
               {sauna.images.map((image) => (
@@ -204,7 +215,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         className={styles.modal}
       >
         <Box className={styles.modalContent}>
-          <IconButton 
+          <IconButton
             onClick={handleClose}
             className={styles.closeButton}
             aria-label="close"
@@ -241,7 +252,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
           </div>
 
           <Typography className={styles.imageCounter}>
-            {sauna.images.length > 1 && `${currentImageIndex + 1} / ${sauna.images.length}`}
+            {sauna.images.length > 1 &&
+              `${currentImageIndex + 1} / ${sauna.images.length}`}
           </Typography>
         </Box>
       </Modal>

@@ -3,9 +3,9 @@ import type { AppProps } from "next/app";
 import Layout from "components/layout/Layout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { theme } from '../styles/theme';
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { theme } from "../styles/theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
