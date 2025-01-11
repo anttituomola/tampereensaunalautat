@@ -27,16 +27,20 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   };
 
   return (
-    <div className={`${styles.lauttaEl} ${isSaunaOnState ? styles.selected : ""}`}>
+    <div
+      className={`${styles.lauttaEl} ${isSaunaOnState ? styles.selected : ""}`}
+    >
       <div className={styles.content}>
         <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
           <div>
             <div className={styles.imageHolder}>
               <Image
-                className={`${styles.theImage} ${isSaunaOnState ? styles.grayScaleImage : ""}`}
+                className={`${styles.theImage} ${
+                  isSaunaOnState ? styles.grayScaleImage : ""
+                }`}
                 src={`/images/${sauna.mainImage}`}
                 alt={sauna.name}
-                fill
+                layout="fill"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
               />

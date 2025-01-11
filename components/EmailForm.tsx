@@ -180,7 +180,6 @@ const EmailForm = (props: Props) => {
               <MobileDatePicker
                 label="Päivämäärä *"
                 minDate={dayjs()}
-                inputFormat="DD.MM.YYYY"
                 value={date}
                 onChange={(newDate: any) => {
                   setDate(newDate);
