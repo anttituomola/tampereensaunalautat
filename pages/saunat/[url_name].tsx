@@ -88,26 +88,10 @@ const getEquipmentIcon = (equipment: string) => {
 };
 
 const LauttaPage: NextPage<Props> = ({ sauna }) => {
-  if (!sauna) {
-    return (
-      <Container maxWidth="lg" className={styles.container}>
-        <div className={styles.loadingContainer}>
-          <CircularProgress />
-          <Typography>Loading sauna information...</Typography>
-        </div>
-      </Container>
-    );
-  }
-
   const [open, setOpen] = useState(false);
   const [modalImage, setModalImage] = useState("");
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const pageTitle = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
-  const pricing = sauna.pricemin === sauna.pricemax
-    ? sauna.pricemin
-    : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -118,6 +102,27 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, currentImageIndex]);
+
+  if (!sauna) {
+    return (
+      <Container maxWidth="lg" className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <CircularProgress />
+          <Typography>Loading sauna information...</Typography>
+        </div>
+      </Container>
+    );
+  }
+  const pageTitle = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
+  const pricing =
+    sauna.pricemin === sauna.pricemax
+      ? sauna.pricemin
+      : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   const handleOpen = (image: string) => {
     const index = sauna.images.indexOf(image);
@@ -132,7 +137,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex = (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
+    const newIndex =
+      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
     setCurrentImageIndex(newIndex);
     setModalImage(sauna.images[newIndex]);
   };
@@ -155,11 +161,6 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
       }
     }
   };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, currentImageIndex]);
 
   return (
     <Container maxWidth="lg" className={styles.container}>
@@ -358,7 +359,10 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             </>
           )}
 
-          <div className={styles.modalImageWrapper} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.modalImageWrapper}
+            onClick={(e) => e.stopPropagation()}
+          >
             <img
               src={`/images/${modalImage}`}
               alt={sauna.name}
@@ -391,7 +395,11 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async ({ params }: { params: { url_name: string } }) => {
+export const getStaticProps = async ({
+  params,
+}: {
+  params: { url_name: string };
+}) => {
   const sauna = saunas.find((sauna) => sauna.url_name === params.url_name);
 
   if (!sauna) {
