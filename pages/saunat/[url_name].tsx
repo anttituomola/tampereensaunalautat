@@ -4,6 +4,7 @@ import styles from "styles/[url_name].module.css";
 import Head from "next/head";
 import { Saunalautta } from "types";
 import { saunas } from "saunadata";
+import Image from "next/image";
 import {
   ImageList,
   ImageListItem,
@@ -178,10 +179,12 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         </Typography>
 
         <div className={styles.mainImageHolder}>
-          <img
+          <Image
             src={`/images/${sauna.mainImage}`}
             alt={sauna.name}
             className={styles.mainImage}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
 
@@ -311,11 +314,14 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                   className={styles.galleryItem}
                   onClick={() => handleOpen(image)}
                 >
-                  <img
+                  <Image
                     src={`/images/${image}`}
                     alt={sauna.name}
                     loading="lazy"
                     className={styles.galleryImage}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
                   />
                 </ImageListItem>
               ))}
@@ -363,10 +369,12 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             className={styles.modalImageWrapper}
             onClick={(e) => e.stopPropagation()}
           >
-            <img
+            <Image
               src={`/images/${modalImage}`}
               alt={sauna.name}
               className={styles.modalImage}
+              fill
+              sizes="100vw"
             />
           </div>
 
