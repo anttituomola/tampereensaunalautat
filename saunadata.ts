@@ -410,7 +410,7 @@ export const saunas = [
     ],
     notes: "",
   },
-  {
+  /*  {
     id: "cli0jk219000108jo1j3jceib",
     name: "Antin testilautta",
     url_name: "antin-testilautta",
@@ -445,5 +445,5 @@ export const saunas = [
       "https://evaraus.fi/saunalautta_auroora/",
     ],
     notes: "",
-  },
+  }, */
 ] as Saunalautta[];
