@@ -1,0 +1,38 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Albert Sans', sans-serif;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  min-width: fit-content;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 600px) {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}

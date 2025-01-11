@@ -1,0 +1,230 @@
+.container {
+  padding: 2rem 1rem;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  padding: 2rem;
+  border-radius: 12px;
+  overflow-x: hidden;
+  word-break: break-word;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #2d3748;
+  word-wrap: break-word;
+}
+
+.mainImageHolder {
+  width: 100%;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainImage {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.location {
+  font-size: 1.5rem;
+  color: #4a5568;
+  margin-bottom: 1rem;
+}
+
+.capacity {
+  color: #718096;
+  margin-bottom: 2rem;
+}
+
+.section {
+  margin: 2rem 0;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.contactList,
+.equipmentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contactList li,
+.equipmentList li {
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+.contactList a {
+  color: #2c5282;
+  text-decoration: none;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.contactList a:hover {
+  text-decoration: underline;
+}
+
+.galleryItem {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.galleryItem:hover {
+  transform: scale(1.02);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Modal styles */
+.modal {
+  backdrop-filter: blur(5px);
+}
+
+.modalContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalImage {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.closeButton {
+  position: absolute !important;
+  top: 16px;
+  right: 16px;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  z-index: 1;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+
+.navButton {
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  z-index: 1;
+  transition: opacity 0.2s ease !important;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+
+.prevButton {
+  left: 16px;
+}
+
+.nextButton {
+  right: 16px;
+}
+
+.imageCounter {
+  position: absolute !important;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  .mainContent {
+    padding: 1rem;
+    margin: 0;
+    width: 100%;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .modalContent {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+  }
+
+  .closeButton {
+    top: 8px;
+    right: 8px;
+  }
+
+  .navButton {
+    opacity: 0.8;
+  }
+
+  .prevButton {
+    left: 8px;
+  }
+
+  .nextButton {
+    right: 8px;
+  }
+
+  .imageCounter {
+    bottom: 8px;
+  }
+
+  .section {
+    margin: 1.5rem 0;
+    padding-top: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+}

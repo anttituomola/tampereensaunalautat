@@ -1,0 +1,49 @@
+.emailForm {
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.formPaper {
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+}
+
+.successMessage,
+.errorMessage {
+    padding: 2rem;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.successMessage {
+    background-color: #f0fff4;
+    border: 1px solid #9ae6b4;
+}
+
+.errorMessage {
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+}
+
+.errorMessage ul {
+    text-align: left;
+    margin: 1rem auto;
+    max-width: 300px;
+    color: #4a5568;
+}
+
+.errorMessage li {
+    margin-bottom: 0.5rem;
+}
+
+@media screen and (max-width: 600px) {
+    .emailForm {
+        margin: 1rem auto;
+    }
+
+    .formPaper {
+        padding: 1rem;
+    }
+}
