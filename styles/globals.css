@@ -2,15 +2,10 @@ html,
 body {
   padding: 0;
   margin: 0;
-<<<<<<< HEAD
-=======
-  margin-bottom: 3em;
->>>>>>> origin/main
   font-family: 'Albert Sans', sans-serif;
   overflow-wrap: break-word;
   word-wrap: break-word;
   min-width: fit-content;
-<<<<<<< HEAD
   background-color: #f5f7fa;
   min-height: 100vh;
 }
@@ -23,8 +18,6 @@ body {
 
 main {
   flex: 1;
-=======
->>>>>>> origin/main
 }
 
 a {
