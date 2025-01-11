@@ -18,6 +18,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
 } from "@mui/material";
 import { NextPage } from "next";
 import CloseIcon from "@mui/icons-material/Close";
@@ -45,7 +46,7 @@ import FireplaceIcon from "@mui/icons-material/Fireplace";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
 
 interface Props {
-  sauna: Saunalautta;
+  sauna?: Saunalautta;
 }
 
 const getEquipmentIcon = (equipment: string) => {
@@ -87,16 +88,26 @@ const getEquipmentIcon = (equipment: string) => {
 };
 
 const LauttaPage: NextPage<Props> = ({ sauna }) => {
+  if (!sauna) {
+    return (
+      <Container maxWidth="lg" className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <CircularProgress />
+          <Typography>Loading sauna information...</Typography>
+        </div>
+      </Container>
+    );
+  }
+
   const [open, setOpen] = useState(false);
   const [modalImage, setModalImage] = useState("");
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const pageTitle = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
-  const pricing =
-    sauna.pricemin === sauna.pricemax
-      ? sauna.pricemin
-      : `${sauna.pricemin} - ${sauna.pricemax}`;
+  const pricing = sauna.pricemin === sauna.pricemax
+    ? sauna.pricemin
+    : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,8 +132,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex =
-      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
+    const newIndex = (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
     setCurrentImageIndex(newIndex);
     setModalImage(sauna.images[newIndex]);
   };
@@ -319,7 +329,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         aria-labelledby="image-modal"
         className={styles.modal}
       >
-        <Box className={styles.modalContent}>
+        <Box className={styles.modalContent} onClick={handleClose}>
           <IconButton
             onClick={handleClose}
             className={styles.closeButton}
@@ -348,7 +358,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             </>
           )}
 
-          <div className={styles.modalImageWrapper}>
+          <div className={styles.modalImageWrapper} onClick={(e) => e.stopPropagation()}>
             <img
               src={`/images/${modalImage}`}
               alt={sauna.name}
@@ -381,10 +391,14 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async (context: any) => {
-  const sauna = saunas.find(
-    (sauna) => sauna.url_name === context.params.url_name
-  );
+export const getStaticProps = async ({ params }: { params: { url_name: string } }) => {
+  const sauna = saunas.find((sauna) => sauna.url_name === params.url_name);
+
+  if (!sauna) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
