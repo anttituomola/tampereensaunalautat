@@ -180,19 +180,20 @@ const EmailForm = (props: Props) => {
               <MobileDatePicker
                 label="Päivämäärä *"
                 minDate={dayjs()}
-                format="DD.MM.YYYY"
+                inputFormat="DD.MM.YYYY"
                 value={date}
                 onChange={(newDate: any) => {
                   setDate(newDate);
                   if (errors.date) setErrors({ ...errors, date: "" });
                 }}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    error: !!errors.date,
-                    helperText: errors.date,
-                  },
-                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    error={!!errors.time}
+                    helperText={errors.time}
+                  />
+                )}
               />
               <MobileTimePicker
                 label="Lähtöaika *"
@@ -202,13 +203,14 @@ const EmailForm = (props: Props) => {
                   setTime(newValue);
                   if (errors.time) setErrors({ ...errors, time: "" });
                 }}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    error: !!errors.time,
-                    helperText: errors.time,
-                  },
-                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    error={!!errors.time}
+                    helperText={errors.time}
+                  />
+                )}
               />
             </Stack>
           </LocalizationProvider>

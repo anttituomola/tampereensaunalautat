@@ -31,26 +31,28 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     >
       <div className={styles.content}>
         <Link href={`/saunat/${sauna.url_name}`} key={sauna.id}>
-          <div className={styles.imageHolder}>
-            <img
-              className={`${styles.theImage} ${
-                isSaunaOnState ? styles.grayScaleImage : ""
-              }`}
-              src={`/images/${sauna.mainImage}`}
-              alt={sauna.name}
-            />
-            {isSaunaOnState && (
-              <div className={styles.selectedOverlay}>
-                <Chip
-                  icon={<CheckCircleIcon />}
-                  label="Lisätty tarjouspyyntöön"
-                  color="primary"
-                  className={styles.selectedChip}
-                />
-              </div>
-            )}
+          <div>
+            <div className={styles.imageHolder}>
+              <img
+                className={`${styles.theImage} ${
+                  isSaunaOnState ? styles.grayScaleImage : ""
+                }`}
+                src={`/images/${sauna.mainImage}`}
+                alt={sauna.name}
+              />
+              {isSaunaOnState && (
+                <div className={styles.selectedOverlay}>
+                  <Chip
+                    icon={<CheckCircleIcon />}
+                    label="Lisätty tarjouspyyntöön"
+                    color="primary"
+                    className={styles.selectedChip}
+                  />
+                </div>
+              )}
+            </div>
+            <h2 className={styles.title}>{sauna.name}</h2>
           </div>
-          <h2 className={styles.title}>{sauna.name}</h2>
         </Link>
         <div className={styles.details}>
           <p>{sauna.location}</p>
