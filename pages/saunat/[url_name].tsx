@@ -13,21 +13,83 @@ import {
   Typography,
   Container,
   IconButton,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { NextPage } from "next";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import WcIcon from "@mui/icons-material/Wc";
+import ShowerIcon from "@mui/icons-material/Shower";
+import CheckroomIcon from "@mui/icons-material/Checkroom";
+import DeckIcon from "@mui/icons-material/Deck";
+import HotTubIcon from "@mui/icons-material/HotTub";
+import KitchenIcon from "@mui/icons-material/Kitchen";
+import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
+import TvIcon from "@mui/icons-material/Tv";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import MicrowaveIcon from "@mui/icons-material/Microwave";
+import CoffeeIcon from "@mui/icons-material/Coffee";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import EmailIcon from "@mui/icons-material/Email";
+import LinkIcon from "@mui/icons-material/Link";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import GroupIcon from "@mui/icons-material/Group";
+import EuroIcon from "@mui/icons-material/Euro";
 
 interface Props {
   sauna: Saunalautta;
 }
+
+const getEquipmentIcon = (equipment: string) => {
+  switch (equipment.toLowerCase()) {
+    case "wc":
+      return <WcIcon />;
+    case "suihku":
+      return <ShowerIcon />;
+    case "pukuhuone":
+      return <CheckroomIcon />;
+    case "kattoterassi":
+      return <DeckIcon />;
+    case "palju":
+    case "poreallas":
+      return <HotTubIcon />;
+    case "kylmäsäilytys":
+    case "jääkaappi":
+      return <KitchenIcon />;
+    case "grilli":
+      return <OutdoorGrillIcon />;
+    case "tv":
+      return <TvIcon />;
+    case "äänentoisto":
+      return <VolumeUpIcon />;
+    case "mikro":
+    case "mikroaaltouuni":
+      return <MicrowaveIcon />;
+    case "kahvinkeitin":
+      return <CoffeeIcon />;
+    case "ilmastointi":
+      return <AcUnitIcon />;
+    default:
+      return null;
+  }
+};
 
 const LauttaPage: NextPage<Props> = ({ sauna }) => {
   const [open, setOpen] = useState(false);
   const [modalImage, setModalImage] = useState("");
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const pageTitle = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
+  const pricing = sauna.pricemin === sauna.pricemax
+    ? sauna.pricemin
+    : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,8 +114,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex =
-      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
+    const newIndex = (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
     setCurrentImageIndex(newIndex);
     setModalImage(sauna.images[newIndex]);
   };
@@ -82,17 +143,10 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, currentImageIndex]);
 
-  const pricing =
-    sauna.pricemin === sauna.pricemax
-      ? sauna.pricemin
-      : `${sauna.pricemin} - ${sauna.pricemax}`;
-
-  const title = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
-
   return (
     <Container maxWidth="lg" className={styles.container}>
       <Head>
-        <title>{title}</title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
           content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`}
@@ -101,7 +155,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
       <Paper elevation={0} className={styles.mainContent}>
         <Typography variant="h1" className={styles.title}>
-          Saunalautta Tampere: {sauna.name}
+          {sauna.name}
         </Typography>
 
         <div className={styles.mainImageHolder}>
@@ -112,66 +166,97 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
           />
         </div>
 
-        <Typography variant="h3" className={styles.location}>
-          {sauna.location}
-        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <section className={styles.section}>
+              <Typography variant="h2" className={styles.sectionTitle}>
+                Perustiedot
+              </Typography>
+              <List>
+                <ListItem className={styles.contactItem}>
+                  <ListItemIcon>
+                    <LocationOnIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={sauna.location} />
+                </ListItem>
+                <ListItem className={styles.contactItem}>
+                  <ListItemIcon>
+                    <GroupIcon />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={`${sauna.capacity} henkilöä`}
+                    secondary={`${sauna.name} pystyy ${sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "saunottamaan" : "kuljettamaan risteilyllä"} maksimissaan ${sauna.capacity} henkilöä.`}
+                  />
+                </ListItem>
+                <ListItem className={styles.contactItem}>
+                  <ListItemIcon>
+                    <EuroIcon />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={`${pricing} € / ${sauna.eventLength}h`}
+                    secondary={`Vuonna ${dayjs().format("YYYY")} tyypillinen ${sauna.eventLength} tunnin ${sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "sauna" : "risteily"} saunalautalla ${sauna.name} maksaa noin ${pricing} €. ${sauna.notes || ""}`}
+                  />
+                </ListItem>
+              </List>
+            </section>
 
-        <Typography variant="body1" className={styles.capacity}>
-          {sauna.name} pystyy{" "}
-          {sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
-            ? "saunottamaan"
-            : "kuljettamaan risteilyllä"}{" "}
-          maksimissaan {sauna.capacity} henkilöä.
-        </Typography>
+            <section className={styles.section}>
+              <Typography variant="h2" className={styles.sectionTitle}>
+                Yhteystiedot
+              </Typography>
+              <List>
+                <ListItem className={styles.contactItem}>
+                  <ListItemIcon>
+                    <LocalPhoneIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <a href={`tel:${sauna.phone}`}>{sauna.phone}</a>
+                  </ListItemText>
+                </ListItem>
+                <ListItem className={styles.contactItem}>
+                  <ListItemIcon>
+                    <EmailIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <a href={`mailto:${sauna.email}`}>{sauna.email}</a>
+                  </ListItemText>
+                </ListItem>
+                {sauna.urlArray.map((url) => (
+                  <ListItem key={url} className={styles.contactItem}>
+                    <ListItemIcon>
+                      <LinkIcon />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <a href={url} target="_blank" rel="noopener noreferrer">
+                        {url.length > 50 ? url.slice(0, 50) + "..." : url}
+                      </a>
+                    </ListItemText>
+                  </ListItem>
+                ))}
+              </List>
+            </section>
+          </Grid>
 
-        <section className={styles.section}>
-          <Typography variant="h2" className={styles.sectionTitle}>
-            Hinnoittelu
-          </Typography>
-          <Typography variant="body1">
-            Vuonna {dayjs().format("YYYY")} tyypillinen{" "}
-            <strong>
-              {sauna.eventLength} tunnin{" "}
-              {sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
-                ? "sauna"
-                : "risteily"}
-            </strong>{" "}
-            saunalautalla {sauna.name} maksaa <strong>noin {pricing} €</strong>.{" "}
-            {sauna.notes}
-          </Typography>
-        </section>
-
-        <section className={styles.section}>
-          <Typography variant="h2" className={styles.sectionTitle}>
-            Yhteystiedot
-          </Typography>
-          <ul className={styles.contactList}>
-            {sauna.urlArray.map((url) => (
-              <li key={url}>
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  {url.length > 50 ? url.slice(0, 50) + "..." : url}
-                </a>
-              </li>
-            ))}
-            <li>
-              Puhelinnumero: <a href={`tel:${sauna.phone}`}>{sauna.phone}</a>
-            </li>
-            <li>
-              Sähköposti: <a href={`mailto:${sauna.email}`}>{sauna.email}</a>
-            </li>
-          </ul>
-        </section>
-
-        <section className={styles.section}>
-          <Typography variant="h2" className={styles.sectionTitle}>
-            Varusteet
-          </Typography>
-          <ul className={styles.equipmentList}>
-            {sauna.equipment.sort().map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
+          <Grid item xs={12} md={6}>
+            <section className={styles.section}>
+              <Typography variant="h2" className={styles.sectionTitle}>
+                Varusteet
+              </Typography>
+              <List>
+                {sauna.equipment.sort().map((item) => {
+                  const icon = getEquipmentIcon(item);
+                  if (!item) return null;
+                  return (
+                    <ListItem key={item} className={styles.equipmentItem}>
+                      {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                      <ListItemText primary={item} />
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </section>
+          </Grid>
+        </Grid>
 
         {sauna.images.length > 0 && (
           <section className={styles.section}>
