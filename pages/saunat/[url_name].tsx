@@ -41,6 +41,8 @@ import LinkIcon from "@mui/icons-material/Link";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import GroupIcon from "@mui/icons-material/Group";
 import EuroIcon from "@mui/icons-material/Euro";
+import FireplaceIcon from "@mui/icons-material/Fireplace";
+import LocalBarIcon from "@mui/icons-material/LocalBar";
 
 interface Props {
   sauna: Saunalautta;
@@ -48,6 +50,10 @@ interface Props {
 
 const getEquipmentIcon = (equipment: string) => {
   switch (equipment.toLowerCase()) {
+    case "takka":
+      return <FireplaceIcon />;
+    case "jääpalakone":
+      return <LocalBarIcon />;
     case "wc":
       return <WcIcon />;
     case "suihku":
@@ -87,9 +93,10 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const pageTitle = `Saunalautta Tampere: ${sauna.name}, ${sauna.location}`;
-  const pricing = sauna.pricemin === sauna.pricemax
-    ? sauna.pricemin
-    : `${sauna.pricemin} - ${sauna.pricemax}`;
+  const pricing =
+    sauna.pricemin === sauna.pricemax
+      ? sauna.pricemin
+      : `${sauna.pricemin} - ${sauna.pricemax}`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -114,7 +121,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex = (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
+    const newIndex =
+      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
     setCurrentImageIndex(newIndex);
     setModalImage(sauna.images[newIndex]);
   };
@@ -183,18 +191,30 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                   <ListItemIcon>
                     <GroupIcon />
                   </ListItemIcon>
-                  <ListItemText 
+                  <ListItemText
                     primary={`${sauna.capacity} henkilöä`}
-                    secondary={`${sauna.name} pystyy ${sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "saunottamaan" : "kuljettamaan risteilyllä"} maksimissaan ${sauna.capacity} henkilöä.`}
+                    secondary={`${sauna.name} pystyy ${
+                      sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
+                        ? "saunottamaan"
+                        : "kuljettamaan risteilyllä"
+                    } maksimissaan ${sauna.capacity} henkilöä.`}
                   />
                 </ListItem>
                 <ListItem className={styles.contactItem}>
                   <ListItemIcon>
                     <EuroIcon />
                   </ListItemIcon>
-                  <ListItemText 
+                  <ListItemText
                     primary={`${pricing} € / ${sauna.eventLength}h`}
-                    secondary={`Vuonna ${dayjs().format("YYYY")} tyypillinen ${sauna.eventLength} tunnin ${sauna.name === "Saunalautta (Tampereen vesijettivuokraus)" ? "sauna" : "risteily"} saunalautalla ${sauna.name} maksaa noin ${pricing} €. ${sauna.notes || ""}`}
+                    secondary={`Vuonna ${dayjs().format("YYYY")} tyypillinen ${
+                      sauna.eventLength
+                    } tunnin ${
+                      sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
+                        ? "sauna"
+                        : "risteily"
+                    } saunalautalla ${sauna.name} maksaa noin ${pricing} €. ${
+                      sauna.notes || ""
+                    }`}
                   />
                 </ListItem>
               </List>
