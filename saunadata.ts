@@ -379,7 +379,7 @@ export const saunas = [
     url: "http://www.manta5.fi/extreme",
     urlArray: ["http://www.manta5.fi/extreme", "http://www.vello.fi/manta5"],
     notes:
-      "Uusi lautta, mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu).",
+      "Mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu).",
   },
   {
     id: "cln08k9ii000308mkaqy8e984",
@@ -398,7 +398,17 @@ export const saunas = [
       "Kylmäsäilytys",
       "Pukuhuone",
     ],
-    images: ["huvilautta1.jpg", "huvilautta2.jpg", "huvilautta3.jpg"],
+    images: [
+      "huvilautta1.jpg",
+      "huvilautta2.jpg",
+      "huvilautta3.jpg",
+      "huvilautta_uusi.JPG",
+      "huvilautta_uusi2.JPG",
+      "huvilautta_uusi3.JPG",
+      "huvilautta_uusi4.JPG",
+      "huvilautta_uusi5.JPG",
+      "huvilautta_uusi6.JPG",
+    ],
     mainImage: "huvilautta1.jpg",
     email: "mika.hirvinen@hotmail.com",
     phone: "+358408287974",
