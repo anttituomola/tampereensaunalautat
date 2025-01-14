@@ -183,7 +183,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             src={`/images/${sauna.mainImage}`}
             alt={sauna.name}
             className={styles.mainImage}
-            fill
+            fill={true}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
@@ -373,7 +373,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
               src={`/images/${modalImage}`}
               alt={sauna.name}
               className={styles.modalImage}
-              fill
+              fill={true}
               sizes="100vw"
             />
           </div>

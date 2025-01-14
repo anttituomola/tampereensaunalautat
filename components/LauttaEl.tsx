@@ -40,7 +40,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 }`}
                 src={`/images/${sauna.mainImage}`}
                 alt={sauna.name}
-                layout="fill"
+                fill={true}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
               />
