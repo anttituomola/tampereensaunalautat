@@ -184,11 +184,11 @@
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 2rem !important;
   }
 
   .sectionTitle {
-	font-size: 1.2rem;
+	font-size: 1.2rem !important;
   }
 
   .modalImageWrapper {
