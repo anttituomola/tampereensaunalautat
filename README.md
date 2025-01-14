@@ -13,8 +13,7 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - add another page explaining saunalautta experience in general
 - add captcha
 - create an API from sauna data
-- better data validation on frontend
-- Show toast when adding sauna to tender
+- Add filter for saunas available during winter months
+- validate user email before sending a RFP
 
 ## NEXT
-- fix image gallery rendering
