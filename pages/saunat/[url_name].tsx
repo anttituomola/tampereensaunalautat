@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import styles from "styles/[url_name].module.css";
+import styles from "styles/url_name.module.css";
 import Head from "next/head";
 import { Saunalautta } from "types";
 import { saunas } from "saunadata";
@@ -93,6 +93,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
   const [modalImage, setModalImage] = useState("");
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  console.log("Styles loaded:", styles);
 
   useEffect(() => {
     const handleResize = () => {
