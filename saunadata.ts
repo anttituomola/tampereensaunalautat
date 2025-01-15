@@ -222,7 +222,8 @@ export const saunas = [
       "https://www.instagram.com/laineillefi/",
       "https://www.varaaheti.fi/laineillesaunalautta/fi/laineille/varaa",
     ],
-    notes: "Myös talvivuokrausmahdollisuus ja avantouinti!",
+    notes:
+      "Myös talvivuokrausmahdollisuus ja avantouinti! Nämä hinnat talvisesongille.",
   },
   {
     id: "cl5kqu1160065xgudjsdkr2o6",
