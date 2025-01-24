@@ -26,7 +26,6 @@ export type SaunaEquipment =
   | "WC"
   | "Suihku"
   | "Grilli"
-  | "Mikro"
   | "Kylmäsäilytys"
   | "Pukuhuone"
   | "Puulämmitteinen kiuas"
@@ -38,3 +37,15 @@ export type SaunaEquipment =
   | "Ilmastointi"
   | "Mikroaaltouuni"
   | "Astiasto";
+
+export interface EquipmentFilter {
+  name: SaunaEquipment;
+  checked: boolean;
+}
+
+export interface FilterState {
+  location: string;
+  capacity: number;
+  sort: string;
+  equipment: EquipmentFilter[];
+}

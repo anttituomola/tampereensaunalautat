@@ -13,6 +13,8 @@ import {
   Box,
 } from "@mui/material";
 import styles from "/styles/Filters.module.css";
+import { Dispatch, SetStateAction } from "react";
+import { FilterState } from "types";
 
 type Filters = {
   location: string;
@@ -26,10 +28,15 @@ type Props = {
   filters: Filters;
 };
 
-const Filters = (props: Props) => {
+interface FiltersProps {
+  setFilters: Dispatch<SetStateAction<FilterState>>;
+  filters: FilterState;
+}
+
+const Filters = ({ setFilters, filters }: FiltersProps) => {
   const locationSelector = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.setFilters({
-      ...props.filters,
+    setFilters({
+      ...filters,
       location: e.target.value,
     });
   };
@@ -39,23 +46,23 @@ const Filters = (props: Props) => {
     value: number | number[],
     activeThumb: number
   ) => {
-    props.setFilters({
-      ...props.filters,
+    setFilters({
+      ...filters,
       capacity: value as number,
     });
   };
 
   const sortSelector = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.setFilters({
-      ...props.filters,
+    setFilters({
+      ...filters,
       sort: e.target.value,
     });
   };
 
   const checkboxHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFilters = {
-      ...props.filters,
-      equipment: props.filters.equipment.map((equipment) => {
+      ...filters,
+      equipment: filters.equipment.map((equipment) => {
         if (equipment.name === e.target.name) {
           return {
             ...equipment,
@@ -65,7 +72,7 @@ const Filters = (props: Props) => {
         return equipment;
       }),
     };
-    props.setFilters(newFilters);
+    setFilters(newFilters);
   };
 
   return (
@@ -156,7 +163,7 @@ const Filters = (props: Props) => {
                 Varusteet
               </FormLabel>
               <FormGroup className={styles.equipmentGrid}>
-                {props.filters.equipment.map((item) => (
+                {filters.equipment.map((item) => (
                   <FormControlLabel
                     key={item.name}
                     control={
