@@ -8,24 +8,19 @@ import {
   Slider,
   FormGroup,
   Checkbox,
-  Divider,
-  Grid,
   Box,
 } from "@mui/material";
 import styles from "/styles/Filters.module.css";
 import { Dispatch, SetStateAction } from "react";
 import { FilterState } from "types";
+import Grid from "@mui/material/Grid2";
+import type { Grid2Props } from "@mui/material/Grid2";
 
 type Filters = {
   location: string;
   capacity: number;
   sort: string;
   equipment: { name: string; checked: boolean }[];
-};
-
-type Props = {
-  setFilters: (filters: Filters) => void;
-  filters: Filters;
 };
 
 interface FiltersProps {
@@ -78,7 +73,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
   return (
     <Paper elevation={0} className={styles.filters}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
@@ -110,7 +105,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Box className={styles.filterSection}>
             <FormLabel component="legend" className={styles.filterTitle}>
               Matkustajien lukumäärä
@@ -156,7 +151,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
