@@ -73,7 +73,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
   return (
     <Paper elevation={0} className={styles.filters}>
       <Grid container spacing={3}>
-        <Grid xs={12} md={4}>
+        <Grid gridColumn={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
@@ -105,7 +105,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           </Box>
         </Grid>
 
-        <Grid xs={12} md={4}>
+        <Grid gridColumn={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
             <FormLabel component="legend" className={styles.filterTitle}>
               Matkustajien lukumäärä
@@ -151,7 +151,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           </Box>
         </Grid>
 
-        <Grid xs={12} md={4}>
+        <Grid gridColumn={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
