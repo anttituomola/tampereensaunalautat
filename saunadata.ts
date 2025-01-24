@@ -1,14 +1,14 @@
-import { Saunalautta } from "types";
+import { Saunalautta, SaunaEquipment } from "./types";
 
-export const saunas = [
+export const saunas: Saunalautta[] = [
   {
     id: "cl5jklabw0042xcudg4l6d76z",
     name: "M/S BlackBox",
     url_name: "ms-blackbox",
     location: "Pyhäjärvi",
-    capacity: 15,
+    capacity: 12,
     eventLength: 3,
-    pricemin: 600,
+    pricemin: 525,
     pricemax: 600,
     equipment: [
       "Kattoterassi",
@@ -54,7 +54,6 @@ export const saunas = [
       "Kaasugrilli",
       "Äänentoisto",
       "Palju",
-      "",
     ],
     images: ["ms_palju_1.jpg"],
     mainImage: "ms_palju_1.jpg",
@@ -69,9 +68,9 @@ export const saunas = [
     name: "Vertical",
     url_name: "vertical",
     location: "Pyhäjärvi",
-    capacity: 20,
+    capacity: 12,
     eventLength: 3,
-    pricemin: 750,
+    pricemin: 675,
     pricemax: 750,
     equipment: [
       "Kahvinkeitin",
@@ -94,6 +93,49 @@ export const saunas = [
       "https://www.instagram.com/saunalauttaristeilyt/",
       "https://www.facebook.com/saunalauttaristeilyt",
     ],
+    notes: "",
+  },
+  {
+    id: "new_premium_sauna",
+    name: "M/S Premium",
+    url_name: "ms_premium",
+    location: "Pyhäjärvi",
+    capacity: 12,
+    eventLength: 3,
+    pricemin: 600,
+    pricemax: 660,
+    equipment: [
+      "Kattoterassi",
+      "Palju",
+      "Kahvinkeitin",
+      "Mikro",
+      "Äänentoisto",
+      "Jääkaappi",
+      "WC",
+      "Suihku",
+      "Grilli",
+      "Pukuhuone",
+      "Astiasto",
+    ],
+    images: [
+      "premium1.jpg",
+      "premium2.jpg",
+      "premium3.jpg",
+      "premium4.jpg",
+      "premium5.jpg",
+      "premium6.jpg",
+      "premium7.jpg",
+      "premium8.jpg",
+      "premium9.jpg",
+      "premium10.jpg",
+      "premium11.jpg",
+      "premium12.jpg",
+    ],
+    mainImage: "premium1.jpg",
+    email: "info@saunalauttaristeilyt.fi",
+    phone: "+358400379160",
+    url: "https://saunalauttaristeilyt.fi/#premium",
+    urlArray: ["https://saunalauttaristeilyt.fi/#premium"],
     notes: "",
   },
   {
@@ -461,4 +503,4 @@ export const saunas = [
     ],
     notes: "",
   }, */
-] as Saunalautta[];
+] as const;
