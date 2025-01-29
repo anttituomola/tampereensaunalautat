@@ -94,8 +94,6 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  console.log("Styles loaded:", styles);
-
   useEffect(() => {
     const handleResize = () => {
       setColumns(window.innerWidth <= 600 ? 2 : 3);
