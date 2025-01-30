@@ -4,8 +4,7 @@ import styles from "../styles/Home.module.css";
 import LauttaEl from "../components/LauttaEl";
 import Filters from "components/Filters";
 import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import Collapse from "@mui/material/Collapse";
+import { Button, Collapse, Stack } from "@mui/material";
 import SelectedSaunas from "components/SelectedSaunas";
 import { saunas } from "../saunadata";
 import { FilterState, SaunaEquipment, Saunalautta } from "../types";
@@ -19,6 +18,7 @@ const Home: NextPage<Props> = () => {
     location: "",
     capacity: 0,
     sort: "",
+    winter: false,
     equipment: [
       { name: "WC", checked: false },
       { name: "Suihku", checked: false },
@@ -56,6 +56,10 @@ const Home: NextPage<Props> = () => {
 
   // Show saunas based on filters
   const filteredSaunas = saunas.filter((sauna) => {
+    if (filters.winter && !sauna.winter) {
+      return false;
+    }
+
     if (filters.location === "ei väliä") {
       return sauna.capacity >= filters.capacity;
     } else {
@@ -86,6 +90,14 @@ const Home: NextPage<Props> = () => {
   });
   const hiddenSaunas = saunas.length - filteredSaunasWithEquipment.length;
 
+  const handleWinterFilter = () => {
+    setShowFilters(true);
+    setFilters({
+      ...filters,
+      winter: true,
+    });
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -101,15 +113,33 @@ const Home: NextPage<Props> = () => {
           />
         )}
 
-        {/* Show filters on click */}
-        <Button
+        {/* Stack component for horizontal button layout */}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
           sx={{ mb: 5 }}
-          color={`${showFilters ? "error" : "primary"}`}
-          variant="outlined"
-          onClick={() => setShowFilters(!showFilters)}
         >
-          Järjestä / suodata
-        </Button>
+          <Button
+            color={`${showFilters ? "error" : "primary"}`}
+            variant="outlined"
+            onClick={() => setShowFilters(!showFilters)}
+            fullWidth // Makes button take full width on mobile
+          >
+            Järjestä / suodata
+          </Button>
+
+          {!showFilters && !filters.winter && (
+            <Button
+              color="secondary"
+              variant="outlined"
+              onClick={handleWinterFilter}
+              fullWidth // Makes button take full width on mobile
+            >
+              Näytä talvikäytössä olevat
+            </Button>
+          )}
+        </Stack>
+
         <Collapse in={showFilters}>
           {showFilters && <Filters setFilters={setFilters} filters={filters} />}
         </Collapse>

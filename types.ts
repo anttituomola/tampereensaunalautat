@@ -15,6 +15,7 @@ export interface Saunalautta {
   url_name: string;
   eventLength: number;
   urlArray: string[];
+  winter: boolean;
 }
 
 export type SaunaEquipment =
@@ -48,4 +49,5 @@ export interface FilterState {
   capacity: number;
   sort: string;
   equipment: EquipmentFilter[];
+  winter: boolean;
 }

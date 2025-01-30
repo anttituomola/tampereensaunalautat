@@ -1,3 +1,4 @@
+import { trueColor } from "@cloudinary/url-gen/qualifiers/colorSpace";
 import { Saunalautta, SaunaEquipment } from "./types";
 
 export const saunas: Saunalautta[] = [
@@ -33,6 +34,7 @@ export const saunas: Saunalautta[] = [
       "https://www.instagram.com/saunalauttaristeilyt/",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5jkaesh0007xcud0qwpnltz",
@@ -62,6 +64,7 @@ export const saunas: Saunalautta[] = [
     url: "http://www.paljulautta.fi/428320069",
     urlArray: ["http://www.paljulautta.fi/428320069"],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5jn45iw0007r4udodq83h59",
@@ -94,6 +97,7 @@ export const saunas: Saunalautta[] = [
       "https://www.facebook.com/saunalauttaristeilyt",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "new_premium_sauna",
@@ -137,6 +141,7 @@ export const saunas: Saunalautta[] = [
     url: "https://saunalauttaristeilyt.fi/#premium",
     urlArray: ["https://saunalauttaristeilyt.fi/#premium"],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5kpp47w0007foudohpvyy7l",
@@ -155,6 +160,7 @@ export const saunas: Saunalautta[] = [
     url: "https://www.tampereenvesijettivuokraus.fi/ajanvaraus/",
     urlArray: ["https://www.tampereenvesijettivuokraus.fi/ajanvaraus/"],
     notes: "Ei liiku, kiinteästi laiturissa.",
+    winter: false,
   },
   {
     id: "cl5kqndgz0041xgudmso68l8t",
@@ -188,6 +194,7 @@ export const saunas: Saunalautta[] = [
       "https://calendar.google.com/calendar/u/0/embed?src=jukka.oksala7@gmail.com&ctz=Europe/Helsinki",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5kqndh00043xgudju3f0biq",
@@ -219,6 +226,7 @@ export const saunas: Saunalautta[] = [
       "https://calendar.google.com/calendar/u/0/embed?height=400&wkst=2&bgcolor=%23FFFFFF&src=qd8n50oht4udrf0o3p4rbbekv8@group.calendar.google.com&color=%23125A12&src=fi.finnish%23holiday@group.v.calendar.google.com&color=%23125A12&ctz=Europe/Helsinki",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5ksjc940212xgudvm32lpsa",
@@ -266,6 +274,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes:
       "Myös talvivuokrausmahdollisuus ja avantouinti! Nämä hinnat talvisesongille.",
+    winter: true,
   },
   {
     id: "cl5kqu1160065xgudjsdkr2o6",
@@ -284,6 +293,7 @@ export const saunas: Saunalautta[] = [
     url: "https://www.saunalauttatampere.fi/",
     urlArray: ["https://www.saunalauttatampere.fi/"],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5krawua0125xgudkr4tkvcd",
@@ -302,6 +312,7 @@ export const saunas: Saunalautta[] = [
     url: "https://www.tampereensaunalautta.com/",
     urlArray: ["https://www.tampereensaunalautta.com/"],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5krnvob0160xgudyiep2r1p",
@@ -324,6 +335,7 @@ export const saunas: Saunalautta[] = [
       "https://www.instagram.com/suomenkatamaraanioy/",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "cl5ks5faz0177xgudn1mt4jl3",
@@ -351,6 +363,7 @@ export const saunas: Saunalautta[] = [
       "https://www.instagram.com/saunalauttatyyne/",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "cl66bty490014l4udtjjje71y",
@@ -387,6 +400,7 @@ export const saunas: Saunalautta[] = [
       "https://evaraus.fi/saunalautta_auroora/",
     ],
     notes: "",
+    winter: false,
   },
   {
     id: "clfi4b80v000008l811nq768x",
@@ -425,6 +439,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ["http://www.manta5.fi/extreme", "http://www.vello.fi/manta5"],
     notes:
       "Mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu).",
+    winter: false,
   },
   {
     id: "cln08k9ii000308mkaqy8e984",
@@ -466,6 +481,7 @@ export const saunas: Saunalautta[] = [
       "https://www.facebook.com/groups/748266035286482/",
     ],
     notes: "Varaukset vain puhelimitse",
+    winter: true,
   },
   {
     id: "elamyslaiva_roosa",
@@ -512,6 +528,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ["https://www.extremeteam.fi/tyky-ja-polttaripaketti/"],
     notes:
       "Elämyslaiva on lähtökohtaisesti paikallaan. Myös yöpymismahdollisuus!",
+    winter: true,
   },
 
   /*  {

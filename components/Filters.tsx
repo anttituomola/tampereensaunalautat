@@ -21,6 +21,7 @@ type Filters = {
   capacity: number;
   sort: string;
   equipment: { name: string; checked: boolean }[];
+  winter: boolean;
 };
 
 interface FiltersProps {
@@ -70,6 +71,13 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
     setFilters(newFilters);
   };
 
+  const winterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters({
+      ...filters,
+      winter: e.target.checked,
+    });
+  };
+
   return (
     <Paper elevation={0} className={styles.filters}>
       <Grid container spacing={3}>
@@ -77,7 +85,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
-                Sijainti
+                <strong>Sijainti</strong>
               </FormLabel>
               <RadioGroup
                 aria-label="location"
@@ -103,12 +111,33 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
               </RadioGroup>
             </FormControl>
           </Box>
+
+          <Box className={styles.filterSection} mt={3}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend" className={styles.filterTitle}>
+                <strong>Sesonki</strong>
+              </FormLabel>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={filters.winter}
+                      onChange={winterHandler}
+                      name="winter"
+                      color="primary"
+                    />
+                  }
+                  label="Talvi"
+                />
+              </FormGroup>
+            </FormControl>
+          </Box>
         </Grid>
 
         <Grid gridColumn={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
             <FormLabel component="legend" className={styles.filterTitle}>
-              Matkustajien lukumäärä
+              <strong>Matkustajien lukumäärä</strong>
             </FormLabel>
             <Box px={2}>
               <Slider
@@ -128,7 +157,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           <Box className={styles.filterSection} mt={3}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
-                Järjestä
+                <strong>Järjestä</strong>
               </FormLabel>
               <RadioGroup
                 aria-label="sort"
@@ -155,7 +184,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
           <Box className={styles.filterSection}>
             <FormControl component="fieldset">
               <FormLabel component="legend" className={styles.filterTitle}>
-                Varusteet
+                <strong>Varusteet</strong>
               </FormLabel>
               <FormGroup className={styles.equipmentGrid}>
                 {filters.equipment.map((item) => (
