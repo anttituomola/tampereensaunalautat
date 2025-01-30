@@ -2,7 +2,8 @@
     border: none;
     border-radius: 8px;
     padding: 1.5rem;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     position: relative;
     background-color: #ffffff;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -11,6 +12,7 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 1rem;
+    margin: 0 auto;
 }
 
 .imageHolder {
@@ -24,4 +26,10 @@
 
 .theImage {
     object-fit: cover !important;
+}
+
+@media (max-width: 600px) {
+    .lauttaEl {
+        padding: 1rem;
+    }
 }
