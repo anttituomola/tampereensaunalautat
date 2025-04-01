@@ -489,9 +489,9 @@ export const saunas: Saunalautta[] = [
     url_name: "elamyslaiva-roosa",
     location: "Näsijärvi",
     capacity: 30,
-    eventLength: 3,
-    pricemin: 200,
-    pricemax: 250,
+    eventLength: 4,
+    pricemin: 250,
+    pricemax: 400,
     equipment: [
       "Jääkaappi",
       "TV",
