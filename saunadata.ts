@@ -402,7 +402,8 @@ export const saunas: Saunalautta[] = [
     notes: "",
     winter: false,
   },
-  {
+  /* Otin tämän piiloon, koska mailit ei mene läpi ja tekstiviestiin ei ole vastattu. /*
+/*   {
     id: "clfi4b80v000008l811nq768x",
     name: "Manta5",
     url_name: "manta5",
@@ -440,7 +441,7 @@ export const saunas: Saunalautta[] = [
     notes:
       "Mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu).",
     winter: false,
-  },
+  }, */
   {
     id: "cln08k9ii000308mkaqy8e984",
     name: "HuvilaLautta ",

@@ -8,6 +8,7 @@ import { Button, Collapse, Stack } from "@mui/material";
 import SelectedSaunas from "components/SelectedSaunas";
 import { saunas } from "../saunadata";
 import { FilterState, SaunaEquipment, Saunalautta } from "../types";
+import { isWinterSeason } from "../utils/dateUtils";
 
 interface Props {
   saunas: Saunalautta[];
@@ -128,7 +129,7 @@ const Home: NextPage<Props> = () => {
             Järjestä / suodata
           </Button>
 
-          {!showFilters && !filters.winter && (
+          {!showFilters && !filters.winter && isWinterSeason() && (
             <Button
               color="secondary"
               variant="outlined"
