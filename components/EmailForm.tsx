@@ -5,20 +5,20 @@ import {
   Stack,
   Box,
   CircularProgress,
-} from "@mui/material";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { MobileTimePicker } from "@mui/x-date-pickers";
-import { useState, useMemo } from "react";
-import styles from "styles/EmailForm.module.css";
-import dayjs from "dayjs";
-import * as EmailValidator from "email-validator";
-import { Saunalautta } from "types";
-import { toast } from "react-toastify";
-import "dayjs/locale/fi";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+} from '@mui/material';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileTimePicker } from '@mui/x-date-pickers';
+import { useState, useMemo } from 'react';
+import styles from 'styles/EmailForm.module.css';
+import dayjs from 'dayjs';
+import * as EmailValidator from 'email-validator';
+import { Saunalautta } from 'types';
+import { toast } from 'react-toastify';
+import 'dayjs/locale/fi';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
@@ -35,18 +35,18 @@ type ErrorState = {
 };
 
 const EmailForm = (props: Props) => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [date, setDate] = useState<dayjs.Dayjs | null>(null);
   const [time, setTime] = useState<dayjs.Dayjs | null>(null);
   const [pax, setPax] = useState<number>(10);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorState>({
-    email: "",
-    date: "",
-    time: "",
-    pax: "",
-    message: "",
+    email: '',
+    date: '',
+    time: '',
+    pax: '',
+    message: '',
   });
 
   const isFormValid = useMemo(() => {
@@ -60,22 +60,22 @@ const EmailForm = (props: Props) => {
     const newErrors = { ...errors };
 
     if (!email || !EmailValidator.validate(email)) {
-      newErrors.email = "Sähköpostiosoite ei ole kelvollinen";
+      newErrors.email = 'Sähköpostiosoite ei ole kelvollinen';
       isValid = false;
     }
 
     if (!date) {
-      newErrors.date = "Päivämäärä on pakollinen";
+      newErrors.date = 'Päivämäärä on pakollinen';
       isValid = false;
     }
 
     if (!time) {
-      newErrors.time = "Lähtöaika on pakollinen";
+      newErrors.time = 'Lähtöaika on pakollinen';
       isValid = false;
     }
 
     if (!pax || pax < 1) {
-      newErrors.pax = "Osallistujien lukumäärä tulee olla vähintään 1";
+      newErrors.pax = 'Osallistujien lukumäärä tulee olla vähintään 1';
       isValid = false;
     }
 
@@ -83,14 +83,74 @@ const EmailForm = (props: Props) => {
     return isValid;
   };
 
+  // New function to verify email using the API
+  const verifyEmail = async (email: string): Promise<boolean> => {
+    try {
+      console.log('Verifying email:', email);
+
+      const response = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.error('Email verification API error:', response.status);
+        return true; // Continue with email sending on API errors to avoid blocking users
+      }
+
+      const data = await response.json();
+      console.log('Verification result:', data);
+
+      // Allow email if validation was skipped due to API issues
+      if (data.message && data.message.includes('skipped')) {
+        console.log('Email verification was skipped due to API issues');
+        return true;
+      }
+
+      // If the email is not valid, show a more detailed error message based on the details
+      if (!data.isValid && data.details) {
+        const details = data.details;
+        let errorMessage =
+          'Annettu sähköpostiosoite ei vaikuta olevan käytössä tai ei voi vastaanottaa viestejä';
+
+        // Use more specific error messages when available
+        if (details.isValidFormat === false) {
+          errorMessage = 'Sähköpostiosoitteen muoto on virheellinen';
+        } else if (details.isDisposableEmail === true) {
+          errorMessage = 'Kertakäyttöisiä sähköpostiosoitteita ei hyväksytä';
+        }
+
+        setErrors({
+          ...errors,
+          email: errorMessage,
+        });
+      }
+
+      return data.isValid;
+    } catch (error) {
+      console.error('Email verification failed:', error);
+      return true; // Continue with email sending on errors to avoid blocking users
+    }
+  };
+
   const sendEmail = async () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
+
+    // Verify the email with the API before proceeding
+    const isValidEmail = await verifyEmail(email);
+
+    if (!isValidEmail) {
+      setIsLoading(false);
+      return; // Error message already set by verifyEmail function
+    }
+
     const emailPromises = props.saunas.map((sauna) => {
       const data = {
         emailTo: sauna.email,
-        emailFrom: "info@tampereensaunalautat.fi",
+        emailFrom: 'info@tampereensaunalautat.fi',
         customerEmail: email,
         message: {
           date: date,
@@ -101,10 +161,10 @@ const EmailForm = (props: Props) => {
         },
       };
 
-      return fetch("/api/email", {
-        method: "POST",
+      return fetch('/api/email', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       }).then((res) => res.json());
@@ -124,34 +184,34 @@ const EmailForm = (props: Props) => {
         },
       };
 
-      await fetch("/api/confirmatioEmailToCustomer", {
-        method: "POST",
+      await fetch('/api/confirmatioEmailToCustomer', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(confirmationData),
       }).then((res) => res.json());
 
-      toast.success("Tarjouspyyntö lähetetty onnistuneesti!");
+      toast.success('Tarjouspyyntö lähetetty onnistuneesti!');
 
       // Reset input fields
-      setEmail("");
+      setEmail('');
       setDate(null);
       setTime(null);
       setPax(10);
-      setMessage("");
+      setMessage('');
       setErrors({
-        email: "",
-        date: "",
-        time: "",
-        pax: "",
-        message: "",
+        email: '',
+        date: '',
+        time: '',
+        pax: '',
+        message: '',
       });
 
       setIsLoading(false);
     } catch (error) {
-      console.error("Error sending emails:", error);
-      toast.error("Virhe tarjouspyynnön lähetyksessä. Yritä uudelleen.");
+      console.error('Error sending emails:', error);
+      toast.error('Virhe tarjouspyynnön lähetyksessä. Yritä uudelleen.');
       setIsLoading(false);
     }
   };
@@ -163,27 +223,27 @@ const EmailForm = (props: Props) => {
           <TextField
             required
             fullWidth
-            id="email"
-            type="email"
-            label="Sähköpostiosoitteesi"
-            variant="outlined"
+            id='email'
+            type='email'
+            label='Sähköpostiosoitteesi'
+            variant='outlined'
             value={email}
             onChange={(event) => {
               setEmail(event.target.value);
-              if (errors.email) setErrors({ ...errors, email: "" });
+              if (errors.email) setErrors({ ...errors, email: '' });
             }}
             error={!!errors.email}
             helperText={errors.email}
           />
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fi">
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fi'>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <MobileDatePicker
-                label="Päivämäärä *"
+                label='Päivämäärä *'
                 minDate={dayjs()}
                 value={date}
                 onChange={(newDate: any) => {
                   setDate(newDate);
-                  if (errors.date) setErrors({ ...errors, date: "" });
+                  if (errors.date) setErrors({ ...errors, date: '' });
                 }}
                 slotProps={{
                   textField: {
@@ -194,12 +254,12 @@ const EmailForm = (props: Props) => {
                 }}
               />
               <MobileTimePicker
-                label="Lähtöaika *"
+                label='Lähtöaika *'
                 ampm={false}
                 value={time}
                 onChange={(newValue) => {
                   setTime(newValue);
-                  if (errors.time) setErrors({ ...errors, time: "" });
+                  if (errors.time) setErrors({ ...errors, time: '' });
                 }}
                 slotProps={{
                   textField: {
@@ -214,13 +274,13 @@ const EmailForm = (props: Props) => {
           <TextField
             required
             fullWidth
-            id="pax"
-            label="Osallistujien lukumäärä"
-            type="number"
+            id='pax'
+            label='Osallistujien lukumäärä'
+            type='number'
             value={pax}
             onChange={(event) => {
               setPax(parseInt(event.target.value));
-              if (errors.pax) setErrors({ ...errors, pax: "" });
+              if (errors.pax) setErrors({ ...errors, pax: '' });
             }}
             error={!!errors.pax}
             helperText={errors.pax}
@@ -228,33 +288,33 @@ const EmailForm = (props: Props) => {
           />
           <TextField
             fullWidth
-            id="message"
-            label="Lisätietoja (vapaaehtoinen)"
+            id='message'
+            label='Lisätietoja (vapaaehtoinen)'
             multiline
             rows={4}
             value={message}
             onChange={(event) => {
               setMessage(event.target.value);
-              if (errors.message) setErrors({ ...errors, message: "" });
+              if (errors.message) setErrors({ ...errors, message: '' });
             }}
             error={!!errors.message}
             helperText={errors.message}
-            placeholder="Esim. erityistoiveet, kysymykset tai muut huomiot"
+            placeholder='Esim. erityistoiveet, kysymykset tai muut huomiot'
           />
           <Button
-            size="large"
+            size='large'
             disabled={isLoading || !isFormValid}
-            variant="contained"
+            variant='contained'
             onClick={sendEmail}
             fullWidth
           >
             {isLoading ? (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CircularProgress size={20} color="inherit" />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} color='inherit' />
                 Lähetetään...
               </Box>
             ) : (
-              "LÄHETÄ TARJOUSPYYNTÖ"
+              'LÄHETÄ TARJOUSPYYNTÖ'
             )}
           </Button>
         </Stack>
