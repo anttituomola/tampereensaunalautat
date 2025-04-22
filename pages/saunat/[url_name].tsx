@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import styles from "styles/url_name.module.css";
-import Head from "next/head";
-import { Saunalautta } from "types";
-import { saunas } from "saunadata";
-import Image from "next/image";
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import styles from 'styles/url_name.module.css';
+import Head from 'next/head';
+import { Saunalautta } from 'types';
+import { saunas } from 'saunadata';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 import {
   ImageList,
   ImageListItem,
@@ -20,31 +21,34 @@ import {
   ListItemIcon,
   ListItemText,
   CircularProgress,
-} from "@mui/material";
-import { NextPage } from "next";
-import CloseIcon from "@mui/icons-material/Close";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import WcIcon from "@mui/icons-material/Wc";
-import ShowerIcon from "@mui/icons-material/Shower";
-import CheckroomIcon from "@mui/icons-material/Checkroom";
-import DeckIcon from "@mui/icons-material/Deck";
-import HotTubIcon from "@mui/icons-material/HotTub";
-import KitchenIcon from "@mui/icons-material/Kitchen";
-import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
-import TvIcon from "@mui/icons-material/Tv";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import MicrowaveIcon from "@mui/icons-material/Microwave";
-import CoffeeIcon from "@mui/icons-material/Coffee";
-import AcUnitIcon from "@mui/icons-material/AcUnit";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import EmailIcon from "@mui/icons-material/Email";
-import LinkIcon from "@mui/icons-material/Link";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import GroupIcon from "@mui/icons-material/Group";
-import EuroIcon from "@mui/icons-material/Euro";
-import FireplaceIcon from "@mui/icons-material/Fireplace";
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+  Button,
+} from '@mui/material';
+import { NextPage } from 'next';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import WcIcon from '@mui/icons-material/Wc';
+import ShowerIcon from '@mui/icons-material/Shower';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
+import DeckIcon from '@mui/icons-material/Deck';
+import HotTubIcon from '@mui/icons-material/HotTub';
+import KitchenIcon from '@mui/icons-material/Kitchen';
+import OutdoorGrillIcon from '@mui/icons-material/OutdoorGrill';
+import TvIcon from '@mui/icons-material/Tv';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import MicrowaveIcon from '@mui/icons-material/Microwave';
+import CoffeeIcon from '@mui/icons-material/Coffee';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import EmailIcon from '@mui/icons-material/Email';
+import LinkIcon from '@mui/icons-material/Link';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import GroupIcon from '@mui/icons-material/Group';
+import EuroIcon from '@mui/icons-material/Euro';
+import FireplaceIcon from '@mui/icons-material/Fireplace';
+import LocalBarIcon from '@mui/icons-material/LocalBar';
+import AddIcon from '@mui/icons-material/Add';
+import { toast } from 'react-toastify';
 
 interface Props {
   sauna?: Saunalautta;
@@ -52,36 +56,36 @@ interface Props {
 
 const getEquipmentIcon = (equipment: string) => {
   switch (equipment.toLowerCase()) {
-    case "takka":
+    case 'takka':
       return <FireplaceIcon />;
-    case "jääpalakone":
+    case 'jääpalakone':
       return <LocalBarIcon />;
-    case "wc":
+    case 'wc':
       return <WcIcon />;
-    case "suihku":
+    case 'suihku':
       return <ShowerIcon />;
-    case "pukuhuone":
+    case 'pukuhuone':
       return <CheckroomIcon />;
-    case "kattoterassi":
+    case 'kattoterassi':
       return <DeckIcon />;
-    case "palju":
-    case "poreallas":
+    case 'palju':
+    case 'poreallas':
       return <HotTubIcon />;
-    case "kylmäsäilytys":
-    case "jääkaappi":
+    case 'kylmäsäilytys':
+    case 'jääkaappi':
       return <KitchenIcon />;
-    case "grilli":
+    case 'grilli':
       return <OutdoorGrillIcon />;
-    case "tv":
+    case 'tv':
       return <TvIcon />;
-    case "äänentoisto":
+    case 'äänentoisto':
       return <VolumeUpIcon />;
-    case "mikro":
-    case "mikroaaltouuni":
+    case 'mikro':
+    case 'mikroaaltouuni':
       return <MicrowaveIcon />;
-    case "kahvinkeitin":
+    case 'kahvinkeitin':
       return <CoffeeIcon />;
-    case "ilmastointi":
+    case 'ilmastointi':
       return <AcUnitIcon />;
     default:
       return null;
@@ -89,10 +93,13 @@ const getEquipmentIcon = (equipment: string) => {
 };
 
 const LauttaPage: NextPage<Props> = ({ sauna }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [modalImage, setModalImage] = useState("");
+  const [modalImage, setModalImage] = useState('');
   const [columns, setColumns] = useState(3);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [saunasOnState, setSaunasOnState] = useState<Saunalautta[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,18 +107,49 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, currentImageIndex]);
+
+  // Get initial saunasOnState from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSaunas = localStorage.getItem('saunasOnState');
+      if (storedSaunas) {
+        setSaunasOnState(JSON.parse(storedSaunas));
+      }
+      setIsInitialized(true);
+    }
+  }, []);
+
+  const addSaunaToState = (sauna: Saunalautta) => {
+    if (saunasOnState.find((s) => s.id === sauna.id)) {
+      return;
+    }
+    const newSaunasOnState = [...saunasOnState, sauna];
+    setSaunasOnState(newSaunasOnState);
+    if (isInitialized) {
+      localStorage.setItem('saunasOnState', JSON.stringify(newSaunasOnState));
+    }
+    toast.success(
+      `${sauna.name} lisätty tarjouspyyntöön, lomake etusivun ylälaidassa`
+    );
+    router.push('/');
+  };
+
+  // Check if this sauna is already in RFP
+  const isSaunaInRfp = sauna
+    ? saunasOnState.some((s) => s.id === sauna.id)
+    : false;
 
   if (!sauna) {
     return (
-      <Container maxWidth="lg" className={styles.container}>
+      <Container maxWidth='lg' className={styles.container}>
         <div className={styles.loadingContainer}>
           <CircularProgress />
           <Typography>Loading sauna information...</Typography>
@@ -153,28 +191,28 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (open) {
-      if (e.key === "ArrowLeft") {
+      if (e.key === 'ArrowLeft') {
         handlePrevImage(e as unknown as React.MouseEvent);
-      } else if (e.key === "ArrowRight") {
+      } else if (e.key === 'ArrowRight') {
         handleNextImage(e as unknown as React.MouseEvent);
-      } else if (e.key === "Escape") {
+      } else if (e.key === 'Escape') {
         handleClose();
       }
     }
   };
 
   return (
-    <Container maxWidth="lg" className={styles.container}>
+    <Container maxWidth='lg' className={styles.container}>
       <Head>
         <title>{pageTitle}</title>
         <meta
-          name="description"
+          name='description'
           content={`${sauna.name} sijainti on ${sauna.location} ja vuokrahinta on alkaen ${sauna.pricemin}`}
         />
       </Head>
 
       <Paper elevation={0} className={styles.mainContent}>
-        <Typography variant="h1" className={styles.title}>
+        <Typography variant='h1' className={styles.title}>
           {sauna.name}
         </Typography>
 
@@ -184,14 +222,30 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             alt={sauna.name}
             className={styles.mainImage}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
           />
         </div>
+
+        {!isSaunaInRfp && (
+          <div className={styles.rfpButtonContainer}>
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<AddIcon />}
+              onClick={() => addSaunaToState(sauna)}
+              sx={{ mt: 2, mb: 2 }}
+              fullWidth
+              data-cy={`addButton-detail-${sauna.name}`}
+            >
+              Lisää tarjouspyyntöön
+            </Button>
+          </div>
+        )}
 
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <section className={styles.section}>
-              <Typography variant="h2" className={styles.sectionTitle}>
+              <Typography variant='h2' className={styles.sectionTitle}>
                 Perustiedot
               </Typography>
               <List>
@@ -208,9 +262,9 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                   <ListItemText
                     primary={`${sauna.capacity} henkilöä`}
                     secondary={`${sauna.name} pystyy ${
-                      sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
-                        ? "saunottamaan"
-                        : "kuljettamaan risteilyllä"
+                      sauna.name === 'Saunalautta (Tampereen vesijettivuokraus)'
+                        ? 'saunottamaan'
+                        : 'kuljettamaan risteilyllä'
                     } maksimissaan ${sauna.capacity} henkilöä.`}
                   />
                 </ListItem>
@@ -220,14 +274,14 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                   </ListItemIcon>
                   <ListItemText
                     primary={`${pricing} € / ${sauna.eventLength}h`}
-                    secondary={`Vuonna ${dayjs().format("YYYY")} tyypillinen ${
+                    secondary={`Vuonna ${dayjs().format('YYYY')} tyypillinen ${
                       sauna.eventLength
                     } tunnin ${
-                      sauna.name === "Saunalautta (Tampereen vesijettivuokraus)"
-                        ? "sauna"
-                        : "risteily"
+                      sauna.name === 'Saunalautta (Tampereen vesijettivuokraus)'
+                        ? 'sauna'
+                        : 'risteily'
                     } saunalautalla ${sauna.name} maksaa noin ${pricing} €. ${
-                      sauna.notes || ""
+                      sauna.notes || ''
                     }`}
                   />
                 </ListItem>
@@ -235,7 +289,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             </section>
 
             <section className={styles.section}>
-              <Typography variant="h2" className={styles.sectionTitle}>
+              <Typography variant='h2' className={styles.sectionTitle}>
                 Yhteystiedot
               </Typography>
               <List>
@@ -261,8 +315,8 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                       <LinkIcon />
                     </ListItemIcon>
                     <ListItemText>
-                      <a href={url} target="_blank" rel="noopener noreferrer">
-                        {url.length > 50 ? url.slice(0, 50) + "..." : url}
+                      <a href={url} target='_blank' rel='noopener noreferrer'>
+                        {url.length > 50 ? url.slice(0, 50) + '...' : url}
                       </a>
                     </ListItemText>
                   </ListItem>
@@ -273,7 +327,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
           <Grid item xs={12} md={6}>
             <section className={styles.section}>
-              <Typography variant="h2" className={styles.sectionTitle}>
+              <Typography variant='h2' className={styles.sectionTitle}>
                 Varusteet
               </Typography>
               <List>
@@ -294,38 +348,41 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
         {sauna.images.length > 0 && (
           <section className={styles.section}>
-            <Typography variant="h2" className={styles.sectionTitle}>
+            <Typography variant='h2' className={styles.sectionTitle}>
               Kuvia
             </Typography>
-            <ImageList
-              cols={columns}
-              gap={8}
-              sx={{
-                gridAutoFlow: "dense",
-                "& .MuiImageListItem-root": {
-                  overflow: "hidden",
-                  borderRadius: 1,
-                },
-              }}
-            >
-              {sauna.images.map((image) => (
-                <ImageListItem
-                  key={image}
-                  className={styles.galleryItem}
-                  onClick={() => handleOpen(image)}
-                >
-                  <Image
-                    src={`/images/${image}`}
-                    alt={sauna.name}
-                    loading="lazy"
-                    className={styles.galleryImage}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
+            <div style={{ overflow: 'hidden' }}>
+              <ImageList
+                cols={columns}
+                gap={8}
+                rowHeight={200}
+                sx={{
+                  gridAutoFlow: 'dense',
+                  '& .MuiImageListItem-root': {
+                    overflow: 'hidden',
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                {sauna.images.map((image) => (
+                  <ImageListItem
+                    key={image}
+                    className={styles.galleryItem}
+                    onClick={() => handleOpen(image)}
+                  >
+                    <Image
+                      src={`/images/${image}`}
+                      alt={sauna.name}
+                      loading='lazy'
+                      className={styles.galleryImage}
+                      width={0}
+                      height={0}
+                      sizes='100vw'
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            </div>
           </section>
         )}
       </Paper>
@@ -333,14 +390,14 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="image-modal"
+        aria-labelledby='image-modal'
         className={styles.modal}
       >
         <Box className={styles.modalContent} onClick={handleClose}>
           <IconButton
             onClick={handleClose}
             className={styles.closeButton}
-            aria-label="close"
+            aria-label='close'
           >
             <CloseIcon />
           </IconButton>
@@ -350,7 +407,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
               <IconButton
                 onClick={handlePrevImage}
                 className={`${styles.navButton} ${styles.prevButton}`}
-                aria-label="previous image"
+                aria-label='previous image'
               >
                 <ArrowBackIosNewIcon />
               </IconButton>
@@ -358,7 +415,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
               <IconButton
                 onClick={handleNextImage}
                 className={`${styles.navButton} ${styles.nextButton}`}
-                aria-label="next image"
+                aria-label='next image'
               >
                 <ArrowForwardIosIcon />
               </IconButton>
@@ -374,7 +431,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
               alt={sauna.name}
               className={styles.modalImage}
               fill={true}
-              sizes="100vw"
+              sizes='100vw'
             />
           </div>
 

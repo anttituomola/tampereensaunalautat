@@ -1,14 +1,14 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import LauttaEl from "../components/LauttaEl";
-import Filters from "components/Filters";
-import { useState, useEffect } from "react";
-import { Button, Collapse, Stack } from "@mui/material";
-import SelectedSaunas from "components/SelectedSaunas";
-import { saunas } from "../saunadata";
-import { FilterState, SaunaEquipment, Saunalautta } from "../types";
-import { isWinterSeason } from "../utils/dateUtils";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+import LauttaEl from '../components/LauttaEl';
+import Filters from 'components/Filters';
+import { useState, useEffect } from 'react';
+import { Button, Collapse, Stack } from '@mui/material';
+import SelectedSaunas from 'components/SelectedSaunas';
+import { saunas } from '../saunadata';
+import { FilterState, SaunaEquipment, Saunalautta } from '../types';
+import { isWinterSeason } from '../utils/dateUtils';
 
 interface Props {
   saunas: Saunalautta[];
@@ -16,44 +16,47 @@ interface Props {
 
 const Home: NextPage<Props> = () => {
   const initialState: FilterState = {
-    location: "",
+    location: '',
     capacity: 0,
-    sort: "",
+    sort: '',
     winter: false,
     equipment: [
-      { name: "WC", checked: false },
-      { name: "Suihku", checked: false },
-      { name: "Pukuhuone", checked: false },
-      { name: "Kattoterassi", checked: false },
-      { name: "Palju", checked: false },
-      { name: "Poreallas", checked: false },
-      { name: "Kylmäsäilytys", checked: false },
-      { name: "Grilli", checked: false },
-      { name: "TV", checked: false },
-      { name: "Äänentoisto", checked: false },
-      { name: "Mikroaaltouuni", checked: false },
+      { name: 'WC', checked: false },
+      { name: 'Suihku', checked: false },
+      { name: 'Pukuhuone', checked: false },
+      { name: 'Kattoterassi', checked: false },
+      { name: 'Palju', checked: false },
+      { name: 'Poreallas', checked: false },
+      { name: 'Kylmäsäilytys', checked: false },
+      { name: 'Grilli', checked: false },
+      { name: 'TV', checked: false },
+      { name: 'Äänentoisto', checked: false },
+      { name: 'Mikroaaltouuni', checked: false },
     ],
   };
 
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialState);
   const [saunasOnState, setSaunasOnState] = useState<Saunalautta[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Get initial saunasOnState from localStorage
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.getItem("saunasOnState")
-        ? setSaunasOnState(
-            JSON.parse(localStorage.getItem("saunasOnState") || "[]")
-          )
-        : [];
+    if (typeof window !== 'undefined') {
+      const storedSaunas = localStorage.getItem('saunasOnState');
+      if (storedSaunas) {
+        setSaunasOnState(JSON.parse(storedSaunas));
+      }
+      setIsInitialized(true);
     }
   }, []);
 
-  // Save saunasOnState to localStorage
+  // Save saunasOnState to localStorage only after initialization
   useEffect(() => {
-    localStorage.setItem("saunasOnState", JSON.stringify(saunasOnState));
-  }, [saunasOnState]);
+    if (isInitialized) {
+      localStorage.setItem('saunasOnState', JSON.stringify(saunasOnState));
+    }
+  }, [saunasOnState, isInitialized]);
 
   // Show saunas based on filters
   const filteredSaunas = saunas.filter((sauna) => {
@@ -61,7 +64,7 @@ const Home: NextPage<Props> = () => {
       return false;
     }
 
-    if (filters.location === "ei väliä") {
+    if (filters.location === 'ei väliä') {
       return sauna.capacity >= filters.capacity;
     } else {
       return (
@@ -73,7 +76,7 @@ const Home: NextPage<Props> = () => {
 
   // Sort saunas based on pricemin or capacity
   const sortedSaunas = filteredSaunas.sort((a, b) => {
-    if (filters.sort === "koko") {
+    if (filters.sort === 'koko') {
       return b.capacity - a.capacity;
     } else {
       return a.pricemin - b.pricemin;
@@ -116,13 +119,13 @@ const Home: NextPage<Props> = () => {
 
         {/* Stack component for horizontal button layout */}
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
           sx={{ mb: 5 }}
         >
           <Button
-            color={`${showFilters ? "error" : "primary"}`}
-            variant="outlined"
+            color={`${showFilters ? 'error' : 'primary'}`}
+            variant='outlined'
             onClick={() => setShowFilters(!showFilters)}
             fullWidth // Makes button take full width on mobile
           >
@@ -131,8 +134,8 @@ const Home: NextPage<Props> = () => {
 
           {!showFilters && !filters.winter && isWinterSeason() && (
             <Button
-              color="secondary"
-              variant="outlined"
+              color='secondary'
+              variant='outlined'
               onClick={handleWinterFilter}
               fullWidth // Makes button take full width on mobile
             >
@@ -146,12 +149,12 @@ const Home: NextPage<Props> = () => {
         </Collapse>
         {hiddenSaunas > 0 && (
           <>
-            <p className="hiddenSaunas">{`${hiddenSaunas} saunaa piilotettu.`}</p>
+            <p className='hiddenSaunas'>{`${hiddenSaunas} saunaa piilotettu.`}</p>
             <Button
-              size="small"
+              size='small'
               sx={{ mb: 5 }}
-              color="secondary"
-              variant="outlined"
+              color='secondary'
+              variant='outlined'
               onClick={() => setFilters(initialState)}
             >
               Näytä kaikki saunat
