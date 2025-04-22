@@ -22,6 +22,9 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [allImages, setAllImages] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
+    new Set()
+  );
   const imageHolderRef = useRef<HTMLDivElement>(null);
 
   // Check if the device is mobile
@@ -46,7 +49,39 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
       }
     });
     setAllImages(uniqueImages);
+
+    // Preload the main image immediately
+    preloadImage(sauna.mainImage);
   }, [sauna]);
+
+  // Preload adjacent images when user interacts with carousel
+  useEffect(() => {
+    if (allImages.length <= 1 || (!isHovering && !isMobile)) return;
+
+    // Preload current image and adjacent images
+    const imagesToPreload = [
+      allImages[currentImageIndex],
+      allImages[(currentImageIndex + 1) % allImages.length],
+      allImages[(currentImageIndex - 1 + allImages.length) % allImages.length],
+    ];
+
+    imagesToPreload.forEach(preloadImage);
+  }, [currentImageIndex, isHovering, isMobile, allImages]);
+
+  // Helper function to preload an image
+  const preloadImage = (imageSrc: string) => {
+    if (preloadedImages.has(imageSrc)) return;
+
+    const img = new (window.Image as any)();
+    img.src = `/images/${imageSrc}`;
+    img.onload = () => {
+      setPreloadedImages((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(imageSrc);
+        return newSet;
+      });
+    };
+  };
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -94,6 +129,13 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     window.location.href = `/saunat/${sauna.url_name}`;
   };
 
+  // When image container is first interacted with, preload all images
+  const handleFirstInteraction = () => {
+    if (allImages.length > 1) {
+      allImages.forEach(preloadImage);
+    }
+  };
+
   return (
     <div className={styles.lauttaEl}>
       <div className={styles.content}>
@@ -101,7 +143,10 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
           <div
             className={styles.imageHolder}
             ref={imageHolderRef}
-            onMouseEnter={() => setIsHovering(true)}
+            onMouseEnter={() => {
+              setIsHovering(true);
+              handleFirstInteraction();
+            }}
             onMouseLeave={() => {
               setIsHovering(false);
               // Don't reset image index when mouse leaves on mobile
@@ -119,6 +164,22 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
               sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               priority={currentImageIndex === 0} // Only prioritize loading the main image
             />
+
+            {/* Preload hidden images for smoother carousel */}
+            <div className={styles.hiddenPreload}>
+              {allImages.length > 1 &&
+                allImages.map(
+                  (img, index) =>
+                    index !== currentImageIndex && (
+                      <link
+                        key={img}
+                        rel='preload'
+                        href={`/images/${img}`}
+                        as='image'
+                      />
+                    )
+                )}
+            </div>
 
             {/* Always show indicator if multiple images exist */}
             {allImages.length > 1 && (

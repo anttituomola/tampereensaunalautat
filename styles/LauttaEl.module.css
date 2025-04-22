@@ -255,3 +255,11 @@
         transform: translateY(-50%) rotate(225deg);
     }
 }
+
+.hiddenPreload {
+    display: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
