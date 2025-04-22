@@ -8,7 +8,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
-import { useState, useEffect, useRef, TouchEvent } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Props = {
   sauna: Saunalautta;
@@ -21,13 +21,20 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   const [isHovering, setIsHovering] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [allImages, setAllImages] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
   const imageHolderRef = useRef<HTMLDivElement>(null);
-  const carouselTimer = useRef<NodeJS.Timeout | null>(null);
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
 
-  // Minimum swipe distance (in px) to trigger navigation
-  const minSwipeDistance = 50;
+  // Check if the device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Initialize images array with mainImage and all other images
   useEffect(() => {
@@ -41,84 +48,18 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     setAllImages(uniqueImages);
   }, [sauna]);
 
-  // Auto-advance carousel on hover
-  useEffect(() => {
-    if (isHovering && allImages.length > 1) {
-      carouselTimer.current = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
-      }, 2000); // Change image every 2 seconds
-    }
-
-    return () => {
-      if (carouselTimer.current) {
-        clearInterval(carouselTimer.current);
-      }
-    };
-  }, [isHovering, allImages.length]);
-
-  const handlePrevImage = (e: React.MouseEvent | TouchEvent) => {
+  const handlePrevImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImageIndex(
       (prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length
     );
-
-    // Reset timer
-    if (carouselTimer.current) {
-      clearInterval(carouselTimer.current);
-      carouselTimer.current = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
-      }, 2000);
-    }
   };
 
-  const handleNextImage = (e: React.MouseEvent | TouchEvent) => {
+  const handleNextImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
-
-    // Reset timer
-    if (carouselTimer.current) {
-      clearInterval(carouselTimer.current);
-      carouselTimer.current = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length);
-      }, 2000);
-    }
-  };
-
-  // Touch event handlers for swipe gestures
-  const handleTouchStart = (e: TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-
-    // Show carousel controls on touch start for mobile
-    if (allImages.length > 1) {
-      setIsHovering(true);
-    }
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: TouchEvent) => {
-    if (!touchStartX.current || !touchEndX.current) return;
-
-    const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && allImages.length > 1) {
-      handleNextImage(e);
-    } else if (isRightSwipe && allImages.length > 1) {
-      handlePrevImage(e);
-    } else if (Math.abs(distance) < 10) {
-      // If it was just a tap (not a swipe), navigate to sauna page
-      navigateToSaunaPage();
-    }
-
-    // Reset values
-    touchStartX.current = null;
-    touchEndX.current = null;
   };
 
   const addSaunaToState = (sauna: Saunalautta) => {
@@ -163,12 +104,12 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => {
               setIsHovering(false);
-              setCurrentImageIndex(0); // Reset to main image when not hovering
+              // Don't reset image index when mouse leaves on mobile
+              if (!isMobile) {
+                setCurrentImageIndex(0);
+              }
             }}
             onClick={navigateToSaunaPage}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
           >
             <Image
               className={styles.theImage}
@@ -185,50 +126,54 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                 <div className={styles.imageCountIndicator}>
                   {currentImageIndex + 1}/{allImages.length}
                 </div>
-                <div className={styles.scrollHintOverlay}>
-                  <div className={styles.scrollHintIcon}></div>
-                </div>
+                {!isMobile && (
+                  <div className={styles.scrollHintOverlay}>
+                    <div className={styles.scrollHintIcon}></div>
+                  </div>
+                )}
               </>
             )}
 
-            {(isHovering || touchStartX.current !== null) &&
-              allImages.length > 1 && (
-                <div
-                  className={styles.carouselContainer}
-                  onClick={handleCarouselClick}
-                >
-                  <div className={styles.carouselNavigation}>
-                    <IconButton
-                      className={`${styles.navButton} ${styles.prevButton}`}
-                      onClick={handlePrevImage}
-                      size='small'
-                      aria-label='Previous image'
-                    >
-                      <ArrowBackIosNewIcon fontSize='small' />
-                    </IconButton>
+            {/* Show carousel controls based on device type and hover state */}
+            {(isMobile || isHovering) && allImages.length > 1 && (
+              <div
+                className={`${styles.carouselContainer} ${
+                  isMobile ? styles.mobileBtns : ''
+                }`}
+                onClick={handleCarouselClick}
+              >
+                <div className={styles.carouselNavigation}>
+                  <IconButton
+                    className={`${styles.navButton} ${styles.prevButton}`}
+                    onClick={handlePrevImage}
+                    size='small'
+                    aria-label='Previous image'
+                  >
+                    <ArrowBackIosNewIcon fontSize='small' />
+                  </IconButton>
 
-                    <IconButton
-                      className={`${styles.navButton} ${styles.nextButton}`}
-                      onClick={handleNextImage}
-                      size='small'
-                      aria-label='Next image'
-                    >
-                      <ArrowForwardIosIcon fontSize='small' />
-                    </IconButton>
-                  </div>
-
-                  <div className={styles.carouselIndicator}>
-                    {allImages.map((_, index) => (
-                      <span
-                        key={index}
-                        className={`${styles.indicatorDot} ${
-                          index === currentImageIndex ? styles.activeDot : ''
-                        }`}
-                      />
-                    ))}
-                  </div>
+                  <IconButton
+                    className={`${styles.navButton} ${styles.nextButton}`}
+                    onClick={handleNextImage}
+                    size='small'
+                    aria-label='Next image'
+                  >
+                    <ArrowForwardIosIcon fontSize='small' />
+                  </IconButton>
                 </div>
-              )}
+
+                <div className={styles.carouselIndicator}>
+                  {allImages.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`${styles.indicatorDot} ${
+                        index === currentImageIndex ? styles.activeDot : ''
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <h2 className={styles.title}>
             <Link href={`/saunat/${sauna.url_name}`}>{sauna.name}</Link>

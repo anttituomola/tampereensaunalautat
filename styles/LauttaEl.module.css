@@ -103,6 +103,12 @@
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
+/* Mobile-specific styles for always-visible buttons */
+.mobileBtns .navButton {
+    opacity: 0.9;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
 /* Carousel Indicator Dots */
 .carouselIndicator {
     position: absolute;
@@ -192,7 +198,7 @@
         width: 40px !important;
         height: 40px !important;
         margin: 0 10px !important;
-        background-color: rgba(0, 0, 0, 0.4) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
     }
     
     .prevButton {
@@ -201,6 +207,24 @@
     
     .nextButton {
         margin-right: 5px !important;
+    }
+    
+    /* Make buttons more visible on mobile */
+    .mobileBtns .navButton {
+        opacity: 1 !important; 
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Larger indicator on mobile */
+    .imageCountIndicator {
+        padding: 4px 10px;
+        font-size: 14px;
+    }
+    
+    /* Better spacing for controls */
+    .carouselContainer {
+        padding-bottom: 10px;
     }
     
     /* Better touch area for the image */
