@@ -54,6 +54,9 @@ export default function handler(
     ? `\nLisätietoja asiakkaalta:\n${message.additionalInfo}`
     : '';
 
+  // Treat date as a simple date without timezone conversion
+  const formattedDate = dayjs(message.date).format('DD.MM.YYYY');
+
   var params = {
     Destination: {
       ToAddresses: [emailTo],
@@ -63,9 +66,7 @@ export default function handler(
         Text: {
           Data: `${message.sauna} on saanut tarjouspyynnön: 
           
-Asiakas haluaisi saunoa ${dayjs(
-            dayjs(message.date).tz('Europe/Helsinki')
-          ).format('DD.MM.YYYY')} klo ${dayjs(message.time)
+Asiakas haluaisi saunoa ${formattedDate} klo ${dayjs(message.time)
             .tz('Europe/Helsinki')
             .format('HH:mm')}, mukana ${
             message.pax
@@ -78,9 +79,7 @@ tampereensaunalautat.fi | info@tampereensaunalautat.fi | +358456798818`,
         },
       },
       Subject: {
-        Data:
-          'Tarjouspyyntö: ' +
-          dayjs(message.date).tz('Europe/Helsinki').format('DD.MM.YYYY'),
+        Data: 'Tarjouspyyntö: ' + formattedDate,
       },
     },
     ReplyToAddresses: [customerEmail],
