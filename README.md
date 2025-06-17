@@ -17,5 +17,6 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - add an option on when user needs the responses
 - this page needs more images of the saunas
 - make it easier for the sauna entrepreneur to response to the RFP with one-click solution
+- Add "Aikatauluni on joustava" option to replace the exact start time?
 
 ## NEXT

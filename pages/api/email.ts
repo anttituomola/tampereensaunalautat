@@ -1,14 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import { SESClient } from "@aws-sdk/client-ses";
-import { SendEmailCommand } from "@aws-sdk/client-ses";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { SESClient } from '@aws-sdk/client-ses';
+import { SendEmailCommand } from '@aws-sdk/client-ses';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(timezone);
 dayjs.extend(utc);
-import "dayjs/locale/fi";
-dayjs.locale("fi");
+import 'dayjs/locale/fi';
+dayjs.locale('fi');
 
 interface Credentials {
   accessKeyId: any;
@@ -48,16 +48,15 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   const { emailTo, emailFrom, customerEmail, message }: Req = req.body;
-  console.log("req", req.body);
+  console.log('req', req.body);
 
   const additionalInfoSection = message.additionalInfo
     ? `\nLisätietoja asiakkaalta:\n${message.additionalInfo}`
-    : "";
+    : '';
 
   var params = {
     Destination: {
       ToAddresses: [emailTo],
-      BccAddresses: [emailFrom],
     },
     Message: {
       Body: {
@@ -65,10 +64,10 @@ export default function handler(
           Data: `${message.sauna} on saanut tarjouspyynnön: 
           
 Asiakas haluaisi saunoa ${dayjs(
-            dayjs(message.date).tz("Europe/Helsinki")
-          ).format("DD.MM.YYYY")} klo ${dayjs(message.time)
-            .tz("Europe/Helsinki")
-            .format("HH:mm")}, mukana ${
+            dayjs(message.date).tz('Europe/Helsinki')
+          ).format('DD.MM.YYYY')} klo ${dayjs(message.time)
+            .tz('Europe/Helsinki')
+            .format('HH:mm')}, mukana ${
             message.pax
           } osallistujaa.${additionalInfoSection}
           
@@ -80,26 +79,26 @@ tampereensaunalautat.fi | info@tampereensaunalautat.fi | +358456798818`,
       },
       Subject: {
         Data:
-          "Tarjouspyyntö: " +
-          dayjs(message.date).tz("Europe/Helsinki").format("DD.MM.YYYY"),
+          'Tarjouspyyntö: ' +
+          dayjs(message.date).tz('Europe/Helsinki').format('DD.MM.YYYY'),
       },
     },
     ReplyToAddresses: [customerEmail],
-    Source: "info@tampereensaunalautat.fi",
+    Source: 'info@tampereensaunalautat.fi',
   };
 
   return sesClient
     .send(new SendEmailCommand(params))
     .then(() => {
       res.status(200).json({
-        message: "Message sent.",
-        status: "success",
+        message: 'Message sent.',
+        status: 'success',
       });
     })
     .catch((error) => {
       res.status(500).json({
         message: `Error occured: ${error}`,
-        status: "error",
+        status: 'error',
       });
       console.log(error);
     });
