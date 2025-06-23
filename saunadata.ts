@@ -276,7 +276,7 @@ export const saunas: Saunalautta[] = [
       'Myös talvivuokrausmahdollisuus ja avantouinti! Nämä hinnat talvisesongille.',
     winter: true,
   },
-  {
+  /* {
     id: 'cl5kqu1160065xgudjsdkr2o6',
     name: 'Saunalautta Tampere',
     url_name: 'saunalautta-tampere',
@@ -294,7 +294,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['https://www.saunalauttatampere.fi/'],
     notes: '',
     winter: false,
-  },
+  }, Their website is down and email is not working */
   {
     id: 'cl5krawua0125xgudkr4tkvcd',
     name: 'Tampereen Saunalautta',
