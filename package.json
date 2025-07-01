@@ -10,7 +10,9 @@
     "lint": "next lint",
     "test": "set DEBUG_PRINT_LIMIT=100000 && jest --watch",
     "jest": "jest",
-    "cypress": "cypress run"
+    "cypress": "cypress run",
+    "optimize-images": "node scripts/optimize-images.js",
+    "replace-images": "node scripts/replace-images.js"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.726.1",
@@ -43,6 +45,7 @@
     "eslint-config-next": "15.1.4",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "sharp": "^0.33.0",
     "typescript": "5.7.3"
   }
 }
