@@ -9,8 +9,6 @@ const nextConfig = {
 		minimumCacheTTL: 31536000, // 1 year cache
 		dangerouslyAllowSVG: false,
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-		// Better compression for Vercel
-		quality: 80, // Reduce from default 75 for better compression
 	},
 	// Enable compression
 	compress: true,
