@@ -9,6 +9,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 import { useState, useEffect, useRef } from 'react';
+import { getImageUrl } from '../lib/api';
 
 type Props = {
   sauna: Saunalautta;
@@ -20,7 +21,8 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   const isSaunaOnState = saunasOnState.some((s) => s.id === sauna.id);
   const [isHovering, setIsHovering] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [allImages, setAllImages] = useState<string[]>([]);
+  // Initialize allImages with mainImage to prevent undefined on first render
+  const [allImages, setAllImages] = useState<string[]>([sauna.mainImage]);
   const [isMobile, setIsMobile] = useState(false);
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set()
@@ -73,7 +75,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     if (preloadedImages.has(imageSrc)) return;
 
     const img = new (window.Image as any)();
-    img.src = `/images/${imageSrc}`;
+    img.src = getImageUrl(imageSrc);
     img.onload = () => {
       setPreloadedImages((prev) => {
         const newSet = new Set(prev);
@@ -158,7 +160,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
           >
             <Image
               className={styles.theImage}
-              src={`/images/${allImages[currentImageIndex]}`}
+              src={getImageUrl(allImages[currentImageIndex])}
               alt={sauna.name}
               fill={true}
               sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
@@ -174,7 +176,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
                       <link
                         key={img}
                         rel='preload'
-                        href={`/images/${img}`}
+                        href={getImageUrl(img)}
                         as='image'
                       />
                     )

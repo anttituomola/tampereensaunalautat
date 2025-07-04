@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import styles from 'styles/url_name.module.css';
 import Head from 'next/head';
 import { Saunalautta } from 'types';
-import { saunas } from 'saunadata';
+import { fetchSaunas, getImageUrl } from 'lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
@@ -23,7 +23,7 @@ import {
   CircularProgress,
   Button,
 } from '@mui/material';
-import { NextPage } from 'next';
+import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -371,7 +371,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                     onClick={() => handleOpen(image)}
                   >
                     <Image
-                      src={`/images/${image}`}
+                      src={getImageUrl(image)}
                       alt={sauna.name}
                       loading='lazy'
                       className={styles.galleryImage}
@@ -427,7 +427,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={`/images/${modalImage}`}
+              src={getImageUrl(modalImage)}
               alt={sauna.name}
               className={styles.modalImage}
               fill={true}
@@ -447,35 +447,58 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
 
 export default LauttaPage;
 
-export const getStaticPaths = async () => {
-  const paths = saunas.map((sauna) => ({
-    params: {
-      url_name: sauna.url_name,
-    },
-  }));
+export const getStaticPaths: GetStaticPaths = async () => {
+  try {
+    const saunas = await fetchSaunas();
+    const paths = saunas.map((sauna) => ({
+      params: {
+        url_name: sauna.url_name,
+      },
+    }));
 
-  return {
-    paths,
-    fallback: false,
-  };
+    return {
+      paths,
+      fallback: 'blocking', // Enable ISR for new saunas
+    };
+  } catch (error) {
+    console.error('Error fetching saunas for paths:', error);
+    return {
+      paths: [],
+      fallback: 'blocking',
+    };
+  }
 };
 
-export const getStaticProps = async ({
-  params,
-}: {
-  params: { url_name: string };
-}) => {
-  const sauna = saunas.find((sauna) => sauna.url_name === params.url_name);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { params } = context;
 
-  if (!sauna) {
+  if (!params || !params.url_name) {
     return {
       notFound: true,
     };
   }
 
-  return {
-    props: {
-      sauna,
-    },
-  };
+  try {
+    const saunas = await fetchSaunas();
+    const sauna = saunas.find((sauna) => sauna.url_name === params.url_name);
+
+    if (!sauna) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        sauna,
+      },
+      // Revalidate every hour
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error('Error fetching sauna:', error);
+    return {
+      notFound: true,
+    };
+  }
 };

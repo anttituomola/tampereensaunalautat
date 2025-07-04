@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { NextPage, GetStaticProps } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import LauttaEl from '../components/LauttaEl';
@@ -6,7 +6,7 @@ import Filters from 'components/Filters';
 import { useState, useEffect } from 'react';
 import { Button, Collapse, Stack } from '@mui/material';
 import SelectedSaunas from 'components/SelectedSaunas';
-import { saunas } from '../saunadata';
+import { fetchSaunas } from '../lib/api';
 import { FilterState, SaunaEquipment, Saunalautta } from '../types';
 import { isWinterSeason } from '../utils/dateUtils';
 
@@ -14,7 +14,7 @@ interface Props {
   saunas: Saunalautta[];
 }
 
-const Home: NextPage<Props> = () => {
+const Home: NextPage<Props> = ({ saunas }) => {
   const initialState: FilterState = {
     location: '',
     capacity: 0,
@@ -176,6 +176,31 @@ const Home: NextPage<Props> = () => {
       </main>
     </div>
   );
+};
+
+// Fetch data at build time
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const saunas = await fetchSaunas();
+
+    return {
+      props: {
+        saunas,
+      },
+      // Revalidate every hour (3600 seconds)
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error('Error fetching saunas:', error);
+
+    // Return empty array as fallback
+    return {
+      props: {
+        saunas: [],
+      },
+      revalidate: 60, // Try again in 1 minute
+    };
+  }
 };
 
 export default Home;

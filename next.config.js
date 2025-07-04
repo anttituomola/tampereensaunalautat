@@ -9,6 +9,14 @@ const nextConfig = {
 		minimumCacheTTL: 31536000, // 1 year cache
 		dangerouslyAllowSVG: false,
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'api.tampereensaunalautat.fi',
+				port: '',
+				pathname: '/images/**',
+			},
+		],
 	},
 	// Enable compression
 	compress: true,
