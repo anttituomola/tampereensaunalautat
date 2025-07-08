@@ -309,6 +309,24 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                     <a href={`mailto:${sauna.email}`}>{sauna.email}</a>
                   </ListItemText>
                 </ListItem>
+                {sauna.url && (
+                  <ListItem className={styles.contactItem}>
+                    <ListItemIcon>
+                      <LinkIcon />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <a
+                        href={sauna.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        {sauna.url.length > 50
+                          ? sauna.url.slice(0, 50) + '...'
+                          : sauna.url}
+                      </a>
+                    </ListItemText>
+                  </ListItem>
+                )}
                 {sauna.urlArray.map((url) => (
                   <ListItem key={url} className={styles.contactItem}>
                     <ListItemIcon>

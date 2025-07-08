@@ -162,7 +162,7 @@ app.put('/api/sauna/:id', authenticateToken, async (req, res) => {
 
 		const {
 			name, location, capacity, event_length, price_min, price_max,
-			equipment, email, phone, url, notes, winter
+			equipment, email, phone, url, url_array, notes, winter
 		} = req.body;
 
 		// Validate required fields
@@ -178,12 +178,13 @@ app.put('/api/sauna/:id', authenticateToken, async (req, res) => {
       UPDATE saunas SET
         name = ?, location = ?, capacity = ?, event_length = ?, 
         price_min = ?, price_max = ?, equipment = ?, email = ?, 
-        phone = ?, url = ?, notes = ?, winter = ?,
+        phone = ?, url = ?, url_array = ?, notes = ?, winter = ?,
         updated_at = datetime('now')
       WHERE id = ?
     `, [
 			name, location, capacity, event_length, price_min, price_max,
-			JSON.stringify(equipment || []), email, phone, url, notes, winter ? 1 : 0, id
+			JSON.stringify(equipment || []), email, phone, url,
+			JSON.stringify(url_array || []), notes, winter ? 1 : 0, id
 		]);
 
 		// Get updated sauna

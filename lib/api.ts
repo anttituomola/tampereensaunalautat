@@ -1,26 +1,8 @@
 // API client for communicating with UpCloud VM backend
+import { Saunalautta, SaunaEquipment } from '../types';
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || 'https://api.tampereensaunalautat.fi';
-
-export interface Saunalautta {
-  id: string;
-  name: string;
-  location: string;
-  capacity: number;
-  pricemin: number;
-  pricemax: number;
-  equipment: string[];
-  images: string[];
-  mainImage: string;
-  email: string;
-  phone: string;
-  url: string;
-  notes?: string;
-  url_name: string;
-  eventLength: number;
-  urlArray: string[];
-  winter: boolean;
-}
 
 // Fetch all saunas from the API
 export const fetchSaunas = async (): Promise<Saunalautta[]> => {
@@ -152,6 +134,9 @@ export const authAPI = {
           eventLength: sauna.event_length,
           mainImage: sauna.main_image,
           urlArray: sauna.urlArray || [],
+          equipment: Array.isArray(sauna.equipment)
+            ? sauna.equipment
+            : JSON.parse(sauna.equipment || '[]'),
         };
       }
 
@@ -219,10 +204,11 @@ export interface SaunaUpdateData {
   event_length: number;
   price_min: number;
   price_max: number;
-  equipment: string[];
+  equipment: SaunaEquipment[];
   email: string;
   phone: string;
   url?: string;
+  url_array?: string[];
   notes?: string;
   winter: boolean;
 }

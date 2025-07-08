@@ -309,17 +309,30 @@ NEXT_PUBLIC_API_URL=https://api.tampereensaunalautat.fi
 - Cleared build cache and verified production deployment readiness
 - All 21 pages now compile successfully with TypeScript strict mode
 
-## 🔄 Phase 5: Owner Sauna Management & Registration System (PLANNED)
+## 🔄 Phase 5: Owner Sauna Management & Registration System (IN PROGRESS)
 
-### Owner Sauna Editing Interface
-- [ ] **Edit Sauna Form** (`/edit-sauna/[id]`) - Complete sauna data editing
-  - [ ] Basic information fields (name, location, capacity, event length, prices)
-  - [ ] Contact details (email, phone, website URLs)
-  - [ ] Equipment selection with checkboxes
-  - [ ] Notes/description with character limits (max 500 chars)
-  - [ ] Winter availability toggle
-  - [ ] Real-time form validation and error display
-  - [ ] Save/Cancel functionality with confirmation dialogs
+### ✅ Owner Sauna Editing Interface (COMPLETED)
+- [x] **Edit Sauna Form** (`/edit-sauna/[id]`) - Complete sauna data editing
+  - [x] Basic information fields (name, location, capacity, event length, prices)
+  - [x] Contact details (email, phone, website URLs with multiple URL support)
+  - [x] Equipment selection with checkboxes
+  - [x] Notes/description with character limits (max 500 chars)
+  - [x] Winter availability toggle
+  - [x] Real-time form validation and error display
+  - [x] Save/Cancel functionality with confirmation dialogs
+  - [x] Protected route with ownership verification
+  - [x] Loading states and error handling
+  - [x] Unsaved changes warnings
+
+### Technical Issues Resolved During Phase 5
+- [x] **Material-UI v7 Grid Syntax**: Fixed Grid component usage from deprecated `item xs={12}` to new `size={12}` format
+- [x] **TypeScript Type Conflicts**: Resolved conflicts between `SaunaEquipment[]` and `string[]` in API interfaces
+- [x] **URL Management Enhancement**: Enhanced backend API to handle `url_array` parameter alongside single `url` field
+- [x] **URL Editing Interface**: Created sophisticated URL management with primary website and additional URLs
+- [x] **Local Development Permissions**: Fixed `.next` directory permission issues on Windows
+- [x] **URL Display Bug**: Fixed missing primary URL display on sauna detail pages
+- [x] **URL Removal Bug**: Fixed issue where deleted URLs persisted due to empty string handling
+- [x] **Import Conflicts**: Resolved duplicate interface imports in api.ts
 
 ### Image Management System
 - [ ] **Image Upload & Management**
@@ -373,12 +386,12 @@ NEXT_PUBLIC_API_URL=https://api.tampereensaunalautat.fi
   - [ ] `PUT /api/sauna/:id/main-image` - Set main image
   - [ ] Image storage organization (by sauna ID, with backup retention)
 
-- [ ] **Sauna Management Endpoints**
-  - [ ] `PUT /api/sauna/:id` - Update sauna data (enhance existing)
+- [x] **Sauna Management Endpoints** (PARTIALLY COMPLETED)
+  - [x] `PUT /api/sauna/:id` - Update sauna data (enhanced with url_array support)
   - [ ] `POST /api/sauna` - Create new sauna (admin only)
   - [ ] `GET /api/sauna/:id/edit` - Get editable sauna data
-  - [ ] Input validation middleware for all update operations
-  - [ ] Content sanitization on server side
+  - [x] Input validation middleware for all update operations
+  - [x] Content sanitization on server side
 
 - [ ] **Registration System Endpoints**
   - [ ] `POST /api/register/sauna` - Submit new sauna registration
@@ -420,6 +433,7 @@ NEXT_PUBLIC_API_URL=https://api.tampereensaunalautat.fi
 - **15 user-sauna relationships**: All saunas linked to owners
 - **Authentication system**: Fully deployed and operational
 - **Material-UI Frontend**: All components working with v7 compatibility
+- **Phase 5 Sauna Editing**: Owner sauna editing interface fully implemented
 
 ### Saunas in Database (15 total)
 1. **Laineilla.fi saunalautta** - Näsijärvi (250-700€, 20 people)
@@ -588,11 +602,11 @@ npm run build
 - [ ] Review and rating system
 - [ ] Mobile app development
 - [ ] Analytics dashboard
-- [x] **Sauna owner editing interface (Phase 5 - Planned)**
-- [x] **Public sauna registration form (Phase 5 - Planned)**
-- [x] **Admin approval workflow (Phase 5 - Planned)**
-- [x] **Image management system (Phase 5 - Planned)**
-- [x] **Content sanitization & validation (Phase 5 - Planned)**
+- [x] **Sauna owner editing interface (Phase 5 - Completed)**
+- [ ] **Public sauna registration form (Phase 5 - Planned)**
+- [ ] **Admin approval workflow (Phase 5 - Planned)**
+- [ ] **Image management system (Phase 5 - Planned)**
+- [x] **Content sanitization & validation (Phase 5 - Partially Completed)**
 
 ### Phase 6+ Future Considerations
 - [ ] Multi-language support (English/Swedish)
@@ -616,4 +630,4 @@ npm run build
 ---
 
 *Last Updated: January 2025*  
-*Status: Phase 4 Complete - Owner Management Interface Fully Deployed, Material-UI v7 Migrated, Production Build Verified & Phase 5 Comprehensively Planned (Sauna Editing, Image Management, Registration System)* 
+*Status: Phase 5 Partially Complete - Owner Sauna Editing Interface Fully Implemented with URL Management, Form Validation, and Technical Issues Resolved. Remaining: Image Management System, Registration System, and Admin Interface.* 
