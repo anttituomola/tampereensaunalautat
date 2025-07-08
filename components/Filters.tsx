@@ -9,12 +9,11 @@ import {
   FormGroup,
   Checkbox,
   Box,
-} from "@mui/material";
-import styles from "/styles/Filters.module.css";
-import { Dispatch, SetStateAction } from "react";
-import { FilterState } from "types";
-import Grid from "@mui/material/Grid2";
-import type { Grid2Props } from "@mui/material/Grid2";
+} from '@mui/material';
+import styles from '/styles/Filters.module.css';
+import { Dispatch, SetStateAction } from 'react';
+import { FilterState } from 'types';
+import { Grid } from '@mui/material';
 
 type Filters = {
   location: string;
@@ -81,40 +80,40 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
   return (
     <Paper elevation={0} className={styles.filters}>
       <Grid container spacing={3}>
-        <Grid gridColumn={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" className={styles.filterTitle}>
+            <FormControl component='fieldset'>
+              <FormLabel component='legend' className={styles.filterTitle}>
                 <strong>Sijainti</strong>
               </FormLabel>
               <RadioGroup
-                aria-label="location"
-                defaultValue="ei väliä"
-                name="location-selector"
+                aria-label='location'
+                defaultValue='ei väliä'
+                name='location-selector'
                 onChange={locationSelector}
               >
                 <FormControlLabel
-                  value="Näsijärvi"
-                  control={<Radio color="primary" />}
-                  label="Näsijärvi"
+                  value='Näsijärvi'
+                  control={<Radio color='primary' />}
+                  label='Näsijärvi'
                 />
                 <FormControlLabel
-                  value="Pyhäjärvi"
-                  control={<Radio color="primary" />}
-                  label="Pyhäjärvi"
+                  value='Pyhäjärvi'
+                  control={<Radio color='primary' />}
+                  label='Pyhäjärvi'
                 />
                 <FormControlLabel
-                  value="ei väliä"
-                  control={<Radio color="primary" />}
-                  label="Ei väliä"
+                  value='ei väliä'
+                  control={<Radio color='primary' />}
+                  label='Ei väliä'
                 />
               </RadioGroup>
             </FormControl>
           </Box>
 
           <Box className={styles.filterSection} mt={3}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" className={styles.filterTitle}>
+            <FormControl component='fieldset'>
+              <FormLabel component='legend' className={styles.filterTitle}>
                 <strong>Sesonki</strong>
               </FormLabel>
               <FormGroup>
@@ -123,67 +122,67 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
                     <Checkbox
                       checked={filters.winter}
                       onChange={winterHandler}
-                      name="winter"
-                      color="primary"
+                      name='winter'
+                      color='primary'
                     />
                   }
-                  label="Talvi"
+                  label='Talvi'
                 />
               </FormGroup>
             </FormControl>
           </Box>
         </Grid>
 
-        <Grid gridColumn={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
-            <FormLabel component="legend" className={styles.filterTitle}>
+            <FormLabel component='legend' className={styles.filterTitle}>
               <strong>Matkustajien lukumäärä</strong>
             </FormLabel>
             <Box px={2}>
               <Slider
-                aria-label="capacity"
+                aria-label='capacity'
                 defaultValue={10}
-                valueLabelDisplay="auto"
+                valueLabelDisplay='auto'
                 step={1}
                 marks
                 min={1}
                 max={20}
                 onChange={capacitySelector}
-                color="primary"
+                color='primary'
               />
             </Box>
           </Box>
 
           <Box className={styles.filterSection} mt={3}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" className={styles.filterTitle}>
+            <FormControl component='fieldset'>
+              <FormLabel component='legend' className={styles.filterTitle}>
                 <strong>Järjestä</strong>
               </FormLabel>
               <RadioGroup
-                aria-label="sort"
-                defaultValue=""
-                name="sort-selector"
+                aria-label='sort'
+                defaultValue=''
+                name='sort-selector'
                 onChange={sortSelector}
               >
                 <FormControlLabel
-                  value="hinta"
-                  control={<Radio color="primary" />}
-                  label="Hinnan mukaan"
+                  value='hinta'
+                  control={<Radio color='primary' />}
+                  label='Hinnan mukaan'
                 />
                 <FormControlLabel
-                  value="koko"
-                  control={<Radio color="primary" />}
-                  label="Koon mukaan"
+                  value='koko'
+                  control={<Radio color='primary' />}
+                  label='Koon mukaan'
                 />
               </RadioGroup>
             </FormControl>
           </Box>
         </Grid>
 
-        <Grid gridColumn={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Box className={styles.filterSection}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" className={styles.filterTitle}>
+            <FormControl component='fieldset'>
+              <FormLabel component='legend' className={styles.filterTitle}>
                 <strong>Varusteet</strong>
               </FormLabel>
               <FormGroup className={styles.equipmentGrid}>
@@ -195,7 +194,7 @@ const Filters = ({ setFilters, filters }: FiltersProps) => {
                         checked={item.checked}
                         onChange={checkboxHandler}
                         name={item.name}
-                        color="primary"
+                        color='primary'
                       />
                     }
                     label={item.name}

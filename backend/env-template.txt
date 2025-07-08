@@ -1,0 +1,38 @@
+# Environment variables for Tampereensaunalautat.fi API
+# Copy this file to .env and fill in the actual values
+
+# Server configuration
+NODE_ENV=production
+PORT=3001
+FRONTEND_URL=https://tampereensaunalautat.fi
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-immediately
+
+# AWS SES Configuration (for sending magic link emails)
+AWS_REGION=eu-west-1
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+FROM_EMAIL=noreply@tampereensaunalautat.fi
+
+# Database Configuration
+DATABASE_PATH=./saunas.db
+
+# Security
+BCRYPT_ROUNDS=12
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+AUTH_RATE_LIMIT_MAX_REQUESTS=5
+
+# Magic Link Configuration
+MAGIC_LINK_EXPIRES_MINUTES=15
+REFRESH_TOKEN_EXPIRES_DAYS=7
+JWT_EXPIRES_IN=24h
+
+# Admin Configuration
+ADMIN_EMAIL=admin@tampereensaunalautat.fi
+
+# Logging
+LOG_LEVEL=info 

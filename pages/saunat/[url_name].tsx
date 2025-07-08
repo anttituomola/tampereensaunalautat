@@ -243,7 +243,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         )}
 
         <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <section className={styles.section}>
               <Typography variant='h2' className={styles.sectionTitle}>
                 Perustiedot
@@ -325,7 +325,7 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             </section>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <section className={styles.section}>
               <Typography variant='h2' className={styles.sectionTitle}>
                 Varusteet
