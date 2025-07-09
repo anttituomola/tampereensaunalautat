@@ -54,7 +54,7 @@ import {
 } from '@mui/icons-material';
 
 import ProtectedRoute from '../../components/ProtectedRoute';
-import { fetchSaunas, getImageUrl, authAPI } from '../../lib/api';
+import { getImageUrl, authAPI } from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Saunalautta } from '../../types';
 import { toast } from 'react-toastify';
@@ -118,7 +118,7 @@ const AdminSaunasManagement: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const saunasData = await fetchSaunas();
+      const saunasData = await authAPI.getAllSaunas();
       setSaunas(saunasData);
     } catch (error) {
       console.error('Error loading saunas:', error);
@@ -732,7 +732,8 @@ const AdminSaunasManagement: React.FC = () => {
           <DialogTitle id='delete-dialog-title'>Poista sauna</DialogTitle>
           <DialogContent>
             <DialogContentText id='delete-dialog-description'>
-              Haluatko varmasti poistaa saunan &quot;{saunaToDelete?.name}&quot;?
+              Haluatko varmasti poistaa saunan &quot;{saunaToDelete?.name}
+              &quot;?
               <br />
               <br />
               <strong>Tämä toiminto ei ole peruutettavissa!</strong>

@@ -169,6 +169,41 @@ export const authAPI = {
     }
   },
 
+  // Get all saunas including hidden ones (admin only)
+  async getAllSaunas(): Promise<Saunalautta[]> {
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/saunas`, {
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Transform backend format to frontend format
+        return data.saunas.map((sauna: any) => ({
+          ...sauna,
+          pricemin: sauna.price_min,
+          pricemax: sauna.price_max,
+          eventLength: sauna.event_length,
+          mainImage: sauna.main_image,
+          urlArray: sauna.urlArray || [],
+          equipment: Array.isArray(sauna.equipment)
+            ? sauna.equipment
+            : JSON.parse(sauna.equipment || '[]'),
+        }));
+      }
+
+      throw new Error(data.message || 'Failed to fetch admin saunas');
+    } catch (error) {
+      console.error('Error fetching admin saunas:', error);
+      throw error;
+    }
+  },
+
   // Get all users (admin only)
   async getAllUsers(): Promise<UserWithStats[]> {
     try {

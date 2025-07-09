@@ -336,7 +336,8 @@ app.use('/api/auth', authRouter);
 // Get all saunas (public endpoint)
 app.get('/api/sauna/list', async (req, res) => {
 	try {
-		const saunas = await dbAll('SELECT * FROM saunas ORDER BY name');
+		// Only return visible saunas for public listing
+		const saunas = await dbAll('SELECT * FROM saunas WHERE visible = 1 ORDER BY name');
 
 		// Transform data for frontend compatibility
 		const transformedSaunas = saunas.map(sauna => ({
@@ -1167,6 +1168,47 @@ app.get('/api/admin/users', authenticateToken, async (req, res) => {
 
 	} catch (error) {
 		console.error('Error fetching users:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Palvelimella tapahtui virhe'
+		});
+	}
+});
+
+// Get all saunas including hidden ones (admin only)
+app.get('/api/admin/saunas', authenticateToken, async (req, res) => {
+	try {
+		// Verify admin permissions
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Toiminto vaatii ylläpitäjän oikeudet'
+			});
+		}
+
+		// Return ALL saunas (including hidden ones) for admin management
+		const saunas = await dbAll('SELECT * FROM saunas ORDER BY name');
+
+		// Transform data for frontend compatibility
+		const transformedSaunas = saunas.map(sauna => ({
+			...sauna,
+			pricemin: sauna.price_min,
+			pricemax: sauna.price_max,
+			eventLength: sauna.event_length,
+			mainImage: sauna.main_image,
+			equipment: sauna.equipment ? JSON.parse(sauna.equipment) : [],
+			images: sauna.images ? JSON.parse(sauna.images) : [],
+			urlArray: sauna.url_array ? JSON.parse(sauna.url_array) : [],
+			winter: sauna.winter === 1,
+			visible: sauna.visible === 1
+		}));
+
+		res.json({
+			success: true,
+			saunas: transformedSaunas
+		});
+	} catch (error) {
+		console.error('Error fetching admin saunas:', error);
 		res.status(500).json({
 			success: false,
 			message: 'Palvelimella tapahtui virhe'
