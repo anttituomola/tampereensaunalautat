@@ -5,6 +5,7 @@
 NODE_ENV=production
 PORT=3001
 FRONTEND_URL=https://tampereensaunalautat.fi
+CORS_ORIGINS=https://tampereensaunalautat.fi,https://www.tampereensaunalautat.fi
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-immediately

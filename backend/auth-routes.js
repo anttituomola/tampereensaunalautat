@@ -38,7 +38,7 @@ const sendMagicLinkEmail = async (email, token, frontendUrl = null) => {
 	const magicLink = `${baseUrl}/login?token=${token}`;
 
 	const params = {
-		Source: process.env.FROM_EMAIL || 'noreply@tampereensaunalautat.fi',
+		Source: process.env.FROM_EMAIL || 'info@tampereensaunalautat.fi',
 		Destination: {
 			ToAddresses: [email],
 		},

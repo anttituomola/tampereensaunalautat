@@ -14,7 +14,7 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'api.tampereensaunalautat.fi',
+				hostname: process.env.NEXT_PUBLIC_API_HOSTNAME || 'api.tampereensaunalautat.fi',
 				port: '',
 				pathname: '/images/**',
 			},

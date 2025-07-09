@@ -185,12 +185,18 @@ const authLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 
 // CORS configuration for API endpoints only
-app.use('/api', cors({
-	origin: process.env.NODE_ENV === 'production'
+const corsOrigins = process.env.CORS_ORIGINS
+	? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+	: process.env.NODE_ENV === 'production'
 		? ['https://tampereensaunalautat.fi', 'https://www.tampereensaunalautat.fi']
-		: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+		: ['http://localhost:3000', 'http://127.0.0.1:3000'];
+
+app.use('/api', cors({
+	origin: corsOrigins,
 	credentials: true
 }));
+
+console.log('🌍 CORS enabled for origins:', corsOrigins);
 
 // Body parsing middleware
 app.use(express.json({ limit: '20mb' }));
