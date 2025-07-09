@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import {
   Container,
@@ -31,28 +31,31 @@ const Login: React.FC = () => {
     }
   }, [isAuthenticated, router, returnUrl]);
 
+  const handleTokenVerification = useCallback(
+    async (magicToken: string) => {
+      setIsLoading(true);
+      try {
+        const success = await verifyToken(magicToken);
+        if (success) {
+          const destination =
+            typeof returnUrl === 'string' ? returnUrl : '/dashboard';
+          router.push(destination);
+        }
+      } catch (error) {
+        toast.error('Virhe kirjautumisessa. Yritä uudelleen.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [verifyToken, returnUrl, router]
+  );
+
   // Handle magic link verification
   useEffect(() => {
     if (token && typeof token === 'string') {
       handleTokenVerification(token);
     }
-  }, [token]);
-
-  const handleTokenVerification = async (magicToken: string) => {
-    setIsLoading(true);
-    try {
-      const success = await verifyToken(magicToken);
-      if (success) {
-        const destination =
-          typeof returnUrl === 'string' ? returnUrl : '/dashboard';
-        router.push(destination);
-      }
-    } catch (error) {
-      toast.error('Virhe kirjautumisessa. Yritä uudelleen.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [token, handleTokenVerification]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

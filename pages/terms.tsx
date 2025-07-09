@@ -35,7 +35,7 @@ const Terms: React.FC = () => {
 
           <Typography component='ul' variant='body1' sx={{ pl: 2 }}>
             <Typography component='li' sx={{ mb: 1 }}>
-              Saunasillan tiedot (nimi, sijainti, hinnat, varusteet, kuvat)
+              Saunalautan tiedot (nimi, sijainti, hinnat, varusteet, kuvat)
             </Typography>
             <Typography component='li' sx={{ mb: 1 }}>
               Yhteystiedot (sähköposti, puhelinnumero, verkkosivut)
@@ -51,7 +51,7 @@ const Terms: React.FC = () => {
 
           <Typography component='ul' variant='body1' sx={{ pl: 2 }}>
             <Typography component='li' sx={{ mb: 1 }}>
-              Saunasillan esittely sivustolla potentiaalisille asiakkaille
+              Saunalautan esittely sivustolla potentiaalisille asiakkaille
             </Typography>
             <Typography component='li' sx={{ mb: 1 }}>
               Yhteydenottojen välittäminen sinulle kiinnostuneilta asiakkailta
@@ -83,10 +83,10 @@ const Terms: React.FC = () => {
               Voit muokata tietojasi milloin tahansa kirjautumalla palveluun
             </Typography>
             <Typography component='li' sx={{ mb: 1 }}>
-              Voit piilottaa saunasillan sivustolta tilapäisesti
+              Voit piilottaa saunalautan sivustolta tilapäisesti
             </Typography>
             <Typography component='li' sx={{ mb: 1 }}>
-              Voit poistaa saunasillan kokonaan palvelusta ottamalla yhteyttä
+              Voit poistaa saunalautan kokonaan palvelusta ottamalla yhteyttä
               ylläpitoon
             </Typography>
           </Typography>

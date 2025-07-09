@@ -732,7 +732,7 @@ const AdminSaunasManagement: React.FC = () => {
           <DialogTitle id='delete-dialog-title'>Poista sauna</DialogTitle>
           <DialogContent>
             <DialogContentText id='delete-dialog-description'>
-              Haluatko varmasti poistaa saunan "{saunaToDelete?.name}"?
+              Haluatko varmasti poistaa saunan &quot;{saunaToDelete?.name}&quot;?
               <br />
               <br />
               <strong>Tämä toiminto ei ole peruutettavissa!</strong>

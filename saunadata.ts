@@ -35,6 +35,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5jkaesh0007xcud0qwpnltz',
@@ -65,6 +66,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['http://www.paljulautta.fi/428320069'],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5jn45iw0007r4udodq83h59',
@@ -98,6 +100,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'new_premium_sauna',
@@ -142,6 +145,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['https://saunalauttaristeilyt.fi/#premium'],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5kpp47w0007foudohpvyy7l',
@@ -161,6 +165,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['https://www.tampereenvesijettivuokraus.fi/ajanvaraus/'],
     notes: 'Ei liiku, kiinteästi laiturissa.',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5kqndgz0041xgudmso68l8t',
@@ -195,6 +200,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5kqndh00043xgudju3f0biq',
@@ -227,6 +233,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5ksjc940212xgudvm32lpsa',
@@ -275,6 +282,7 @@ export const saunas: Saunalautta[] = [
     notes:
       'Myös talvivuokrausmahdollisuus ja avantouinti! Nämä hinnat talvisesongille.',
     winter: true,
+    visible: true,
   },
   /* {
     id: 'cl5kqu1160065xgudjsdkr2o6',
@@ -294,6 +302,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['https://www.saunalauttatampere.fi/'],
     notes: '',
     winter: false,
+    visible: true,
   }, Their website is down and email is not working */
   {
     id: 'cl5krawua0125xgudkr4tkvcd',
@@ -313,6 +322,7 @@ export const saunas: Saunalautta[] = [
     urlArray: ['https://www.tampereensaunalautta.com/'],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5krnvob0160xgudyiep2r1p',
@@ -336,6 +346,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl5ks5faz0177xgudn1mt4jl3',
@@ -364,6 +375,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   {
     id: 'cl66bty490014l4udtjjje71y',
@@ -401,6 +413,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: false,
+    visible: true,
   },
   /* Otin tämän piiloon, koska mailit ei mene läpi ja tekstiviestiin ei ole vastattu. /*
 /*   {
@@ -441,6 +454,7 @@ export const saunas: Saunalautta[] = [
     notes:
       "Mahdollisuus myös sähköavusteisen Manta5-vesipolkupyörän ajamiseen (lisäpalvelu).",
     winter: false,
+    visible: true,
   }, */
   {
     id: 'cln08k9ii000308mkaqy8e984',
@@ -483,6 +497,7 @@ export const saunas: Saunalautta[] = [
     ],
     notes: 'Varaukset vain puhelimitse',
     winter: true,
+    visible: true,
   },
   {
     id: 'elamyslaiva_roosa',
@@ -540,6 +555,7 @@ export const saunas: Saunalautta[] = [
     notes:
       'Elämyslaiva saunalla ja porealtaalla paikallaan ollessaan 450e/4h. Yöpymismahdollisuus 12:sta hengelle. Mahdollisuus myös risteilylle. Kysy tarjous!',
     winter: true,
+    visible: true,
   },
   /* 
   {
@@ -578,5 +594,6 @@ export const saunas: Saunalautta[] = [
     ],
     notes: '',
     winter: true,
+    visible: true,
   }, */
 ] as const;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
@@ -122,52 +122,55 @@ const EditSauna: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
+  const loadSauna = useCallback(
+    async (saunaId: string) => {
+      try {
+        setIsLoading(true);
+        const userSaunas = await authAPI.getUserSaunas();
+        const saunaData = userSaunas.find((s) => s.id === saunaId);
+
+        if (!saunaData) {
+          toast.error(
+            'Saunaa ei löytynyt tai sinulla ei ole oikeuksia muokata sitä'
+          );
+          router.push('/dashboard');
+          return;
+        }
+
+        setSauna(saunaData);
+        setFormData({
+          name: saunaData.name,
+          location: saunaData.location,
+          capacity: saunaData.capacity,
+          event_length: saunaData.eventLength,
+          price_min: saunaData.pricemin,
+          price_max: saunaData.pricemax,
+          equipment: saunaData.equipment,
+          email: saunaData.email,
+          phone: saunaData.phone,
+          url: saunaData.url || '',
+          url_array: saunaData.urlArray || [],
+          notes: saunaData.notes || '',
+          winter: saunaData.winter,
+          images: saunaData.images || [],
+          mainImage: saunaData.mainImage || null,
+        });
+      } catch (error) {
+        console.error('Error loading sauna:', error);
+        toast.error('Virhe saunan lataamisessa');
+        router.push('/dashboard');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [router]
+  );
+
   useEffect(() => {
     if (id && typeof id === 'string') {
       loadSauna(id);
     }
-  }, [id]);
-
-  const loadSauna = async (saunaId: string) => {
-    try {
-      setIsLoading(true);
-      const userSaunas = await authAPI.getUserSaunas();
-      const saunaData = userSaunas.find((s) => s.id === saunaId);
-
-      if (!saunaData) {
-        toast.error(
-          'Saunaa ei löytynyt tai sinulla ei ole oikeuksia muokata sitä'
-        );
-        router.push('/dashboard');
-        return;
-      }
-
-      setSauna(saunaData);
-      setFormData({
-        name: saunaData.name,
-        location: saunaData.location,
-        capacity: saunaData.capacity,
-        event_length: saunaData.eventLength,
-        price_min: saunaData.pricemin,
-        price_max: saunaData.pricemax,
-        equipment: saunaData.equipment,
-        email: saunaData.email,
-        phone: saunaData.phone,
-        url: saunaData.url || '',
-        url_array: saunaData.urlArray || [],
-        notes: saunaData.notes || '',
-        winter: saunaData.winter,
-        images: saunaData.images || [],
-        mainImage: saunaData.mainImage || null,
-      });
-    } catch (error) {
-      console.error('Error loading sauna:', error);
-      toast.error('Virhe saunan lataamisessa');
-      router.push('/dashboard');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [id, loadSauna]);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};

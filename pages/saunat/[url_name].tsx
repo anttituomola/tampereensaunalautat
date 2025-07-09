@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dayjs from 'dayjs';
 import styles from 'styles/url_name.module.css';
 import Head from 'next/head';
@@ -111,10 +111,50 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handlePrevImage = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const newIndex =
+        (currentImageIndex - 1 + sauna!.images.length) % sauna!.images.length;
+      setCurrentImageIndex(newIndex);
+      setModalImage(sauna!.images[newIndex]);
+    },
+    [currentImageIndex, sauna]
+  );
+
+  const handleNextImage = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const newIndex = (currentImageIndex + 1) % sauna!.images.length;
+      setCurrentImageIndex(newIndex);
+      setModalImage(sauna!.images[newIndex]);
+    },
+    [currentImageIndex, sauna]
+  );
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (open) {
+        if (e.key === 'ArrowLeft') {
+          handlePrevImage(e as unknown as React.MouseEvent);
+        } else if (e.key === 'ArrowRight') {
+          handleNextImage(e as unknown as React.MouseEvent);
+        } else if (e.key === 'Escape') {
+          handleClose();
+        }
+      }
+    },
+    [open, handlePrevImage, handleNextImage, handleClose]
+  );
+
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, currentImageIndex]);
+  }, [handleKeyDown]);
 
   // Get initial saunasOnState from localStorage
   useEffect(() => {
@@ -168,37 +208,6 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
     setCurrentImageIndex(index);
     setModalImage(image);
     setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handlePrevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newIndex =
-      (currentImageIndex - 1 + sauna.images.length) % sauna.images.length;
-    setCurrentImageIndex(newIndex);
-    setModalImage(sauna.images[newIndex]);
-  };
-
-  const handleNextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newIndex = (currentImageIndex + 1) % sauna.images.length;
-    setCurrentImageIndex(newIndex);
-    setModalImage(sauna.images[newIndex]);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (open) {
-      if (e.key === 'ArrowLeft') {
-        handlePrevImage(e as unknown as React.MouseEvent);
-      } else if (e.key === 'ArrowRight') {
-        handleNextImage(e as unknown as React.MouseEvent);
-      } else if (e.key === 'Escape') {
-        handleClose();
-      }
-    }
   };
 
   return (

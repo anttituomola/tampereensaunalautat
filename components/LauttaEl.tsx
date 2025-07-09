@@ -8,7 +8,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { getImageUrl } from '../lib/api';
 
 type Props = {
@@ -41,6 +41,24 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Helper function to preload an image
+  const preloadImage = useCallback(
+    (imageSrc: string) => {
+      if (preloadedImages.has(imageSrc)) return;
+
+      const img = new (window.Image as any)();
+      img.src = getImageUrl(imageSrc);
+      img.onload = () => {
+        setPreloadedImages((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(imageSrc);
+          return newSet;
+        });
+      };
+    },
+    [preloadedImages]
+  );
+
   // Initialize images array with mainImage and all other images
   useEffect(() => {
     // Ensure mainImage is first and remove duplicates
@@ -54,7 +72,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
 
     // Preload the main image immediately
     preloadImage(sauna.mainImage);
-  }, [sauna]);
+  }, [sauna, preloadImage]);
 
   // Preload adjacent images when user interacts with carousel
   useEffect(() => {
@@ -68,22 +86,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
     ];
 
     imagesToPreload.forEach(preloadImage);
-  }, [currentImageIndex, isHovering, isMobile, allImages]);
-
-  // Helper function to preload an image
-  const preloadImage = (imageSrc: string) => {
-    if (preloadedImages.has(imageSrc)) return;
-
-    const img = new (window.Image as any)();
-    img.src = getImageUrl(imageSrc);
-    img.onload = () => {
-      setPreloadedImages((prev) => {
-        const newSet = new Set(prev);
-        newSet.add(imageSrc);
-        return newSet;
-      });
-    };
-  };
+  }, [currentImageIndex, isHovering, isMobile, allImages, preloadImage]);
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.preventDefault();

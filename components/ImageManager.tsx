@@ -82,39 +82,42 @@ const ImageManager: React.FC<ImageManagerProps> = ({
     'image/gif',
   ];
 
-  const validateFiles = (
-    files: File[]
-  ): { valid: File[]; errors: string[] } => {
-    const valid: File[] = [];
-    const errors: string[] = [];
+  const validateFiles = useCallback(
+    (files: File[]): { valid: File[]; errors: string[] } => {
+      const valid: File[] = [];
+      const errors: string[] = [];
 
-    if (images.length + files.length > MAX_IMAGES) {
-      errors.push(
-        `Maksimi ${MAX_IMAGES} kuvaa sallittu. Sinulla on jo ${images.length} kuvaa.`
-      );
-      return { valid, errors };
-    }
-
-    files.forEach((file, index) => {
-      if (!ACCEPTED_TYPES.includes(file.type)) {
+      if (images.length + files.length > MAX_IMAGES) {
         errors.push(
-          `Tiedosto ${
-            index + 1
-          }: Ei tuettu tiedostotyyppi. Käytä yleisiä kuvaformaatteja.`
+          `Maksimi ${MAX_IMAGES} kuvaa sallittu. Sinulla on jo ${images.length} kuvaa.`
         );
-        return;
+        return { valid, errors };
       }
 
-      if (file.size > MAX_FILE_SIZE) {
-        errors.push(`Tiedosto ${index + 1}: Tiedosto on liian suuri (max 5MB)`);
-        return;
-      }
+      files.forEach((file, index) => {
+        if (!ACCEPTED_TYPES.includes(file.type)) {
+          errors.push(
+            `Tiedosto ${
+              index + 1
+            }: Ei tuettu tiedostotyyppi. Käytä yleisiä kuvaformaatteja.`
+          );
+          return;
+        }
 
-      valid.push(file);
-    });
+        if (file.size > MAX_FILE_SIZE) {
+          errors.push(
+            `Tiedosto ${index + 1}: Tiedosto on liian suuri (max 5MB)`
+          );
+          return;
+        }
 
-    return { valid, errors };
-  };
+        valid.push(file);
+      });
+
+      return { valid, errors };
+    },
+    [images, ACCEPTED_TYPES, MAX_FILE_SIZE]
+  );
 
   const handleFileUpload = useCallback(
     async (files: File[]) => {
@@ -179,7 +182,7 @@ const ImageManager: React.FC<ImageManagerProps> = ({
         setUploadProgress({ progress: 0, uploading: false, error: null });
       }
     },
-    [saunaId, images, mainImage, disabled, onImagesUpdate]
+    [saunaId, images, mainImage, disabled, onImagesUpdate, validateFiles]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
