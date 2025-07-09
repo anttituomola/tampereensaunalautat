@@ -142,6 +142,9 @@ const fsSync = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for rate limiting and IP detection (behind nginx)
+app.set('trust proxy', 1);
+
 // CORS configuration for images - same as API endpoints
 const corsOrigins = process.env.CORS_ORIGINS
 	? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
@@ -184,6 +187,20 @@ const limiter = rateLimit({
 	message: {
 		success: false,
 		message: 'Liian monta pyyntöä. Yritä uudelleen myöhemmin.'
+	},
+	handler: (req, res) => {
+		// Set CORS headers for rate limit responses
+		const origin = req.get('origin');
+		if (origin && corsOrigins.includes(origin)) {
+			res.set('Access-Control-Allow-Origin', origin);
+			res.set('Access-Control-Allow-Credentials', 'true');
+			res.set('Vary', 'Origin');
+		}
+
+		res.status(429).json({
+			success: false,
+			message: 'Liian monta pyyntöä. Yritä uudelleen myöhemmin.'
+		});
 	}
 });
 app.use('/api/', limiter);
@@ -195,6 +212,20 @@ const authLimiter = rateLimit({
 	message: {
 		success: false,
 		message: 'Liian monta kirjautumisyritystä. Yritä uudelleen 15 minuutin kuluttua.'
+	},
+	handler: (req, res) => {
+		// Set CORS headers for rate limit responses
+		const origin = req.get('origin');
+		if (origin && corsOrigins.includes(origin)) {
+			res.set('Access-Control-Allow-Origin', origin);
+			res.set('Access-Control-Allow-Credentials', 'true');
+			res.set('Vary', 'Origin');
+		}
+
+		res.status(429).json({
+			success: false,
+			message: 'Liian monta kirjautumisyritystä. Yritä uudelleen 15 minuutin kuluttua.'
+		});
 	}
 });
 app.use('/api/auth', authLimiter);
