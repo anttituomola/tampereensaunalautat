@@ -446,16 +446,17 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         owner_phone: formData.ownerPhone,
       };
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/register/sauna`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(submissionData),
-        }
-      );
+      const API_BASE =
+        process.env.NEXT_PUBLIC_API_URL ||
+        'https://api.tampereensaunalautat.fi';
+
+      const response = await fetch(`${API_BASE}/api/register/sauna`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
 
       const result = await response.json();
 
@@ -601,7 +602,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             }
             error={!!errors.capacity}
             helperText={errors.capacity}
-            inputProps={{ min: 1, max: 100 }}
+            slotProps={{ htmlInput: { min: 1, max: 100 } }}
             required
           />
         </Grid>
@@ -619,7 +620,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             helperText={
               errors.eventLength || 'Saunaristeilyn oletuskesto, yleensä 3 h'
             }
-            inputProps={{ min: 1, max: 24 }}
+            slotProps={{ htmlInput: { min: 1, max: 24 } }}
             required
           />
         </Grid>
@@ -650,9 +651,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             error={!!errors.priceMin}
             helperText={
               errors.priceMin ||
-              'Hintahaarukka, esim. viikonloppuisin on usein kalliimpaa'
+              'Hinta alkaen, esim. arkipäivien edullisempi hinta'
             }
-            inputProps={{ min: 0 }}
+            slotProps={{ htmlInput: { min: 0 } }}
             required
           />
         </Grid>
@@ -669,9 +670,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             error={!!errors.priceMax}
             helperText={
               errors.priceMax ||
-              'Hintahaarukka, esim. viikonloppuisin on usein kalliimpaa'
+              'Hinta enintään, esim. viikonloppuisin on usein kalliimpaa'
             }
-            inputProps={{ min: 0 }}
+            slotProps={{ htmlInput: { min: 0 } }}
             required
           />
         </Grid>
@@ -719,7 +720,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             onChange={(e) => handleInputChange('website', e.target.value)}
             error={!!errors.website}
             helperText={errors.website}
-            placeholder='example.com (https:// lisätään automaattisesti)'
+            placeholder='example.com '
           />
         </Grid>
 
@@ -744,7 +745,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               onChange={(e) => handleUrlArrayChange(index, e.target.value)}
               error={!!errors.additionalUrls}
               helperText={index === 0 ? errors.additionalUrls : ''}
-              placeholder='example.com (https:// lisätään automaattisesti)'
+              placeholder='example.com'
               sx={{ mb: 1 }}
             />
           ))}
@@ -760,7 +761,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             onChange={(e) => handleInputChange('notes', e.target.value)}
             error={!!errors.notes}
             helperText={errors.notes || `${formData.notes.length}/500 merkkiä`}
-            inputProps={{ maxLength: 500 }}
+            slotProps={{ htmlInput: { maxLength: 500 } }}
           />
         </Grid>
       </Grid>
