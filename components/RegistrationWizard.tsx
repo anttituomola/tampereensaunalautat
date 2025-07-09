@@ -426,25 +426,40 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         .map((url) => ensureHttps(url))
         .filter((url) => url !== '' && url !== 'https://');
 
-      // Prepare data for submission
-      const submissionData = {
-        owner_email: formData.ownerEmail,
-        name: formData.saunaName,
-        location: formData.location,
-        capacity: formData.capacity,
-        event_length: formData.eventLength,
-        price_min: formData.priceMin,
-        price_max: formData.priceMax,
-        equipment: JSON.stringify(formData.equipment),
-        email: formData.contactEmail,
-        phone: formData.contactPhone,
-        url: cleanWebsite,
-        url_array: JSON.stringify(cleanAdditionalUrls),
-        notes: formData.notes,
-        winter: formData.winterAvailable,
-        owner_name: formData.ownerName,
-        owner_phone: formData.ownerPhone,
-      };
+      // Prepare data for submission as FormData (to support file uploads)
+      const formSubmissionData = new FormData();
+
+      // Add text fields
+      formSubmissionData.append('owner_email', formData.ownerEmail);
+      formSubmissionData.append('name', formData.saunaName);
+      formSubmissionData.append('location', formData.location);
+      formSubmissionData.append('capacity', formData.capacity.toString());
+      formSubmissionData.append(
+        'event_length',
+        formData.eventLength.toString()
+      );
+      formSubmissionData.append('price_min', formData.priceMin.toString());
+      formSubmissionData.append('price_max', formData.priceMax.toString());
+      formSubmissionData.append(
+        'equipment',
+        JSON.stringify(formData.equipment)
+      );
+      formSubmissionData.append('email', formData.contactEmail);
+      formSubmissionData.append('phone', formData.contactPhone);
+      formSubmissionData.append('url', cleanWebsite);
+      formSubmissionData.append(
+        'url_array',
+        JSON.stringify(cleanAdditionalUrls)
+      );
+      formSubmissionData.append('notes', formData.notes);
+      formSubmissionData.append('winter', formData.winterAvailable.toString());
+      formSubmissionData.append('owner_name', formData.ownerName);
+      formSubmissionData.append('owner_phone', formData.ownerPhone);
+
+      // Add image files
+      formData.images.forEach((image, index) => {
+        formSubmissionData.append('images', image);
+      });
 
       const API_BASE =
         process.env.NEXT_PUBLIC_API_URL ||
@@ -452,10 +467,8 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
       const response = await fetch(`${API_BASE}/api/register/sauna`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
+        // Don't set Content-Type header - let the browser set it with boundary for multipart/form-data
+        body: formSubmissionData,
       });
 
       const result = await response.json();

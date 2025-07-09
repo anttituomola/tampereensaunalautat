@@ -400,8 +400,8 @@ app.get('/api/sauna/:id', async (req, res) => {
 	}
 });
 
-// Register new sauna (public endpoint)
-app.post('/api/register/sauna', async (req, res) => {
+// Register new sauna (public endpoint) - now handles images
+app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 	try {
 		const {
 			owner_email, owner_name, owner_phone,
@@ -480,7 +480,40 @@ app.post('/api/register/sauna', async (req, res) => {
 		// Generate unique ID for pending sauna
 		const pendingId = `pending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-		// Insert into pending_saunas table
+		// Process uploaded images
+		let processedImages = [];
+		let mainImageFilename = null;
+
+		if (req.files && req.files.length > 0) {
+			console.log(`📸 Processing ${req.files.length} images for registration:`, name);
+
+			try {
+				for (let i = 0; i < req.files.length; i++) {
+					const file = req.files[i];
+					const uniqueFilename = `${uuidv4()}-${file.originalname}`;
+
+					console.log(`🔄 Processing image ${i + 1}/${req.files.length}: ${uniqueFilename}`);
+
+					// Process and save image
+					const processedFilename = await processImage(file.buffer, uniqueFilename);
+					processedImages.push(processedFilename);
+
+					// Set first image as main image
+					if (i === 0) {
+						mainImageFilename = processedFilename;
+					}
+				}
+
+				console.log(`✅ Successfully processed ${processedImages.length} images for registration`);
+			} catch (imageError) {
+				console.error('❌ Error processing images during registration:', imageError);
+				// Continue without images rather than failing the entire registration
+				processedImages = [];
+				mainImageFilename = null;
+			}
+		}
+
+		// Insert into pending_saunas table with images
 		await dbRun(`
 			INSERT INTO pending_saunas (
 				id, owner_email, name, location, capacity, event_length,
@@ -492,6 +525,21 @@ app.post('/api/register/sauna', async (req, res) => {
 			price_min, price_max, equipment || '[]', email, phone, url,
 			sanitizedNotes, winter ? 1 : 0
 		]);
+
+		// Store images separately in a pending_images table or as JSON in pending_saunas
+		if (processedImages.length > 0) {
+			// For now, let's store images as JSON in the pending sauna record
+			await dbRun(`
+				UPDATE pending_saunas SET 
+					images = ?, 
+					main_image = ?
+				WHERE id = ?
+			`, [
+				JSON.stringify(processedImages),
+				mainImageFilename,
+				pendingId
+			]);
+		}
 
 		// Send email notification to admin
 		try {
@@ -1300,7 +1348,7 @@ app.put('/api/admin/pending/:id/approve', authenticateToken, async (req, res) =>
 			saunaId, pendingSauna.owner_email, pendingSauna.name, urlName,
 			pendingSauna.location, pendingSauna.capacity, pendingSauna.event_length,
 			pendingSauna.price_min, pendingSauna.price_max, pendingSauna.equipment,
-			'[]', '', pendingSauna.email, pendingSauna.phone,
+			pendingSauna.images || '[]', pendingSauna.main_image || '', pendingSauna.email, pendingSauna.phone,
 			pendingSauna.url || '', '[]', pendingSauna.notes || '',
 			pendingSauna.winter,
 		]);
