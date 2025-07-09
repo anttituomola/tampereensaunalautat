@@ -32,8 +32,10 @@ const generateMagicToken = () => {
 };
 
 // Helper function to send magic link email
-const sendMagicLinkEmail = async (email, token) => {
-	const magicLink = `${process.env.FRONTEND_URL || 'https://tampereensaunalautat.fi'}/auth/verify?token=${token}`;
+const sendMagicLinkEmail = async (email, token, frontendUrl = null) => {
+	// Use provided frontend URL or fallback to environment variable or default
+	const baseUrl = frontendUrl || process.env.FRONTEND_URL || 'https://tampereensaunalautat.fi';
+	const magicLink = `${baseUrl}/login?token=${token}`;
 
 	const params = {
 		Source: process.env.FROM_EMAIL || 'noreply@tampereensaunalautat.fi',
@@ -134,8 +136,11 @@ router.post('/login', async (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `, [token, email, expiresAt.toISOString(), req.ip, req.get('User-Agent') || '']);
 
+		// Get frontend URL from request headers (for dynamic branch URLs)
+		const frontendUrl = req.get('Origin') || req.get('Referer')?.split('/').slice(0, 3).join('/') || null;
+
 		// Send magic link email
-		await sendMagicLinkEmail(email, token);
+		await sendMagicLinkEmail(email, token, frontendUrl);
 
 		res.json({
 			success: true,
