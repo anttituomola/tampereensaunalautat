@@ -92,7 +92,7 @@ const RegisterSauna: React.FC = () => {
                   setSubmitError(null);
                 }}
               >
-                Rekisteröi toinen saunasilta
+                Rekisteröi toinen saunalautta
               </Button>
             </Box>
           </Card>
@@ -104,7 +104,7 @@ const RegisterSauna: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Rekisteröi saunasilta - Tampereensaunalautat.fi</title>
+        <title>Rekisteröi saunalautta - Tampereensaunalautat.fi</title>
         <meta
           name='description'
           content='Rekisteröi saunalattasi Tampereensaunalautat.fi -palveluun'
@@ -115,10 +115,10 @@ const RegisterSauna: React.FC = () => {
         {/* Header */}
         <Box textAlign='center' mb={4}>
           <Typography variant='h3' component='h1' gutterBottom>
-            Rekisteröi saunasilta
+            Rekisteröi saunalautta
           </Typography>
           <Typography variant='h6' color='text.secondary' gutterBottom>
-            Liitä saunasiltasi Tampereen saunalautta-palveluun
+            Liitä saunalautallasi Tampereen saunalautta-palveluun
           </Typography>
           <Typography variant='body1' color='text.secondary'>
             Täytä alla oleva lomake rekisteröidäksesi saunalautasi

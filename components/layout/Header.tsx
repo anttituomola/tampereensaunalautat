@@ -5,9 +5,15 @@ import Button from '@mui/material/Button';
 import Link from 'next/link';
 import styles from 'styles/Header.module.css';
 import { useRouter } from 'next/router';
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  Dashboard as DashboardIcon,
+  Login as LoginIcon,
+} from '@mui/icons-material';
 
 const Header = () => {
   const router = useRouter();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const isActive = (path: string) => router.pathname === path;
 
   return (
@@ -57,9 +63,61 @@ const Header = () => {
                   },
                 }}
               >
-                Rekisteröi saunasilta
+                Rekisteröi saunalautta
               </Button>
             </Link>
+
+            {/* Authentication-aware navigation */}
+            {!isLoading && (
+              <>
+                {isAuthenticated ? (
+                  <Link
+                    href='/dashboard'
+                    className={isActive('/dashboard') ? styles.active : ''}
+                  >
+                    <Button
+                      className={`${styles.navButton} ${
+                        isActive('/dashboard') ? styles.contained : styles.text
+                      }`}
+                      startIcon={<DashboardIcon />}
+                      variant='contained'
+                      sx={{
+                        backgroundColor: '#2c5282',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: '#2a4f7a',
+                        },
+                      }}
+                    >
+                      {user?.name ? `${user.name.split(' ')[0]}` : 'Hallinta'}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link
+                    href='/login'
+                    className={isActive('/login') ? styles.active : ''}
+                  >
+                    <Button
+                      className={`${styles.navButton} ${
+                        isActive('/login') ? styles.contained : styles.text
+                      }`}
+                      startIcon={<LoginIcon />}
+                      variant='outlined'
+                      sx={{
+                        borderColor: '#2c5282',
+                        color: '#2c5282',
+                        '&:hover': {
+                          borderColor: '#2a4f7a',
+                          backgroundColor: 'rgba(44, 82, 130, 0.1)',
+                        },
+                      }}
+                    >
+                      Kirjaudu saunaomistajana
+                    </Button>
+                  </Link>
+                )}
+              </>
+            )}
           </nav>
         </Toolbar>
       </Container>

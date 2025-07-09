@@ -302,7 +302,8 @@ app.get('/api/sauna/list', async (req, res) => {
 			equipment: sauna.equipment ? JSON.parse(sauna.equipment) : [],
 			images: sauna.images ? JSON.parse(sauna.images) : [],
 			urlArray: sauna.url_array ? JSON.parse(sauna.url_array) : [],
-			winter: sauna.winter === 1
+			winter: sauna.winter === 1,
+			visible: sauna.visible === 1
 		}));
 
 		res.json(transformedSaunas);
@@ -338,7 +339,8 @@ app.get('/api/sauna/:id', async (req, res) => {
 			equipment: sauna.equipment ? JSON.parse(sauna.equipment) : [],
 			images: sauna.images ? JSON.parse(sauna.images) : [],
 			urlArray: sauna.url_array ? JSON.parse(sauna.url_array) : [],
-			winter: sauna.winter === 1
+			winter: sauna.winter === 1,
+			visible: sauna.visible === 1
 		};
 
 		res.json(transformedSauna);
@@ -563,13 +565,24 @@ app.put('/api/sauna/:id', authenticateToken, async (req, res) => {
 app.get('/api/user/saunas', authenticateToken, async (req, res) => {
 	try {
 		const userId = req.user.userId;
+		const isAdmin = req.user.isAdmin;
 
-		const saunas = await dbAll(`
-      SELECT s.*, us.role FROM saunas s
-      JOIN user_saunas us ON s.id = us.sauna_id
-      WHERE us.user_id = ?
-      ORDER BY s.name
-    `, [userId]);
+		let saunas;
+		if (isAdmin) {
+			// Admins can see all saunas
+			saunas = await dbAll(`
+        SELECT s.*, 'admin' as role FROM saunas s
+        ORDER BY s.name
+      `);
+		} else {
+			// Regular users see only their owned saunas
+			saunas = await dbAll(`
+        SELECT s.*, us.role FROM saunas s
+        JOIN user_saunas us ON s.id = us.sauna_id
+        WHERE us.user_id = ?
+        ORDER BY s.name
+      `, [userId]);
+		}
 
 		// Transform data for frontend compatibility
 		const transformedSaunas = saunas.map(sauna => ({
@@ -581,7 +594,8 @@ app.get('/api/user/saunas', authenticateToken, async (req, res) => {
 			equipment: sauna.equipment ? JSON.parse(sauna.equipment) : [],
 			images: sauna.images ? JSON.parse(sauna.images) : [],
 			urlArray: sauna.url_array ? JSON.parse(sauna.url_array) : [],
-			winter: sauna.winter === 1
+			winter: sauna.winter === 1,
+			visible: sauna.visible === 1
 		}));
 
 		res.json({
@@ -914,6 +928,173 @@ app.put('/api/sauna/:id/images/main', authenticateToken, async (req, res) => {
 	}
 });
 
+// Create new sauna (admin only)
+app.post('/api/admin/sauna', authenticateToken, async (req, res) => {
+	try {
+		// Check if user is admin
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Admin-oikeudet vaaditaan'
+			});
+		}
+
+		const {
+			name, url_name, location, capacity, event_length,
+			price_min, price_max, equipment, images, main_image,
+			email, phone, url, url_array, notes, winter, owner_email
+		} = req.body;
+
+		// Validate required fields
+		if (!name || !url_name || !location || !capacity || !event_length ||
+			!price_min || !price_max || !email || !phone || !owner_email) {
+			return res.status(400).json({
+				success: false,
+				message: 'Pakolliset kentät puuttuvat'
+			});
+		}
+
+		// Check if URL name is unique
+		const existingSauna = await dbGet('SELECT id FROM saunas WHERE url_name = ?', [url_name]);
+		if (existingSauna) {
+			return res.status(400).json({
+				success: false,
+				message: 'URL-nimi on jo käytössä'
+			});
+		}
+
+		// Generate unique sauna ID
+		const saunaId = `sauna-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+		// Create sauna
+		await dbRun(`
+			INSERT INTO saunas (
+				id, owner_email, name, url_name, location, capacity, event_length,
+				price_min, price_max, equipment, images, main_image, email, phone,
+				url, url_array, notes, winter, created_at, updated_at
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+		`, [
+			saunaId, owner_email, name, url_name, location, capacity, event_length,
+			price_min, price_max, equipment || '[]', images || '[]', main_image || '',
+			email, phone, url || '', url_array || '[]', notes || '', winter ? 1 : 0
+		]);
+
+		// Find or create user account for the owner
+		let user = await dbGet('SELECT * FROM users WHERE email = ?', [owner_email]);
+
+		if (!user) {
+			// Create new user account
+			const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+			await dbRun(`
+				INSERT INTO users (id, email, name, email_verified, status, created_at, updated_at)
+				VALUES (?, ?, ?, 1, 'active', datetime('now'), datetime('now'))
+			`, [userId, owner_email, owner_email]);
+
+			user = await dbGet('SELECT * FROM users WHERE id = ?', [userId]);
+		}
+
+		// Link user to sauna
+		await dbRun(`
+			INSERT INTO user_saunas (user_id, sauna_id, role, created_at)
+			VALUES (?, ?, 'owner', datetime('now'))
+		`, [user.id, saunaId]);
+
+		console.log('Admin created sauna:', name, 'for', owner_email, 'by admin:', req.user.email);
+
+		res.json({
+			success: true,
+			message: 'Sauna luotu onnistuneesti',
+			saunaId: saunaId,
+			urlName: url_name
+		});
+
+	} catch (error) {
+		console.error('Error creating sauna:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe saunan luomisessa'
+		});
+	}
+});
+
+// Toggle sauna visibility (admin only)
+app.put('/api/admin/sauna/:id/visibility', authenticateToken, async (req, res) => {
+	try {
+		// Check if user is admin
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Admin-oikeudet vaaditaan'
+			});
+		}
+
+		const { id } = req.params;
+		const { visible } = req.body;
+
+		// Update sauna visibility
+		await dbRun(
+			'UPDATE saunas SET visible = ?, updated_at = datetime("now") WHERE id = ?',
+			[visible ? 1 : 0, id]
+		);
+
+		console.log('Admin toggled sauna visibility:', id, 'to', visible, 'by', req.user.email);
+
+		res.json({
+			success: true,
+			message: visible ? 'Sauna näkyy nyt julkisesti' : 'Sauna piilotettu julkisesta näkymästä'
+		});
+
+	} catch (error) {
+		console.error('Error toggling sauna visibility:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe näkyvyyden vaihtamisessa'
+		});
+	}
+});
+
+// Delete sauna (admin only)
+app.delete('/api/admin/sauna/:id', authenticateToken, async (req, res) => {
+	try {
+		// Check if user is admin
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Admin-oikeudet vaaditaan'
+			});
+		}
+
+		const { id } = req.params;
+
+		// Get sauna info before deletion
+		const sauna = await dbGet('SELECT name, owner_email FROM saunas WHERE id = ?', [id]);
+		if (!sauna) {
+			return res.status(404).json({
+				success: false,
+				message: 'Saunaa ei löytynyt'
+			});
+		}
+
+		// Delete sauna and related data
+		await dbRun('DELETE FROM user_saunas WHERE sauna_id = ?', [id]);
+		await dbRun('DELETE FROM saunas WHERE id = ?', [id]);
+
+		console.log('Admin deleted sauna:', sauna.name, 'owned by', sauna.owner_email, 'by admin:', req.user.email);
+
+		res.json({
+			success: true,
+			message: `Sauna "${sauna.name}" poistettu onnistuneesti`
+		});
+
+	} catch (error) {
+		console.error('Error deleting sauna:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe saunan poistamisessa'
+		});
+	}
+});
+
 // Admin endpoints (protected)
 app.get('/api/admin/users', authenticateToken, async (req, res) => {
 	try {
@@ -973,6 +1154,170 @@ app.get('/api/admin/pending-saunas', authenticateToken, async (req, res) => {
 		res.status(500).json({
 			success: false,
 			message: 'Palvelimella tapahtui virhe'
+		});
+	}
+});
+
+// Approve pending sauna registration (admin only)
+app.put('/api/admin/pending/:id/approve', authenticateToken, async (req, res) => {
+	try {
+		// Check if user is admin
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Admin-oikeudet vaaditaan'
+			});
+		}
+
+		const { id } = req.params;
+		const adminUserId = req.user.userId;
+
+		// Get pending sauna registration
+		const pendingSauna = await dbGet(`
+			SELECT * FROM pending_saunas 
+			WHERE id = ? AND status = 'pending'
+		`, [id]);
+
+		if (!pendingSauna) {
+			return res.status(404).json({
+				success: false,
+				message: 'Odottavaa saunarekisteröintiä ei löytynyt'
+			});
+		}
+
+		// Generate unique URL name
+		const baseUrlName = pendingSauna.name.toLowerCase()
+			.replace(/[åäö]/g, (match) => ({ å: 'a', ä: 'a', ö: 'o' }[match]))
+			.replace(/[^a-z0-9]/g, '-')
+			.replace(/-+/g, '-')
+			.replace(/^-|-$/g, '');
+
+		let urlName = baseUrlName;
+		let counter = 1;
+		while (await dbGet('SELECT id FROM saunas WHERE url_name = ?', [urlName])) {
+			urlName = `${baseUrlName}-${counter}`;
+			counter++;
+		}
+
+		// Create new sauna from pending registration
+		const saunaId = `sauna-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+		await dbRun(`
+			INSERT INTO saunas (
+				id, owner_email, name, url_name, location, capacity, event_length,
+				price_min, price_max, equipment, images, main_image, email, phone,
+				url, url_array, notes, winter, created_at, updated_at
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+		`, [
+			saunaId, pendingSauna.owner_email, pendingSauna.name, urlName,
+			pendingSauna.location, pendingSauna.capacity, pendingSauna.event_length,
+			pendingSauna.price_min, pendingSauna.price_max, pendingSauna.equipment,
+			'[]', '', pendingSauna.email, pendingSauna.phone,
+			pendingSauna.url || '', '[]', pendingSauna.notes || '',
+			pendingSauna.winter,
+		]);
+
+		// Find or create user account for the owner
+		let user = await dbGet('SELECT * FROM users WHERE email = ?', [pendingSauna.owner_email]);
+
+		if (!user) {
+			// Create new user account
+			const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+			await dbRun(`
+				INSERT INTO users (id, email, name, email_verified, status, created_at, updated_at)
+				VALUES (?, ?, ?, 1, 'active', datetime('now'), datetime('now'))
+			`, [userId, pendingSauna.owner_email, pendingSauna.owner_email]);
+
+			user = await dbGet('SELECT * FROM users WHERE id = ?', [userId]);
+		}
+
+		// Link user to sauna
+		await dbRun(`
+			INSERT INTO user_saunas (user_id, sauna_id, role, created_at)
+			VALUES (?, ?, 'owner', datetime('now'))
+		`, [user.id, saunaId]);
+
+		// Update pending registration status
+		await dbRun(`
+			UPDATE pending_saunas SET
+				status = 'approved',
+				reviewed_by = ?,
+				reviewed_at = datetime('now'),
+				updated_at = datetime('now')
+			WHERE id = ?
+		`, [adminUserId, id]);
+
+		// TODO: Send approval email to owner
+		console.log('Sauna approved:', pendingSauna.name, 'for', pendingSauna.owner_email);
+
+		res.json({
+			success: true,
+			message: 'Saunarekisteröinti hyväksytty onnistuneesti',
+			saunaId: saunaId,
+			urlName: urlName
+		});
+
+	} catch (error) {
+		console.error('Error approving sauna registration:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe saunarekisteröinnin hyväksymisessä'
+		});
+	}
+});
+
+// Reject pending sauna registration (admin only)
+app.delete('/api/admin/pending/:id/reject', authenticateToken, async (req, res) => {
+	try {
+		// Check if user is admin
+		if (!req.user.isAdmin) {
+			return res.status(403).json({
+				success: false,
+				message: 'Admin-oikeudet vaaditaan'
+			});
+		}
+
+		const { id } = req.params;
+		const { reason } = req.body;
+		const adminUserId = req.user.userId;
+
+		// Get pending sauna registration
+		const pendingSauna = await dbGet(`
+			SELECT * FROM pending_saunas 
+			WHERE id = ? AND status = 'pending'
+		`, [id]);
+
+		if (!pendingSauna) {
+			return res.status(404).json({
+				success: false,
+				message: 'Odottavaa saunarekisteröintiä ei löytynyt'
+			});
+		}
+
+		// Update pending registration status
+		await dbRun(`
+			UPDATE pending_saunas SET
+				status = 'rejected',
+				reviewed_by = ?,
+				reviewed_at = datetime('now'),
+				rejection_reason = ?,
+				updated_at = datetime('now')
+			WHERE id = ?
+		`, [adminUserId, reason || 'Ei syytä annettu', id]);
+
+		// TODO: Send rejection email to applicant
+		console.log('Sauna rejected:', pendingSauna.name, 'for', pendingSauna.owner_email, 'Reason:', reason);
+
+		res.json({
+			success: true,
+			message: 'Saunarekisteröinti hylätty'
+		});
+
+	} catch (error) {
+		console.error('Error rejecting sauna registration:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe saunarekisteröinnin hylkäämisessä'
 		});
 	}
 });

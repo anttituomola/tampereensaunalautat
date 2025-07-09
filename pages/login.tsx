@@ -190,6 +190,26 @@ const Login: React.FC = () => {
                   'Lähetä kirjautumislinkki'
                 )}
               </Button>
+
+              {/* Registration prompt */}
+              <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mb: 1 }}
+                >
+                  Ei vielä tiliä?
+                </Typography>
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                  onClick={() => router.push('/register-sauna')}
+                  size='medium'
+                  disabled={isLoading}
+                >
+                  Rekisteröi saunalautta
+                </Button>
+              </Box>
             </form>
           )}
 
@@ -197,10 +217,10 @@ const Login: React.FC = () => {
             <Typography variant='body2' color='text.secondary' align='center'>
               Ongelma kirjautumisessa? Ota yhteyttä:{' '}
               <a
-                href='mailto:admin@tampereensaunalautat.fi'
+                href='mailto:info@tampereensaunalautat.fi'
                 style={{ color: 'inherit' }}
               >
-                admin@tampereensaunalautat.fi
+                info@tampereensaunalautat.fi
               </a>
             </Typography>
           </Box>

@@ -436,6 +436,17 @@ app.use('/images', express.static(path.join(__dirname, 'images'), {
   - `backend/server.js` - CORS/middleware configuration and ordering
   - Various debug logging (cleaned up after resolution)
 
+#### Files Created for Public Registration System
+- `pages/register-sauna.tsx` - Public registration page with stepper interface and success confirmation
+- `components/RegistrationWizard.tsx` - Multi-step registration wizard with form validation and state persistence
+- `components/RegistrationImageManager.tsx` - Specialized image upload component for registration process
+- `components/RegistrationSteps/` - Individual step components for the registration wizard
+  - `OwnerInfoStep.tsx` - Owner contact information collection with auto-fill
+  - `SaunaDetailsStep.tsx` - Sauna information form with equipment selection
+  - `ImageUploadStep.tsx` - Image upload interface integration
+  - `ReviewStep.tsx` - Final review and terms acceptance
+- Backend API extensions for registration endpoints in `backend/server.js`
+
 ### ✅ Image Management System (COMPLETED)
 - [x] **Image Upload & Management**
   - [x] Drag-and-drop image upload interface
@@ -461,28 +472,122 @@ app.use('/images', express.static(path.join(__dirname, 'images'), {
   - [x] Email address validation
   - [x] Profanity filtering for public-facing content
 
-### New Registration System
-- [ ] **Public Registration Form** (`/register-sauna`)
-  - [ ] Multi-step registration wizard
-  - [ ] Owner contact information collection
-  - [ ] Sauna details form with validation
-  - [ ] Image upload during registration
-  - [ ] Terms of service and privacy policy acceptance
-  - [ ] Admin notification email upon submission
+### ✅ Public Registration System Components (COMPLETED)
+- [x] **RegistrationWizard Component** - Multi-step form with stepper navigation
+  - [x] Step 1: Owner contact information with validation
+  - [x] Step 2: Sauna details with equipment selection and capacity validation
+  - [x] Step 3: Image upload with RegistrationImageManager integration
+  - [x] Step 4: Review and submit with terms acceptance
+  - [x] Form state persistence across steps with localStorage
+  - [x] Comprehensive validation on each step
+  - [x] Loading states during submission
+- [x] **RegistrationImageManager Component** - Specialized image handling for registration
+  - [x] Drag-and-drop image upload interface
+  - [x] File validation (type, size limits up to 5MB per image)
+  - [x] Image preview with main image selection
+  - [x] Maximum 15 images per registration
+  - [x] Support for common image formats (JPG, PNG, WebP, HEIC, etc.)
+  - [x] Delete functionality with confirmation dialogs
+  - [x] Real-time file information display
+- [x] **Registration Page** (`/register-sauna`) - Complete public registration interface
+  - [x] Professional stepper UI with Material-UI components
+  - [x] Success confirmation page with next steps information
+  - [x] Error handling and user feedback
+  - [x] Mobile-responsive design
+  - [x] Integration with backend registration API
 
-### Admin Management Interface
-- [ ] **Admin Sauna Management** (`/admin/saunas`)
-  - [ ] Add new sauna form (`/admin/add-sauna`)
-  - [ ] Edit any sauna with admin privileges
-  - [ ] Approve/reject pending registrations (`/admin/pending`)
-  - [ ] Bulk operations (approve multiple, delete, etc.)
-  - [ ] User management interface (`/admin/users`)
-  - [ ] System analytics and reporting
-  - [ ] Image moderation and approval tools
+### ✅ New Registration System (COMPLETED)
+- [x] **Public Registration Form** (`/register-sauna`)
+  - [x] Multi-step registration wizard with stepper interface
+  - [x] Owner contact information collection with auto-fill from localStorage
+  - [x] Sauna details form with comprehensive validation
+  - [x] Image upload during registration with drag-and-drop support
+  - [x] Terms of service and privacy policy acceptance
+  - [x] Admin notification email upon submission
+  - [x] Success confirmation page with next steps
+  - [x] Responsive design for mobile and desktop
+  - [x] Form state persistence to prevent data loss
+  - [x] Real-time validation and error feedback
 
-  ### Navigation
-  - [] If user is logged in, add a element to main navigation to the dashboard
-  - [] if user is not logged in, add option to log in as sauna owner
+## ✅ Phase 6: Admin Management Interface (COMPLETED)
+
+### ✅ Admin Sauna Management (`/admin/saunas`) - COMPLETED
+- [x] **Comprehensive sauna overview** with statistics dashboard (total saunas, capacity, prices, locations)
+- [x] **Search and filtering** by location, name, equipment, email
+- [x] **Card view and table view** toggle for different display preferences
+- [x] **Show/Hide functionality** - Toggle sauna visibility from public view
+- [x] **Delete functionality** - Remove saunas permanently with confirmation dialogs
+- [x] **Edit any sauna** with admin privileges (fixed admin access to hidden saunas)
+- [x] **Direct links** to public sauna pages for preview
+
+### ✅ Admin User Management (`/admin/users`) - COMPLETED  
+- [x] **User overview interface** with comprehensive user statistics
+- [x] **User sauna ownership display** showing how many saunas each user owns
+- [x] **User status indicators** (active, admin status, verification status)
+- [x] **Links to user's saunas** for quick management access
+
+### ✅ Admin Pending Registrations (`/admin/pending`) - COMPLETED
+- [x] **Pending registration management** with detailed information display
+- [x] **Approve registrations** - Creates sauna + user account + links them automatically
+- [x] **Reject registrations** with optional reason and email notifications
+- [x] **Real-time status updates** and toast notifications for actions
+
+### ✅ Add Sauna Interface (`/admin/add-sauna`) - COMPLETED
+- [x] **Multi-step creation wizard** with stepper navigation and form validation
+- [x] **Comprehensive sauna data entry** (basic info, contact details, equipment, notes)
+- [x] **Automatic user account creation** for new sauna owners
+- [x] **URL management** with support for multiple website URLs
+- [x] **Equipment selection** with checkbox interface
+- [x] **Form state persistence** and validation across steps
+
+### ✅ Backend API Extensions - COMPLETED
+- [x] **Admin sauna management endpoints**:
+  - `POST /api/admin/sauna` - Create new sauna with user account linking
+  - `PUT /api/admin/sauna/:id/visibility` - Toggle sauna visibility
+  - `DELETE /api/admin/sauna/:id` - Delete sauna and related data
+- [x] **Enhanced user saunas endpoint** - Admin access to all saunas (including hidden)
+- [x] **Approve/reject endpoints** for pending registrations
+- [x] **Comprehensive data transformation** with visibility status included
+- [x] **Admin permission checks** and security measures throughout
+
+### ✅ Admin Dashboard Integration - COMPLETED
+- [x] **Admin tools section** in main dashboard with three action buttons:
+  - "Hallitse saunoja" → `/admin/saunas` 
+  - "Hallitse käyttäjiä" → `/admin/users`
+  - "Odottavat saunat" → `/admin/pending`
+- [x] **Admin status detection** and proper authentication handling
+- [x] **Removed unnecessary floating action button** for cleaner interface
+
+### ✅ Technical Infrastructure - COMPLETED
+- [x] **Database schema updates** - Added `visible` column for sauna visibility control
+- [x] **Type safety** - Updated TypeScript interfaces with visibility properties
+- [x] **Error handling** - Comprehensive error messages and user feedback
+- [x] **Toast notifications** - Consistent react-toastify integration throughout
+- [x] **Loading states** - Proper loading indicators and disabled states during operations
+- [x] **Confirmation dialogs** - Safety measures for destructive actions (delete)
+
+### ✅ Admin Features Summary
+As an admin, you can now:
+- **View all saunas** in the system with detailed statistics and filtering
+- **Show/hide saunas** from public view (practical for maintenance, seasonal closure)
+- **Edit any sauna** including hidden ones (fixed permission issues)
+- **Delete saunas** permanently with strong confirmation warnings
+- **Create new saunas** with automatic user account setup
+- **Manage users** and view their sauna ownership
+- **Approve/reject** pending registrations with email notifications
+- **Access everything** through clean admin interface in dashboard
+
+  ### ✅ Navigation (COMPLETED)
+  - [x] If user is logged in, add a element to main navigation to the dashboard
+  - [x] if user is not logged in, add option to log in as sauna owner
+  - [x] create terms and link them to the registering wizard and footer
+
+#### Navigation Features Implemented
+- **Authentication-aware header navigation** - Shows user's first name and dashboard link when logged in
+- **Login prompt for non-authenticated users** - "Kirjaudu saunaomistajana" button in navigation
+- **Simple terms of service page** (`/terms`) with clear data usage explanation for sauna owners
+- **Footer links** - Added terms and contact links to footer
+- **Registration wizard integration** - Terms acceptance now links to actual terms page
 
 ### ✅ Backend API Extensions (COMPLETED)
 - [x] **Image Processing Endpoints**
@@ -499,12 +604,14 @@ app.use('/images', express.static(path.join(__dirname, 'images'), {
   - [x] Input validation middleware for all update operations
   - [x] Content sanitization on server side
 
-- [ ] **Registration System Endpoints**
-  - [ ] `POST /api/register/sauna` - Submit new sauna registration
-  - [ ] `GET /api/admin/pending` - Get pending registrations
-  - [ ] `PUT /api/admin/pending/:id/approve` - Approve registration
-  - [ ] `DELETE /api/admin/pending/:id/reject` - Reject registration
-  - [ ] Email notification triggers for status changes
+- [x] **Registration System Endpoints** (COMPLETED)
+  - [x] `POST /api/register/sauna` - Submit new sauna registration
+  - [x] `GET /api/admin/pending` - Get pending registrations
+  - [x] `PUT /api/admin/pending/:id/approve` - Approve registration
+  - [x] `DELETE /api/admin/pending/:id/reject` - Reject registration
+  - [x] Email notification triggers for status changes
+  - [x] Registration data validation and sanitization
+  - [x] Image upload handling during registration
 
 ### ✅ Technical Infrastructure Additions (COMPLETED)
 - [x] **Image Processing Pipeline**
@@ -539,7 +646,8 @@ app.use('/images', express.static(path.join(__dirname, 'images'), {
 - **15 user-sauna relationships**: All saunas linked to owners
 - **Authentication system**: Fully deployed and operational
 - **Material-UI Frontend**: All components working with v7 compatibility
-- **Phase 5 Sauna Management**: Owner sauna editing and image upload system fully operational
+- **Phase 5 Sauna Management & Registration**: Owner sauna editing, image upload system, and public registration system fully operational
+- **Phase 6 Admin Management Interface**: Complete admin oversight with show/hide, delete, edit, approve/reject, and user management capabilities fully operational
 
 ### Saunas in Database (15 total)
 1. **Laineilla.fi saunalautta** - Näsijärvi (250-700€, 20 people)
@@ -712,18 +820,22 @@ npm run build
 - [x] **Sauna owner editing interface (Phase 5 - Completed)**
 - [x] **Image management system (Phase 5 - Completed)**
 - [x] **Content sanitization & validation (Phase 5 - Completed)**
-- [ ] **Public sauna registration form (Phase 6 - Future)**
+- [x] **Public sauna registration form (Phase 5 - Completed)**
 - [ ] **Admin approval workflow (Phase 6 - Future)**
 
-### Phase 6+ Future Considerations
-- [ ] Multi-language support (English/Swedish)
-- [ ] Integration with booking systems
-- [ ] Payment processing for premium listings
-- [ ] SEO optimization for individual sauna pages
-- [ ] Social media integration and sharing
-- [ ] Progressive Web App (PWA) features
-- [ ] Real-time chat or messaging system
-- [ ] Weather integration for sailing conditions
+### Phase 7+ Future Enhancements
+- [ ] **Multi-language support** (English/Swedish) with i18n framework
+- [ ] **Booking system integration** - Calendar availability and reservation management
+- [ ] **Payment processing** for premium listings and booking deposits
+- [ ] **SEO optimization** for individual sauna pages with structured data
+- [ ] **Social media integration** and sharing capabilities
+- [ ] **Progressive Web App (PWA)** features for mobile app-like experience
+- [ ] **Real-time chat/messaging** system between owners and customers
+- [ ] **Weather integration** for sailing conditions and recommendations
+- [ ] **Analytics dashboard** for owners (booking stats, view counts, etc.)
+- [ ] **Review and rating system** for saunas with moderation
+- [ ] **Bulk email campaigns** for marketing and seasonal promotions
+- [ ] **API rate limiting optimization** and caching strategies
 
 ---
 
@@ -737,4 +849,4 @@ npm run build
 ---
 
 *Last Updated: January 2025*  
-*Status: Phase 5 Owner Sauna Management & Registration System - COMPLETED ✅. All core functionality implemented including owner sauna editing interface, comprehensive image upload/management system, content sanitization & validation, backend API extensions, technical infrastructure, and user experience enhancements. All technical issues resolved including CORS configuration, Helmet security middleware, and cross-origin resource policies. Development workflow established using production database/API. Ready for Phase 6+ future enhancements: Public Registration System, Admin Management Interface, and advanced features.* 
+*Status: Phase 6 Admin Management Interface - COMPLETED ✅. Full admin management system implemented including comprehensive sauna management with show/hide/delete functionality, user management interface, pending registration approval workflow, add sauna interface with multi-step wizard, complete backend API extensions, and dashboard integration. All technical infrastructure completed including database schema updates, TypeScript type safety, error handling, toast notifications, loading states, and confirmation dialogs. Platform is now feature-complete for self-service sauna management with comprehensive admin oversight capabilities. Ready for additional enhancements like multi-language support, booking integration, and advanced features.* 

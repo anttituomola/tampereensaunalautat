@@ -16,6 +16,7 @@ export interface Saunalautta {
   eventLength: number;
   urlArray: string[];
   winter: boolean;
+  visible: boolean;
 }
 
 export type SaunaEquipment =

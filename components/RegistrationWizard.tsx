@@ -107,7 +107,6 @@ interface RegistrationFormData {
 
   // Terms acceptance
   acceptTerms: boolean;
-  acceptPrivacy: boolean;
 }
 
 interface FormErrors {
@@ -148,7 +147,6 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
     images: [],
     mainImageIndex: null,
     acceptTerms: false,
-    acceptPrivacy: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -378,10 +376,6 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       case 4: // Terms and review
         if (!formData.acceptTerms) {
           newErrors.acceptTerms = 'Käyttöehtojen hyväksyminen on pakollista';
-        }
-        if (!formData.acceptPrivacy) {
-          newErrors.acceptPrivacy =
-            'Tietosuojaselosteen hyväksyminen on pakollista';
         }
         break;
     }
@@ -868,8 +862,18 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           }
           label={
             <Typography variant='body2'>
-              Hyväksyn Tampereensaunalautat.fi-palvelun käyttöehdot ja sitoudun
-              antamaan totuudenmukaisia tietoja saunalautastani.
+              Hyväksyn{' '}
+              <a
+                href='/terms'
+                target='_blank'
+                rel='noopener noreferrer'
+                style={{ color: '#2c5282', textDecoration: 'underline' }}
+              >
+                Tampereensaunalautat.fi-palvelun käyttöehdot
+              </a>{' '}
+              ja annan suostumukseni yhteystietojeni käsittelyyn saunalautani
+              esittelemiseksi sivustolla. Sitoudun antamaan totuudenmukaisia
+              tietoja.
             </Typography>
           }
         />
@@ -881,34 +885,6 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             sx={{ mt: 1 }}
           >
             {errors.acceptTerms}
-          </Typography>
-        )}
-
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={formData.acceptPrivacy}
-              onChange={(e) =>
-                handleInputChange('acceptPrivacy', e.target.checked)
-              }
-              color='primary'
-            />
-          }
-          label={
-            <Typography variant='body2'>
-              Hyväksyn tietosuojaselosteen ja annan suostumukseni
-              yhteystietojeni käsittelyyn palvelun tarjoamista varten.
-            </Typography>
-          }
-        />
-        {errors.acceptPrivacy && (
-          <Typography
-            variant='caption'
-            color='error'
-            display='block'
-            sx={{ mt: 1 }}
-          >
-            {errors.acceptPrivacy}
           </Typography>
         )}
       </Card>
@@ -930,7 +906,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant='body2' color='text.secondary'>
-              Saunasilta:
+              Saunalautta:
             </Typography>
             <Typography variant='body1'>{formData.saunaName}</Typography>
             <Typography variant='body2'>

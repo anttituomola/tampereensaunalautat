@@ -217,6 +217,151 @@ export const authAPI = {
     }
   },
 
+  // Approve pending sauna registration (admin only)
+  async approvePendingSauna(
+    id: string
+  ): Promise<{ saunaId: string; urlName: string }> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/admin/pending/${id}/approve`,
+        {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return {
+          saunaId: data.saunaId,
+          urlName: data.urlName,
+        };
+      }
+
+      throw new Error(data.message || 'Failed to approve sauna registration');
+    } catch (error) {
+      console.error('Error approving sauna registration:', error);
+      throw error;
+    }
+  },
+
+  // Reject pending sauna registration (admin only)
+  async rejectPendingSauna(id: string, reason?: string): Promise<void> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/admin/pending/${id}/reject`,
+        {
+          method: 'DELETE',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ reason }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to reject sauna registration');
+      }
+    } catch (error) {
+      console.error('Error rejecting sauna registration:', error);
+      throw error;
+    }
+  },
+
+  // Create new sauna (admin only)
+  async createSauna(
+    saunaData: any
+  ): Promise<{ saunaId: string; urlName: string }> {
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/sauna`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(saunaData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return {
+          saunaId: data.saunaId,
+          urlName: data.urlName,
+        };
+      }
+
+      throw new Error(data.message || 'Failed to create sauna');
+    } catch (error) {
+      console.error('Error creating sauna:', error);
+      throw error;
+    }
+  },
+
+  // Toggle sauna visibility (admin only)
+  async toggleSaunaVisibility(id: string, visible: boolean): Promise<string> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/admin/sauna/${id}/visibility`,
+        {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ visible }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.message;
+      }
+
+      throw new Error(data.message || 'Failed to toggle sauna visibility');
+    } catch (error) {
+      console.error('Error toggling sauna visibility:', error);
+      throw error;
+    }
+  },
+
+  // Delete sauna (admin only)
+  async deleteSauna(id: string): Promise<string> {
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/sauna/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.message;
+      }
+
+      throw new Error(data.message || 'Failed to delete sauna');
+    } catch (error) {
+      console.error('Error deleting sauna:', error);
+      throw error;
+    }
+  },
+
   // Image management functions
 
   // Upload images for a sauna

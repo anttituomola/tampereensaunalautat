@@ -192,7 +192,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (storedUser && authToken) {
         const parsedUser = JSON.parse(storedUser);
-        const userWithAlias = { ...parsedUser, isAdmin: parsedUser.is_admin };
+        const userWithAlias = {
+          ...parsedUser,
+          isAdmin: parsedUser.isAdmin ?? parsedUser.is_admin,
+        };
 
         // Set user immediately (optimistic authentication)
         setUser(userWithAlias);
@@ -204,7 +207,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Token is valid, update with fresh user data
             const userWithAlias = {
               ...currentUser,
-              isAdmin: currentUser.is_admin,
+              isAdmin: currentUser.isAdmin ?? currentUser.is_admin,
             };
             setUser(userWithAlias);
             localStorage.setItem('user', JSON.stringify(userWithAlias));
@@ -224,7 +227,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 if (refreshedUser) {
                   const userWithAlias = {
                     ...refreshedUser,
-                    isAdmin: refreshedUser.is_admin,
+                    isAdmin: refreshedUser.isAdmin ?? refreshedUser.is_admin,
                   };
                   setUser(userWithAlias);
                   localStorage.setItem('user', JSON.stringify(userWithAlias));
@@ -302,7 +305,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Update state - add isAdmin alias for frontend convenience
         const userWithAlias = {
           ...response.user,
-          isAdmin: response.user.is_admin,
+          isAdmin: response.user.isAdmin ?? response.user.is_admin,
         };
         setUser(userWithAlias);
 

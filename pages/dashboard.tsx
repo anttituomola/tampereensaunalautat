@@ -12,7 +12,6 @@ import {
   Chip,
   Alert,
   CircularProgress,
-  Fab,
 } from '@mui/material';
 import {
   Person as PersonIcon,
@@ -204,7 +203,14 @@ const Dashboard: React.FC = () => {
               <Typography variant='body1' sx={{ mb: 1 }}>
                 <strong>Ylläpitäjän työkalut</strong>
               </Typography>
-              <Box display='flex' gap={2}>
+              <Box display='flex' gap={2} flexWrap='wrap'>
+                <Button
+                  variant='contained'
+                  size='small'
+                  onClick={() => router.push('/admin/saunas')}
+                >
+                  Hallitse saunoja
+                </Button>
                 <Button
                   variant='contained'
                   size='small'
@@ -312,18 +318,6 @@ const Dashboard: React.FC = () => {
             </Grid>
           )}
         </Box>
-
-        {/* Floating Action Button for adding new sauna (admin only) */}
-        {user?.isAdmin && (
-          <Fab
-            color='primary'
-            aria-label='add'
-            sx={{ position: 'fixed', bottom: 16, right: 16 }}
-            onClick={() => router.push('/add-sauna')}
-          >
-            <AddIcon />
-          </Fab>
-        )}
       </Container>
     </ProtectedRoute>
   );
