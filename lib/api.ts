@@ -4,6 +4,16 @@ import { Saunalautta, SaunaEquipment } from '../types';
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || 'https://api.tampereensaunalautat.fi';
 
+// Add logging for environment debugging
+if (typeof window !== 'undefined') {
+  console.log('🌍 Frontend Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    API_BASE,
+    hostname: window.location.hostname,
+  });
+}
+
 // Fetch all saunas from the API
 export const fetchSaunas = async (): Promise<Saunalautta[]> => {
   try {
@@ -37,7 +47,19 @@ export const fetchSaunas = async (): Promise<Saunalautta[]> => {
 
 // Get image URL for a sauna image
 export const getImageUrl = (filename: string): string => {
-  return `${API_BASE}/images/${filename}`;
+  // Use the same API_BASE as all other functions for consistency
+  // This ensures uploads and displays use the same backend
+  const imageUrl = `${API_BASE}/images/${filename}`;
+
+  // Add debug logging to track URL construction
+  console.log('🖼️ Image URL constructed:', {
+    filename,
+    API_BASE,
+    imageUrl,
+    environment: process.env.NODE_ENV,
+  });
+
+  return imageUrl;
 };
 
 // Health check endpoint
@@ -191,6 +213,166 @@ export const authAPI = {
       throw new Error(data.message || 'Failed to fetch pending saunas');
     } catch (error) {
       console.error('Error fetching pending saunas:', error);
+      throw error;
+    }
+  },
+
+  // Image management functions
+
+  // Upload images for a sauna
+  async uploadImages(saunaId: string, files: File[]): Promise<string[]> {
+    try {
+      console.log('🔧 API: Creating FormData for', files.length, 'files');
+      console.log('🌍 Upload using API_BASE:', API_BASE);
+      const formData = new FormData();
+      files.forEach((file, index) => {
+        console.log(
+          `📎 Adding file ${index + 1}: ${file.name} (${file.size} bytes)`
+        );
+        formData.append('images', file);
+      });
+
+      const authToken =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('authToken')
+          : null;
+
+      console.log('🔑 Auth token available:', !!authToken);
+
+      const url = `${API_BASE}/api/sauna/${saunaId}/images/upload`;
+      console.log('📡 Making POST request to:', url);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          ...(authToken && { Authorization: `Bearer ${authToken}` }),
+        },
+        body: formData,
+      });
+
+      console.log('📥 Response status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Response error:', response.status, errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 Response data:', data);
+
+      if (data.success) {
+        console.log(
+          '✅ API: Upload successful, returning images:',
+          data.images
+        );
+        // Show what URLs will be generated for these images
+        const imageUrls = data.images.map((filename: string) =>
+          getImageUrl(filename)
+        );
+        console.log('🔗 Image URLs that will be generated:', imageUrls);
+
+        return data.images;
+      }
+
+      throw new Error(data.message || 'Failed to upload images');
+    } catch (error) {
+      console.error('❌ API: Error uploading images:', error);
+      throw error;
+    }
+  },
+
+  // Delete an image from a sauna
+  async deleteImage(
+    saunaId: string,
+    filename: string
+  ): Promise<{ deletedImage: string; newMainImage: string | null }> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/sauna/${saunaId}/images/${filename}`,
+        {
+          method: 'DELETE',
+          headers: getAuthHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return {
+          deletedImage: data.deletedImage,
+          newMainImage: data.newMainImage,
+        };
+      }
+
+      throw new Error(data.message || 'Failed to delete image');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      throw error;
+    }
+  },
+
+  // Reorder images for a sauna
+  async reorderImages(
+    saunaId: string,
+    imageOrder: string[]
+  ): Promise<string[]> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/sauna/${saunaId}/images/order`,
+        {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ imageOrder }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.imageOrder;
+      }
+
+      throw new Error(data.message || 'Failed to reorder images');
+    } catch (error) {
+      console.error('Error reordering images:', error);
+      throw error;
+    }
+  },
+
+  // Set main image for a sauna
+  async setMainImage(saunaId: string, mainImage: string): Promise<string> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/sauna/${saunaId}/images/main`,
+        {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ mainImage }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.mainImage;
+      }
+
+      throw new Error(data.message || 'Failed to set main image');
+    } catch (error) {
+      console.error('Error setting main image:', error);
       throw error;
     }
   },

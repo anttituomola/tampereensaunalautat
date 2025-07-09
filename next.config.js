@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	reactStrictMode: true,
+	// Temporarily disable StrictMode in development due to react-beautiful-dnd compatibility issues
+	// StrictMode causes double-invocation of effects which breaks react-beautiful-dnd's internal state
+	reactStrictMode: process.env.NODE_ENV === 'production',
 	images: {
 		unoptimized: false, // Enable image optimization
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -14,6 +16,12 @@ const nextConfig = {
 				protocol: 'https',
 				hostname: 'api.tampereensaunalautat.fi',
 				port: '',
+				pathname: '/images/**',
+			},
+			{
+				protocol: 'http',
+				hostname: 'localhost',
+				port: '3001',
 				pathname: '/images/**',
 			},
 		],

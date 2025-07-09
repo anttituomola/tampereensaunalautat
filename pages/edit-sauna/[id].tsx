@@ -36,6 +36,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../lib/api';
 import { Saunalautta, SaunaEquipment } from '../../types';
 import ProtectedRoute from '../../components/ProtectedRoute';
+import ImageManager from '../../components/ImageManager';
 import { toast } from 'react-toastify';
 
 const EQUIPMENT_OPTIONS: SaunaEquipment[] = [
@@ -76,6 +77,8 @@ interface FormData {
   url_array: string[];
   notes: string;
   winter: boolean;
+  images: string[];
+  mainImage: string | null;
 }
 
 interface FormErrors {
@@ -111,6 +114,8 @@ const EditSauna: React.FC = () => {
     url_array: [],
     notes: '',
     winter: false,
+    images: [],
+    mainImage: null,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -152,6 +157,8 @@ const EditSauna: React.FC = () => {
         url_array: saunaData.urlArray || [],
         notes: saunaData.notes || '',
         winter: saunaData.winter,
+        images: saunaData.images || [],
+        mainImage: saunaData.mainImage || null,
       });
     } catch (error) {
       console.error('Error loading sauna:', error);
@@ -681,6 +688,28 @@ const EditSauna: React.FC = () => {
                     errors.notes || `${formData.notes.length}/500 merkkiä`
                   }
                   inputProps={{ maxLength: 500 }}
+                />
+              </Grid>
+
+              {/* Image Management */}
+              <Grid size={12}>
+                <Typography variant='h6' gutterBottom sx={{ mt: 2 }}>
+                  Kuvat
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                <ImageManager
+                  saunaId={sauna.id}
+                  images={formData.images}
+                  mainImage={formData.mainImage}
+                  onImagesUpdate={(newImages, newMainImage) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      images: newImages,
+                      mainImage: newMainImage,
+                    }));
+                    setHasChanges(true);
+                  }}
+                  disabled={isSaving}
                 />
               </Grid>
 

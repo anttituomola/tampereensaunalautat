@@ -66,6 +66,17 @@ const authAPI: AuthAPI = {
         body: JSON.stringify({ refreshToken }),
       });
 
+      // Check if response is ok (2xx status)
+      if (!response.ok) {
+        // 401/403 means refresh token is invalid
+        if (response.status === 401 || response.status === 403) {
+          console.log('Refresh token is invalid or expired');
+          return false;
+        }
+        // Other errors (5xx, network issues) should be treated as temporary
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
@@ -75,7 +86,8 @@ const authAPI: AuthAPI = {
       return false;
     } catch (error) {
       console.error('Error refreshing token:', error);
-      return false;
+      // Re-throw to let caller handle appropriately
+      throw error;
     }
   },
 
@@ -114,6 +126,17 @@ const authAPI: AuthAPI = {
         },
       });
 
+      // Check if response is ok (2xx status)
+      if (!response.ok) {
+        // 401/403 means token is invalid
+        if (response.status === 401 || response.status === 403) {
+          console.log('Token is invalid or expired');
+          return null;
+        }
+        // Other errors (5xx, network issues) should be treated as temporary
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
@@ -122,7 +145,8 @@ const authAPI: AuthAPI = {
       return null;
     } catch (error) {
       console.error('Error getting current user:', error);
-      return null;
+      // Re-throw to let caller handle appropriately
+      throw error;
     }
   },
 };
@@ -164,44 +188,89 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Try to get user from localStorage first
       const storedUser = localStorage.getItem('user');
       const authToken = localStorage.getItem('authToken');
+      const refreshToken = localStorage.getItem('refreshToken');
 
       if (storedUser && authToken) {
         const parsedUser = JSON.parse(storedUser);
         const userWithAlias = { ...parsedUser, isAdmin: parsedUser.is_admin };
+
+        // Set user immediately (optimistic authentication)
         setUser(userWithAlias);
 
-        // Verify token is still valid
-        const currentUser = await authAPI.getCurrentUser();
-        if (currentUser) {
-          const userWithAlias = {
-            ...currentUser,
-            isAdmin: currentUser.is_admin,
-          };
-          setUser(userWithAlias);
-          localStorage.setItem('user', JSON.stringify(userWithAlias));
-        } else {
-          // Token invalid, try to refresh
-          const refreshed = await authAPI.refreshToken();
-          if (!refreshed) {
-            // Refresh failed, clear auth state
-            handleLogout();
-          } else {
-            // Get user info with new token
-            const refreshedUser = await authAPI.getCurrentUser();
-            if (refreshedUser) {
-              const userWithAlias = {
-                ...refreshedUser,
-                isAdmin: refreshedUser.is_admin,
-              };
-              setUser(userWithAlias);
-              localStorage.setItem('user', JSON.stringify(userWithAlias));
+        // Try to verify token is still valid in background
+        try {
+          const currentUser = await authAPI.getCurrentUser();
+          if (currentUser) {
+            // Token is valid, update with fresh user data
+            const userWithAlias = {
+              ...currentUser,
+              isAdmin: currentUser.is_admin,
+            };
+            setUser(userWithAlias);
+            localStorage.setItem('user', JSON.stringify(userWithAlias));
+          }
+        } catch (error) {
+          // getCurrentUser threw an error
+          console.warn('Token verification failed:', error);
+
+          // If it's a network/server error, try to refresh token
+          // If getCurrentUser returned null (meaning 401/403), try to refresh
+          try {
+            const refreshed = await authAPI.refreshToken();
+            if (refreshed) {
+              // Get user info with new token
+              try {
+                const refreshedUser = await authAPI.getCurrentUser();
+                if (refreshedUser) {
+                  const userWithAlias = {
+                    ...refreshedUser,
+                    isAdmin: refreshedUser.is_admin,
+                  };
+                  setUser(userWithAlias);
+                  localStorage.setItem('user', JSON.stringify(userWithAlias));
+                }
+              } catch (userError) {
+                // Even if we can't get user info, we refreshed successfully
+                console.warn(
+                  'Token refreshed but could not get user info:',
+                  userError
+                );
+              }
+            } else {
+              // Refresh failed, logout
+              console.log('Token refresh failed, logging out');
+              handleLogout();
+            }
+          } catch (refreshError) {
+            // If refresh failed due to network issues, keep user logged in
+            // but log the error for debugging
+            console.warn(
+              'Failed to refresh token on initialization, keeping user logged in:',
+              refreshError
+            );
+
+            // Check if it's an authentication error (401/403)
+            if (
+              refreshError instanceof Error &&
+              (refreshError.message.includes('401') ||
+                refreshError.message.includes('403'))
+            ) {
+              console.log('Refresh token is invalid, logging out');
+              handleLogout();
+            } else if (!refreshToken) {
+              console.log('No refresh token available, logging out');
+              handleLogout();
             }
           }
         }
       }
     } catch (error) {
       console.error('Error initializing auth:', error);
-      handleLogout();
+      // Only logout if we can't parse stored data (corruption)
+      if (error instanceof SyntaxError) {
+        console.log('Corrupted stored auth data, logging out');
+        handleLogout();
+      }
     } finally {
       setIsLoading(false);
     }
@@ -271,12 +340,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const success = await authAPI.refreshToken();
       if (!success) {
+        // Refresh token is invalid, logout
         handleLogout();
       }
       return success;
     } catch (error) {
       console.error('Refresh token error:', error);
-      handleLogout();
+      // Check if it's a network error or authentication error
+      if (
+        error instanceof Error &&
+        (error.message.includes('401') || error.message.includes('403'))
+      ) {
+        // Authentication error - refresh token is invalid
+        handleLogout();
+      } else {
+        // Network error - don't logout, just log the error
+        console.warn(
+          'Network error during token refresh, keeping user logged in'
+        );
+      }
       return false;
     }
   };

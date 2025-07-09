@@ -217,13 +217,19 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         </Typography>
 
         <div className={styles.mainImageHolder}>
-          <Image
-            src={`/images/${sauna.mainImage}`}
-            alt={sauna.name}
-            className={styles.mainImage}
-            fill={true}
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-          />
+          {sauna.mainImage ? (
+            <Image
+              src={getImageUrl(sauna.mainImage)}
+              alt={sauna.name}
+              className={styles.mainImage}
+              fill={true}
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+            />
+          ) : (
+            <div className={styles.placeholderImage}>
+              <Typography>Ei kuvaa saatavilla</Typography>
+            </div>
+          )}
         </div>
 
         {!isSaunaInRfp && (
