@@ -171,6 +171,9 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentVerificationToken, setCurrentVerificationToken] = useState<
+    string | null
+  >(null);
   const router = useRouter();
 
   // Check if user is authenticated
@@ -291,6 +294,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const verifyToken = async (token: string): Promise<boolean> => {
     try {
+      // Prevent duplicate verification attempts with the same token
+      if (currentVerificationToken === token) {
+        console.log('Token verification already in progress for token:', token);
+        return false;
+      }
+
+      setCurrentVerificationToken(token);
       setIsLoading(true);
       const response = await authAPI.verifyToken(token);
 
@@ -321,6 +331,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return false;
     } finally {
       setIsLoading(false);
+      setCurrentVerificationToken(null);
     }
   };
 

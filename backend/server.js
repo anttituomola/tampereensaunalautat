@@ -205,10 +205,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// More restrictive rate limiting for auth endpoints (but still reasonable for dev)
+// More restrictive rate limiting for auth endpoints (but still reasonable for prod)
 const authLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: isDevelopment ? 100 : 5, // Much higher limit for development
+	max: isDevelopment ? 100 : 20, // Reasonable limit for production (was 5, too restrictive)
 	message: {
 		success: false,
 		message: 'Liian monta kirjautumisyritystä. Yritä uudelleen 15 minuutin kuluttua.'

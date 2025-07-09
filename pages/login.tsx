@@ -31,8 +31,14 @@ const Login: React.FC = () => {
     }
   }, [isAuthenticated, router, returnUrl]);
 
+  // Track if token verification is already in progress to prevent duplicate calls
+  const [isVerifying, setIsVerifying] = useState(false);
+
   const handleTokenVerification = useCallback(
     async (magicToken: string) => {
+      if (isVerifying) return; // Prevent duplicate calls
+
+      setIsVerifying(true);
       setIsLoading(true);
       try {
         const success = await verifyToken(magicToken);
@@ -45,17 +51,35 @@ const Login: React.FC = () => {
         toast.error('Virhe kirjautumisessa. Yritä uudelleen.');
       } finally {
         setIsLoading(false);
+        setIsVerifying(false);
       }
     },
-    [verifyToken, returnUrl, router]
+    [verifyToken, returnUrl, router, isVerifying]
   );
 
-  // Handle magic link verification
+  // Handle magic link verification - only depend on token to prevent multiple calls
   useEffect(() => {
-    if (token && typeof token === 'string') {
-      handleTokenVerification(token);
+    if (
+      token &&
+      typeof token === 'string' &&
+      !isVerifying &&
+      !isAuthenticated
+    ) {
+      // Small delay to ensure component is fully mounted and prevent race conditions
+      const timeoutId = setTimeout(() => {
+        handleTokenVerification(token);
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [token, handleTokenVerification]);
+  }, [token]); // Removed handleTokenVerification dependency to prevent multiple calls
+
+  // Cleanup function to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      setIsVerifying(false);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
