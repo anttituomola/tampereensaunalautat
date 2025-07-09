@@ -142,15 +142,30 @@ const fsSync = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CORS configuration for images - same as API endpoints
+const corsOrigins = process.env.CORS_ORIGINS
+	? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+	: process.env.NODE_ENV === 'production'
+		? ['https://tampereensaunalautat.fi', 'https://www.tampereensaunalautat.fi']
+		: ['http://localhost:3000', 'http://127.0.0.1:3000'];
+
 // Serve images FIRST - before any other middleware to avoid conflicts
-app.use('/images', express.static(path.join(__dirname, 'images'), {
+app.use('/images', (req, res, next) => {
+	const origin = req.get('origin');
+
+	// Only set CORS headers if the origin is in our allowed list
+	if (origin && corsOrigins.includes(origin)) {
+		res.set('Access-Control-Allow-Origin', origin);
+		res.set('Access-Control-Allow-Methods', 'GET');
+		res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	}
+
+	next();
+}, express.static(path.join(__dirname, 'images'), {
 	setHeaders: (res, path, stat) => {
-		// Set headers for proper image serving with CORS support
+		// Set cache headers for proper image serving
 		res.set({
 			'Cache-Control': 'public, max-age=31536000', // 1 year cache
-			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'GET',
-			'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
 		});
 	}
 }));
@@ -185,12 +200,6 @@ const authLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 
 // CORS configuration for API endpoints only
-const corsOrigins = process.env.CORS_ORIGINS
-	? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-	: process.env.NODE_ENV === 'production'
-		? ['https://tampereensaunalautat.fi', 'https://www.tampereensaunalautat.fi']
-		: ['http://localhost:3000', 'http://127.0.0.1:3000'];
-
 app.use('/api', cors({
 	origin: corsOrigins,
 	credentials: true
