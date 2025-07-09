@@ -254,7 +254,7 @@ const RegistrationImageManager: React.FC<RegistrationImageManagerProps> = ({
 
           <Grid container spacing={2}>
             {images.map((file, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
+              <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card sx={{ position: 'relative' }}>
                   <CardMedia
                     component='img'
