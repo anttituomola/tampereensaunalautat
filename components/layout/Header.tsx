@@ -39,6 +39,27 @@ const Header = () => {
                 Tietoa sivustosta
               </Button>
             </Link>
+            <Link
+              href='/register-sauna'
+              className={isActive('/register-sauna') ? styles.active : ''}
+            >
+              <Button
+                className={`${styles.navButton} ${
+                  isActive('/register-sauna') ? styles.contained : styles.text
+                }`}
+                variant='outlined'
+                sx={{
+                  borderColor: 'white',
+                  color: 'white',
+                  '&:hover': {
+                    borderColor: 'rgba(255, 255, 255, 0.7)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                Rekisteröi saunasilta
+              </Button>
+            </Link>
           </nav>
         </Toolbar>
       </Container>

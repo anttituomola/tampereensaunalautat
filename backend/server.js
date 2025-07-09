@@ -11,6 +11,127 @@ const { promisify } = require('util');
 // Import authentication routes
 const { router: authRouter, authenticateToken } = require('./auth-routes');
 
+// AWS SES configuration for admin notifications
+const AWS = require('aws-sdk');
+const ses = new AWS.SES({
+	region: process.env.AWS_REGION || 'eu-west-1',
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+// Helper function to send admin notification email
+const sendAdminNotificationEmail = async (registrationData) => {
+	const adminEmail = process.env.ADMIN_EMAIL || 'admin@tampereensaunalautat.fi';
+	const frontendUrl = process.env.FRONTEND_URL || 'https://tampereensaunalautat.fi';
+
+	const {
+		id, name, location, capacity, price_min, price_max,
+		owner_email, owner_name, owner_phone, email, phone
+	} = registrationData;
+
+	const params = {
+		Source: process.env.FROM_EMAIL || 'noreply@tampereensaunalautat.fi',
+		Destination: {
+			ToAddresses: [adminEmail],
+		},
+		Message: {
+			Subject: {
+				Data: `Uusi saunalautta-rekisteröinti: ${name}`,
+				Charset: 'UTF-8',
+			},
+			Body: {
+				Html: {
+					Data: `
+            <html>
+              <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2>Uusi saunalautta-rekisteröinti</h2>
+                <p>Hei!</p>
+                <p>Uusi saunalautta on rekisteröity palveluun ja odottaa hyväksyntää:</p>
+                
+                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="margin-top: 0;">Saunan tiedot</h3>
+                  <p><strong>Nimi:</strong> ${name}</p>
+                  <p><strong>Sijainti:</strong> ${location}</p>
+                  <p><strong>Kapasiteetti:</strong> ${capacity} henkilöä</p>
+                  <p><strong>Hinnat:</strong> ${price_min}€ - ${price_max}€</p>
+                  
+                  <h3>Omistajan tiedot</h3>
+                  <p><strong>Nimi:</strong> ${owner_name}</p>
+                  <p><strong>Sähköposti:</strong> ${owner_email}</p>
+                  <p><strong>Puhelin:</strong> ${owner_phone}</p>
+                  
+                  <h3>Asiakkaiden yhteystiedot</h3>
+                  <p><strong>Sähköposti:</strong> ${email}</p>
+                  <p><strong>Puhelin:</strong> ${phone}</p>
+                  
+                  <p><strong>Rekisteröinti-ID:</strong> ${id}</p>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                  <a href="${frontendUrl}/login" 
+                     style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; margin-right: 10px;">
+                    Käsittele hallintapaneelissa
+                  </a>
+                </div>
+                
+                <p style="color: #666; font-size: 14px;">
+                  Käsittele tämä rekisteröinti mahdollisimman pian. Omistaja saa automaattisen vahvistuksen sähköpostitse kun rekisteröinti on hyväksytty tai hylätty.
+                </p>
+                
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+                <p style="color: #666; font-size: 12px;">
+                  Tampereensaunalautat.fi Admin<br>
+                  <a href="${frontendUrl}">${frontendUrl}</a>
+                </p>
+              </body>
+            </html>
+          `,
+					Charset: 'UTF-8',
+				},
+				Text: {
+					Data: `
+Uusi saunalautta-rekisteröinti: ${name}
+
+Uusi saunalautta on rekisteröity palveluun ja odottaa hyväksyntää:
+
+SAUNAN TIEDOT:
+- Nimi: ${name}
+- Sijainti: ${location}
+- Kapasiteetti: ${capacity} henkilöä
+- Hinnat: ${price_min}€ - ${price_max}€
+
+OMISTAJAN TIEDOT:
+- Nimi: ${owner_name}
+- Sähköposti: ${owner_email}
+- Puhelin: ${owner_phone}
+
+ASIAKKAIDEN YHTEYSTIEDOT:
+- Sähköposti: ${email}
+- Puhelin: ${phone}
+
+Rekisteröinti-ID: ${id}
+
+Käsittele rekisteröinti hallintapaneelissa: ${frontendUrl}/login
+
+Tampereensaunalautat.fi Admin
+${frontendUrl}
+          `,
+					Charset: 'UTF-8',
+				},
+			},
+		},
+	};
+
+	try {
+		const result = await ses.sendEmail(params).promise();
+		console.log('📧 Admin notification email sent successfully:', result.MessageId);
+		return result;
+	} catch (error) {
+		console.error('❌ Error sending admin notification email:', error);
+		throw error;
+	}
+};
+
 // Import image management modules
 const multer = require('multer');
 const sharp = require('sharp');
@@ -226,6 +347,134 @@ app.get('/api/sauna/:id', async (req, res) => {
 		res.status(500).json({
 			success: false,
 			message: 'Palvelimella tapahtui virhe'
+		});
+	}
+});
+
+// Register new sauna (public endpoint)
+app.post('/api/register/sauna', async (req, res) => {
+	try {
+		const {
+			owner_email, owner_name, owner_phone,
+			name, location, capacity, event_length, price_min, price_max,
+			equipment, email, phone, url, url_array, notes, winter
+		} = req.body;
+
+		// Validate required fields
+		if (!owner_email || !owner_name || !owner_phone ||
+			!name || !location || !capacity || !event_length ||
+			!price_min || !price_max || !email || !phone) {
+			return res.status(400).json({
+				success: false,
+				message: 'Pakolliset kentät puuttuvat'
+			});
+		}
+
+		// Validate email format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(owner_email) || !emailRegex.test(email)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Sähköpostin muoto on virheellinen'
+			});
+		}
+
+		// Validate numeric fields
+		if (capacity < 1 || capacity > 100 || event_length < 1 || event_length > 24 ||
+			price_min < 0 || price_max < 0 || price_min > price_max) {
+			return res.status(400).json({
+				success: false,
+				message: 'Numeroarvoissa on virheitä'
+			});
+		}
+
+		// Check if location is valid
+		if (!['Näsijärvi', 'Pyhäjärvi'].includes(location)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Virheellinen sijainti'
+			});
+		}
+
+		// Validate URL formats if provided
+		const urlRegex = /^https?:\/\/.+/;
+		if (url && !urlRegex.test(url)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Verkkosivun osoite on virheellinen'
+			});
+		}
+
+		// Validate URL array
+		let urlArray = [];
+		try {
+			urlArray = url_array ? (typeof url_array === 'string' ? JSON.parse(url_array) : url_array) : [];
+		} catch (e) {
+			return res.status(400).json({
+				success: false,
+				message: 'Lisäverkkosivujen muoto on virheellinen'
+			});
+		}
+
+		for (const singleUrl of urlArray) {
+			if (singleUrl && !urlRegex.test(singleUrl)) {
+				return res.status(400).json({
+					success: false,
+					message: 'Jokin lisäverkkosivun osoite on virheellinen'
+				});
+			}
+		}
+
+		// Sanitize notes length
+		const sanitizedNotes = notes ? notes.substring(0, 500) : null;
+
+		// Generate unique ID for pending sauna
+		const pendingId = `pending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+		// Insert into pending_saunas table
+		await dbRun(`
+			INSERT INTO pending_saunas (
+				id, owner_email, name, location, capacity, event_length,
+				price_min, price_max, equipment, email, phone, url,
+				notes, winter, status, created_at
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))
+		`, [
+			pendingId, owner_email, name, location, capacity, event_length,
+			price_min, price_max, equipment || '[]', email, phone, url,
+			sanitizedNotes, winter ? 1 : 0
+		]);
+
+		// Send email notification to admin
+		try {
+			await sendAdminNotificationEmail({
+				id: pendingId,
+				name,
+				location,
+				capacity,
+				price_min,
+				price_max,
+				owner_email,
+				owner_name,
+				owner_phone,
+				email,
+				phone
+			});
+		} catch (emailError) {
+			// Log email error but don't fail the registration
+			console.error('❌ Failed to send admin notification email:', emailError);
+		}
+
+		res.json({
+			success: true,
+			message: 'Rekisteröinti lähetetty onnistuneesti! Saat vahvistuksen sähköpostitse, kun rekisteröinti on käsitelty.',
+			registrationId: pendingId
+		});
+
+	} catch (error) {
+		console.error('Error processing sauna registration:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Palvelimella tapahtui virhe rekisteröinnin käsittelyssä'
 		});
 	}
 });
