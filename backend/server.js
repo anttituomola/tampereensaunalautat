@@ -310,7 +310,7 @@ const upload = multer({
 	storage: storage,
 	limits: {
 		fileSize: 15 * 1024 * 1024, // 15MB limit per file
-		files: 5 // Maximum 5 files per request
+		files: 15 // Maximum 15 files per request
 	},
 	fileFilter: (req, file, cb) => {
 		// Accept only image files
