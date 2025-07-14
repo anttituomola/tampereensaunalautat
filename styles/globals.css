@@ -5,7 +5,6 @@ body {
   font-family: 'Albert Sans', sans-serif;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  min-width: fit-content;
   background-color: #f5f7fa;
   min-height: 100vh;
 }

@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import Layout from 'components/layout/Layout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,16 +36,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router]);
 
   return (
-    <AuthProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Layout>
-          {loading && <LoadingOverlay />}
-          <Component {...pageProps} />
-          <ToastContainer />
-        </Layout>
-      </ThemeProvider>
-    </AuthProvider>
+    <>
+      <Head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+      </Head>
+      <AuthProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Layout>
+            {loading && <LoadingOverlay />}
+            <Component {...pageProps} />
+            <ToastContainer />
+          </Layout>
+        </ThemeProvider>
+      </AuthProvider>
+    </>
   );
 }
 

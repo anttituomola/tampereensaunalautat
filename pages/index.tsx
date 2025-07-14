@@ -161,8 +161,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
             </Button>
           </>
         )}
-      </div>
-      <main>
+
         <div className={styles.saunaContainer}>
           {filteredSaunasWithEquipment.map((sauna) => (
             <LauttaEl
@@ -173,7 +172,7 @@ const Home: NextPage<Props> = ({ saunas }) => {
             />
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

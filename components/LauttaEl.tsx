@@ -27,10 +27,12 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set()
   );
+  const [isClient, setIsClient] = useState(false);
   const imageHolderRef = useRef<HTMLDivElement>(null);
 
-  // Check if the device is mobile
+  // Check if the device is mobile (only on client side to prevent hydration issues)
   useEffect(() => {
+    setIsClient(true);
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -137,7 +139,11 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   // When image container is first interacted with, preload all images
   const handleFirstInteraction = () => {
     if (allImages.length > 1) {
-      allImages.forEach(preloadImage);
+      allImages.forEach((img, index) => {
+        if (index !== currentImageIndex) {
+          preloadImage(img);
+        }
+      });
     }
   };
 
@@ -155,7 +161,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
             onMouseLeave={() => {
               setIsHovering(false);
               // Don't reset image index when mouse leaves on mobile
-              if (!isMobile) {
+              if (isClient && !isMobile) {
                 setCurrentImageIndex(0);
               }
             }}
@@ -170,29 +176,13 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
               priority={currentImageIndex === 0} // Only prioritize loading the main image
             />
 
-            {/* Preload hidden images for smoother carousel */}
-            <div className={styles.hiddenPreload}>
-              {allImages.length > 1 &&
-                allImages.map(
-                  (img, index) =>
-                    index !== currentImageIndex && (
-                      <link
-                        key={img}
-                        rel='preload'
-                        href={getImageUrl(img)}
-                        as='image'
-                      />
-                    )
-                )}
-            </div>
-
             {/* Always show indicator if multiple images exist */}
             {allImages.length > 1 && (
               <>
                 <div className={styles.imageCountIndicator}>
                   {currentImageIndex + 1}/{allImages.length}
                 </div>
-                {!isMobile && (
+                {isClient && !isMobile && (
                   <div className={styles.scrollHintOverlay}>
                     <div className={styles.scrollHintIcon}></div>
                   </div>
@@ -201,7 +191,7 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
             )}
 
             {/* Show carousel controls based on device type and hover state */}
-            {(isMobile || isHovering) && allImages.length > 1 && (
+            {isClient && (isMobile || isHovering) && allImages.length > 1 && (
               <div
                 className={`${styles.carouselContainer} ${
                   isMobile ? styles.mobileBtns : ''

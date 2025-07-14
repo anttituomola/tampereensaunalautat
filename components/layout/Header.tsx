@@ -6,6 +6,7 @@ import Link from 'next/link';
 import styles from 'styles/Header.module.css';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../contexts/AuthContext';
+import { useEffect, useState } from 'react';
 import {
   Dashboard as DashboardIcon,
   Login as LoginIcon,
@@ -14,7 +15,19 @@ import {
 const Header = () => {
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuth();
+  const [isMobile, setIsMobile] = useState(false);
+
   const isActive = (path: string) => router.pathname === path;
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <AppBar position='static' className={styles.appBar}>
@@ -30,7 +43,7 @@ const Header = () => {
                   isActive('/') ? styles.contained : styles.text
                 }`}
               >
-                Kaikki saunalautat
+                {isMobile ? 'Saunat' : 'Kaikki saunalautat'}
               </Button>
             </Link>
             <Link
@@ -42,7 +55,7 @@ const Header = () => {
                   isActive('/about') ? styles.contained : styles.text
                 }`}
               >
-                Tietoa sivustosta
+                {isMobile ? 'Tietoa' : 'Tietoa sivustosta'}
               </Button>
             </Link>
             <Link
@@ -63,7 +76,7 @@ const Header = () => {
                   },
                 }}
               >
-                Rekisteröi saunalautta
+                {isMobile ? 'Rekisteröi' : 'Rekisteröi saunalautta'}
               </Button>
             </Link>
 
@@ -112,7 +125,7 @@ const Header = () => {
                         },
                       }}
                     >
-                      Kirjaudu saunaomistajana
+                      {isMobile ? 'Kirjaudu' : 'Kirjaudu saunaomistajana'}
                     </Button>
                   </Link>
                 )}
