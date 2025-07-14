@@ -40,6 +40,7 @@
 @media screen and (max-width: 1445px) and (min-width: 961px) {
     .saunaContainer {
       grid-template-columns: 1fr 1fr;
+      gap: 1.2em; /* Reduced from 2em to 1.2em for better spacing with 2 cards */
     }
   }
 

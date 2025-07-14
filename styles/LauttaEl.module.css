@@ -256,3 +256,10 @@
     }
 }
 
+/* Add responsive max-width for mid-size screens */
+@media (max-width: 1445px) and (min-width: 961px) {
+    .lauttaEl {
+        max-width: 500px; /* Increased from 400px to allow wider cards */
+    }
+}
+
