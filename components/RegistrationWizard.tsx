@@ -21,6 +21,8 @@ import {
   CircularProgress,
   Card,
   CardContent,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   NavigateNext as NavigateNextIcon,
@@ -51,6 +53,8 @@ const steps = [
   'Kuvat',
   'Ehdot ja yhteenveto',
 ];
+
+const mobileSteps = ['Yhteystiedot', 'Tiedot', 'Varusteet', 'Kuvat', 'Ehdot'];
 
 const EQUIPMENT_OPTIONS: SaunaEquipment[] = [
   'Kattoterassi',
@@ -126,6 +130,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   isSubmitting,
   setIsSubmitting,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isVerySmall = useMediaQuery(theme.breakpoints.down('sm'));
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<RegistrationFormData>({
     ownerName: '',
@@ -522,8 +529,8 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       </Typography>
       <Divider sx={{ mb: 3 }} />
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
+      <Grid container spacing={{ xs: 2, sm: 3 }}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             fullWidth
             label='Koko nimi'
@@ -535,7 +542,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Sähköpostiosoite'
@@ -548,7 +555,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Puhelinnumero'
@@ -574,8 +581,8 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       </Typography>
       <Divider sx={{ mb: 3 }} />
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
+      <Grid container spacing={{ xs: 2, sm: 3 }}>
+        <Grid size={{ xs: 12, sm: 8 }}>
           <TextField
             fullWidth
             label='Saunan nimi'
@@ -587,7 +594,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <FormControl fullWidth required error={!!errors.location}>
             <InputLabel>Sijainti</InputLabel>
             <Select
@@ -604,7 +611,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             fullWidth
             label='Henkilömäärä'
@@ -620,7 +627,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             fullWidth
             label='Tapahtuman kesto (tuntia)'
@@ -638,7 +645,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -649,10 +656,11 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               />
             }
             label='Käytettävissä talvella'
+            sx={{ mt: { xs: 1, sm: 2 } }}
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Minimihinta (€)'
@@ -671,7 +679,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Maksimihinta (€)'
@@ -700,7 +708,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           </Typography>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Asiakkaille näkyvä sähköposti'
@@ -713,7 +721,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Asiakkaille näkyvä puhelinnumero'
@@ -725,7 +733,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label='Verkkosivut (valinnainen)'
@@ -792,9 +800,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       </Typography>
       <Divider sx={{ mb: 3 }} />
 
-      <Paper variant='outlined' sx={{ p: 3 }}>
+      <Paper variant='outlined' sx={{ p: { xs: 2, sm: 3 } }}>
         <FormGroup>
-          <Grid container spacing={1}>
+          <Grid container spacing={{ xs: 1, sm: 2 }}>
             {EQUIPMENT_OPTIONS.map((equipment) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={equipment}>
                 <FormControlLabel
@@ -807,6 +815,11 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                     />
                   }
                   label={equipment}
+                  sx={{
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                    },
+                  }}
                 />
               </Grid>
             ))}
@@ -859,7 +872,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       <Divider sx={{ mb: 3 }} />
 
       {/* Terms acceptance */}
-      <Card variant='outlined' sx={{ p: 3, mb: 3 }}>
+      <Card variant='outlined' sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
         <Typography variant='h6' gutterBottom>
           Ehdot ja säännöt
         </Typography>
@@ -875,7 +888,10 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             />
           }
           label={
-            <Typography variant='body2'>
+            <Typography
+              variant='body2'
+              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            >
               Hyväksyn{' '}
               <a
                 href='/terms'
@@ -904,13 +920,13 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       </Card>
 
       {/* Data summary */}
-      <Card variant='outlined' sx={{ p: 3 }}>
+      <Card variant='outlined' sx={{ p: { xs: 2, sm: 3 } }}>
         <Typography variant='h6' gutterBottom>
           Yhteenveto rekisteröinnistä
         </Typography>
 
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant='body2' color='text.secondary'>
               Omistaja:
             </Typography>
@@ -918,7 +934,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             <Typography variant='body2'>{formData.ownerEmail}</Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant='body2' color='text.secondary'>
               Saunalautta:
             </Typography>
@@ -928,7 +944,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant='body2' color='text.secondary'>
               Hinnat:
             </Typography>
@@ -937,7 +953,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant='body2' color='text.secondary'>
               Varusteet:
             </Typography>
@@ -962,8 +978,28 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   return (
     <Box>
       {/* Stepper */}
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-        {steps.map((label, index) => {
+      <Stepper
+        activeStep={activeStep}
+        sx={{
+          mb: 4,
+          '& .MuiStepLabel-root': {
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 0.5, sm: 1 },
+          },
+          '& .MuiStepLabel-label': {
+            fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
+            textAlign: 'center',
+            marginTop: { xs: 0.5, sm: 0 },
+          },
+          '& .MuiStepConnector-root': {
+            display: { xs: 'none', sm: 'block' },
+          },
+          '& .MuiStep-root': {
+            padding: { xs: '0 4px', sm: '0 8px' },
+          },
+        }}
+      >
+        {(isMobile ? mobileSteps : steps).map((label, index) => {
           const StepIcon = stepIcons[index];
           return (
             <Step key={label}>
@@ -973,32 +1009,67 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                     sx={{
                       color:
                         activeStep >= index ? 'primary.main' : 'text.secondary',
-                      fontSize: 24,
+                      fontSize: { xs: 20, sm: 22, md: 24 },
                     }}
                   />
                 )}
               >
-                {label}
+                {isVerySmall ? '' : label}
               </StepLabel>
             </Step>
           );
         })}
       </Stepper>
 
+      {/* Current step title for very small screens */}
+      {isVerySmall && (
+        <Typography
+          variant='h6'
+          align='center'
+          sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}
+        >
+          {activeStep + 1}/5: {mobileSteps[activeStep]}
+        </Typography>
+      )}
+
       {/* Step Content */}
-      <Box sx={{ minHeight: 400, mb: 4 }}>{renderStepContent(activeStep)}</Box>
+      <Box
+        sx={{
+          minHeight: 400,
+          mb: 4,
+          px: { xs: 1, sm: 2, md: 0 },
+          '& .MuiTextField-root': {
+            '& .MuiInputLabel-root': {
+              fontSize: { xs: '0.875rem', sm: '1rem' },
+            },
+          },
+        }}
+      >
+        {renderStepContent(activeStep)}
+      </Box>
 
       {/* Navigation Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          pt: 2,
+          px: { xs: 1, sm: 2, md: 0 },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 2, sm: 0 },
+        }}
+      >
         <Button
           disabled={activeStep === 0}
           onClick={handleBack}
           startIcon={<NavigateBeforeIcon />}
+          fullWidth={isVerySmall}
+          sx={{ order: { xs: 2, sm: 1 } }}
         >
           Takaisin
         </Button>
 
-        <Box>
+        <Box sx={{ order: { xs: 1, sm: 2 } }}>
           {activeStep === steps.length - 1 ? (
             <Button
               variant='contained'
@@ -1008,6 +1079,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 isSubmitting ? <CircularProgress size={20} /> : <SendIcon />
               }
               size='large'
+              fullWidth={isVerySmall}
             >
               {isSubmitting ? 'Lähetetään...' : 'Lähetä rekisteröinti'}
             </Button>
@@ -1017,6 +1089,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               onClick={handleNext}
               endIcon={<NavigateNextIcon />}
               size='large'
+              fullWidth={isVerySmall}
             >
               Seuraava
             </Button>
