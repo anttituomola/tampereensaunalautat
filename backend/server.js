@@ -21,7 +21,7 @@ const ses = new AWS.SES({
 
 // Helper function to send admin notification email
 const sendAdminNotificationEmail = async (registrationData) => {
-	const adminEmail = process.env.ADMIN_EMAIL || 'admin@tampereensaunalautat.fi';
+	const adminEmail = process.env.ADMIN_EMAIL || 'info@tampereensaunalautat.fi';
 	const frontendUrl = process.env.FRONTEND_URL || 'https://tampereensaunalautat.fi';
 
 	const {
@@ -30,7 +30,7 @@ const sendAdminNotificationEmail = async (registrationData) => {
 	} = registrationData;
 
 	const params = {
-		Source: process.env.FROM_EMAIL || 'noreply@tampereensaunalautat.fi',
+		Source: process.env.FROM_EMAIL || 'info@tampereensaunalautat.fi',
 		Destination: {
 			ToAddresses: [adminEmail],
 		},
@@ -143,6 +143,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Trust proxy for rate limiting and IP detection (behind nginx)
+// Set to 1 to trust exactly one proxy (nginx)
 app.set('trust proxy', 1);
 
 // CORS configuration for images - same as API endpoints
@@ -188,7 +189,36 @@ const limiter = rateLimit({
 		success: false,
 		message: 'Liian monta pyyntöä. Yritä uudelleen myöhemmin.'
 	},
+	// Custom keyGenerator to handle proxy issues
+	keyGenerator: (req) => {
+		// Try to get the real IP from various headers
+		const forwardedFor = req.get('X-Forwarded-For');
+		const realIp = req.get('X-Real-IP');
+		const remoteAddr = req.connection.remoteAddress;
+		const expressIp = req.ip;
+
+		let finalIP;
+		// Use the first IP from X-Forwarded-For if it exists
+		if (forwardedFor) {
+			finalIP = forwardedFor.split(',')[0].trim();
+		} else {
+			// Fallback to other methods
+			finalIP = realIp || expressIp || remoteAddr || 'unknown';
+		}
+
+		console.log('🚦 RATE LIMIT IP DETECTION:');
+		console.log('  - X-Forwarded-For:', forwardedFor);
+		console.log('  - X-Real-IP:', realIp);
+		console.log('  - req.ip:', expressIp);
+		console.log('  - remoteAddress:', remoteAddr);
+		console.log('  - Final IP used:', finalIP);
+
+		return finalIP;
+	},
 	handler: (req, res) => {
+		const clientIP = req.ip || req.connection.remoteAddress;
+		console.log('🚫 RATE LIMIT TRIGGERED for IP:', clientIP, 'Path:', req.path);
+
 		// Set CORS headers for rate limit responses
 		const origin = req.get('origin');
 		if (origin && corsOrigins.includes(origin)) {
@@ -237,6 +267,24 @@ app.use('/api', cors({
 }));
 
 console.log('🌍 CORS enabled for origins:', corsOrigins);
+
+// Global request logger for debugging
+app.use((req, res, next) => {
+	const timestamp = new Date().toISOString();
+	const clientIP = req.ip || req.connection.remoteAddress;
+
+	// Log all registration-related requests
+	if (req.path.includes('/register') || req.path.includes('/api/register')) {
+		console.log('📥 INCOMING REQUEST:', timestamp);
+		console.log('  - Path:', req.path);
+		console.log('  - Method:', req.method);
+		console.log('  - IP:', clientIP);
+		console.log('  - Origin:', req.get('origin'));
+		console.log('  - Content-Type:', req.get('content-type'));
+	}
+
+	next();
+});
 
 // Body parsing middleware
 app.use(express.json({ limit: '20mb' }));
@@ -402,7 +450,49 @@ app.get('/api/sauna/:id', async (req, res) => {
 
 // Register new sauna (public endpoint) - now handles images
 app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
+	const startTime = Date.now();
+	const startMemory = process.memoryUsage();
+
+	// Debug logging for registration attempts
+	const clientIP = req.ip || req.connection.remoteAddress;
+	const forwardedFor = req.get('X-Forwarded-For');
+	const realIp = req.get('X-Real-IP');
+	const userAgent = req.get('User-Agent');
+	const origin = req.get('origin');
+	const contentType = req.get('content-type');
+	const timestamp = new Date().toISOString();
+
+	console.log('🔍 REGISTRATION ATTEMPT DEBUG:', timestamp);
+	console.log('  - Client IP:', clientIP);
+	console.log('  - X-Forwarded-For:', forwardedFor);
+	console.log('  - X-Real-IP:', realIp);
+	console.log('  - User-Agent:', userAgent);
+	console.log('  - Origin:', origin);
+	console.log('  - Content-Type:', contentType);
+	console.log('  - Trust Proxy setting:', app.get('trust proxy'));
+	console.log('  - NODE_ENV:', process.env.NODE_ENV);
+	console.log('  - Request method:', req.method);
+	console.log('  - Request URL:', req.url);
+	console.log('  - Body size:', JSON.stringify(req.body).length, 'chars');
+	console.log('  - Files uploaded:', req.files ? req.files.length : 0);
+	console.log('  - Start memory usage:', Math.round(startMemory.heapUsed / 1024 / 1024), 'MB');
+
+	// Log file details if any
+	if (req.files && req.files.length > 0) {
+		console.log('📁 FILE DETAILS:');
+		req.files.forEach((file, index) => {
+			console.log(`  - File ${index + 1}: ${file.originalname} (${Math.round(file.size / 1024)}KB, ${file.mimetype})`);
+		});
+	}
+
+	// 📝 COMPLETE FORM DATA - For manual account creation if needed
+	console.log('📝 === COMPLETE FORM DATA ===');
+	console.log(JSON.stringify(req.body, null, 2));
+	console.log('📝 === END FORM DATA ===');
+
 	try {
+		const validationStartTime = Date.now();
+
 		const {
 			owner_email, owner_name, owner_phone,
 			name, location, capacity, event_length, price_min, price_max,
@@ -410,9 +500,22 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		} = req.body;
 
 		// Validate required fields
-		if (!owner_email || !owner_name || !owner_phone ||
-			!name || !location || !capacity || !event_length ||
-			!price_min || !price_max || !email || !phone) {
+		const missingFields = [];
+		if (!owner_email) missingFields.push('owner_email');
+		if (!owner_name) missingFields.push('owner_name');
+		if (!owner_phone) missingFields.push('owner_phone');
+		if (!name) missingFields.push('name');
+		if (!location) missingFields.push('location');
+		if (!capacity) missingFields.push('capacity');
+		if (!event_length) missingFields.push('event_length');
+		if (!price_min) missingFields.push('price_min');
+		if (!price_max) missingFields.push('price_max');
+		if (!email) missingFields.push('email');
+		if (!phone) missingFields.push('phone');
+
+		if (missingFields.length > 0) {
+			console.log('❌ MISSING FIELDS for IP:', clientIP, '- Missing:', missingFields);
+			console.log('⏱️  Validation failed in:', Date.now() - validationStartTime, 'ms');
 			return res.status(400).json({
 				success: false,
 				message: 'Pakolliset kentät puuttuvat'
@@ -422,6 +525,7 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		// Validate email format
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(owner_email) || !emailRegex.test(email)) {
+			console.log('❌ EMAIL VALIDATION FAILED for IP:', clientIP, '- Emails:', owner_email, email);
 			return res.status(400).json({
 				success: false,
 				message: 'Sähköpostin muoto on virheellinen'
@@ -429,8 +533,15 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		}
 
 		// Validate numeric fields
+		console.log('🔢 NUMERIC VALIDATION DEBUG:');
+		console.log('  - capacity:', capacity, typeof capacity);
+		console.log('  - event_length:', event_length, typeof event_length);
+		console.log('  - price_min:', price_min, typeof price_min);
+		console.log('  - price_max:', price_max, typeof price_max);
+
 		if (capacity < 1 || capacity > 100 || event_length < 1 || event_length > 24 ||
 			price_min < 0 || price_max < 0 || price_min > price_max) {
+			console.log('❌ NUMERIC VALIDATION FAILED for IP:', clientIP);
 			return res.status(400).json({
 				success: false,
 				message: 'Numeroarvoissa on virheitä'
@@ -439,6 +550,7 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 
 		// Check if location is valid
 		if (!['Näsijärvi', 'Pyhäjärvi'].includes(location)) {
+			console.log('❌ LOCATION VALIDATION FAILED for IP:', clientIP, '- Location:', location);
 			return res.status(400).json({
 				success: false,
 				message: 'Virheellinen sijainti'
@@ -448,6 +560,7 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		// Validate URL formats if provided
 		const urlRegex = /^https?:\/\/.+/;
 		if (url && !urlRegex.test(url)) {
+			console.log('❌ URL VALIDATION FAILED for IP:', clientIP, '- URL:', url);
 			return res.status(400).json({
 				success: false,
 				message: 'Verkkosivun osoite on virheellinen'
@@ -459,6 +572,7 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		try {
 			urlArray = url_array ? (typeof url_array === 'string' ? JSON.parse(url_array) : url_array) : [];
 		} catch (e) {
+			console.log('❌ URL ARRAY PARSING FAILED for IP:', clientIP, '- Error:', e.message);
 			return res.status(400).json({
 				success: false,
 				message: 'Lisäverkkosivujen muoto on virheellinen'
@@ -467,12 +581,15 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 
 		for (const singleUrl of urlArray) {
 			if (singleUrl && !urlRegex.test(singleUrl)) {
+				console.log('❌ URL ARRAY VALIDATION FAILED for IP:', clientIP, '- URL:', singleUrl);
 				return res.status(400).json({
 					success: false,
 					message: 'Jokin lisäverkkosivun osoite on virheellinen'
 				});
 			}
 		}
+
+		console.log('✅ VALIDATION COMPLETED for IP:', clientIP, '- Time:', Date.now() - validationStartTime, 'ms');
 
 		// Sanitize notes length
 		const sanitizedNotes = notes ? notes.substring(0, 500) : null;
@@ -481,22 +598,29 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		const pendingId = `pending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 		// Process uploaded images
+		const imageProcessingStartTime = Date.now();
 		let processedImages = [];
 		let mainImageFilename = null;
 
 		if (req.files && req.files.length > 0) {
 			console.log(`📸 Processing ${req.files.length} images for registration:`, name);
+			const preImageMemory = process.memoryUsage();
+			console.log('  - Pre-processing memory:', Math.round(preImageMemory.heapUsed / 1024 / 1024), 'MB');
 
 			try {
 				for (let i = 0; i < req.files.length; i++) {
 					const file = req.files[i];
 					const uniqueFilename = `${uuidv4()}-${file.originalname}`;
+					const imageStartTime = Date.now();
 
 					console.log(`🔄 Processing image ${i + 1}/${req.files.length}: ${uniqueFilename}`);
+					console.log(`  - Original size: ${Math.round(file.size / 1024)}KB`);
 
 					// Process and save image
 					const processedFilename = await processImage(file.buffer, uniqueFilename);
 					processedImages.push(processedFilename);
+
+					console.log(`  - Processed in: ${Date.now() - imageStartTime}ms`);
 
 					// Set first image as main image
 					if (i === 0) {
@@ -504,9 +628,14 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 					}
 				}
 
+				const postImageMemory = process.memoryUsage();
 				console.log(`✅ Successfully processed ${processedImages.length} images for registration`);
+				console.log('  - Post-processing memory:', Math.round(postImageMemory.heapUsed / 1024 / 1024), 'MB');
+				console.log('  - Total image processing time:', Date.now() - imageProcessingStartTime, 'ms');
 			} catch (imageError) {
 				console.error('❌ Error processing images during registration:', imageError);
+				console.error('  - Image error details:', imageError.message);
+				console.error('  - Image error stack:', imageError.stack);
 				// Continue without images rather than failing the entire registration
 				processedImages = [];
 				mainImageFilename = null;
@@ -514,36 +643,55 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 		}
 
 		// Insert into pending_saunas table with images
-		await dbRun(`
-			INSERT INTO pending_saunas (
-				id, owner_email, name, location, capacity, event_length,
-				price_min, price_max, equipment, email, phone, url,
-				notes, winter, status, created_at
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))
-		`, [
-			pendingId, owner_email, name, location, capacity, event_length,
-			price_min, price_max, equipment || '[]', email, phone, url,
-			sanitizedNotes, winter ? 1 : 0
-		]);
+		const dbStartTime = Date.now();
+		console.log('💾 DATABASE INSERT for IP:', clientIP, 'ID:', pendingId);
+		try {
+			await dbRun(`
+                                INSERT INTO pending_saunas (
+                                        id, owner_email, name, location, capacity, event_length,
+                                        price_min, price_max, equipment, email, phone, url,
+                                        notes, winter, status, created_at
+                                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))
+                        `, [
+				pendingId, owner_email, name, location, capacity, event_length,
+				price_min, price_max, equipment || '[]', email, phone, url,
+				sanitizedNotes, winter ? 1 : 0
+			]);
+			console.log('✅ DATABASE INSERT SUCCESS for IP:', clientIP, '- Time:', Date.now() - dbStartTime, 'ms');
+		} catch (dbError) {
+			console.error('❌ DATABASE INSERT FAILED for IP:', clientIP, '- Error:', dbError);
+			console.error('  - Database error details:', dbError.message);
+			console.error('  - Database error code:', dbError.code);
+			console.error('  - Database error stack:', dbError.stack);
+			throw dbError;
+		}
 
 		// Store images separately in a pending_images table or as JSON in pending_saunas
 		if (processedImages.length > 0) {
-			// For now, let's store images as JSON in the pending sauna record
-			await dbRun(`
-				UPDATE pending_saunas SET 
-					images = ?, 
-					main_image = ?
-				WHERE id = ?
-			`, [
-				JSON.stringify(processedImages),
-				mainImageFilename,
-				pendingId
-			]);
+			const imageUpdateStartTime = Date.now();
+			console.log('🖼️  UPDATING IMAGES for ID:', pendingId);
+			try {
+				await dbRun(`
+                                        UPDATE pending_saunas SET
+                                                images = ?,
+                                                main_image = ?
+                                        WHERE id = ?
+                                `, [
+					JSON.stringify(processedImages),
+					mainImageFilename,
+					pendingId
+				]);
+				console.log('✅ IMAGE UPDATE SUCCESS for ID:', pendingId, '- Time:', Date.now() - imageUpdateStartTime, 'ms');
+			} catch (imageUpdateError) {
+				console.error('❌ IMAGE UPDATE FAILED for ID:', pendingId, '- Error:', imageUpdateError);
+			}
 		}
 
 		// Send email notification to admin
+		const emailStartTime = Date.now();
+		console.log('📧 SENDING ADMIN EMAIL for IP:', clientIP, 'ID:', pendingId);
 		try {
-			await sendAdminNotificationEmail({
+			const emailResult = await sendAdminNotificationEmail({
 				id: pendingId,
 				name,
 				location,
@@ -556,19 +704,49 @@ app.post('/api/register/sauna', upload.array('images'), async (req, res) => {
 				email,
 				phone
 			});
+			console.log('✅ ADMIN EMAIL SUCCESS for IP:', clientIP, '- Time:', Date.now() - emailStartTime, 'ms');
+			console.log('  - Email MessageId:', emailResult?.MessageId);
 		} catch (emailError) {
 			// Log email error but don't fail the registration
-			console.error('❌ Failed to send admin notification email:', emailError);
+			console.error('❌ ADMIN EMAIL FAILED for IP:', clientIP, '- Error:', emailError.message);
+			console.error('  - Email error details:', emailError);
+			console.error('  - Email error code:', emailError.code);
+			console.error('  - Email error statusCode:', emailError.statusCode);
 		}
 
-		res.json({
+		const endTime = Date.now();
+		const endMemory = process.memoryUsage();
+		console.log('✅ REGISTRATION SUCCESS for IP:', clientIP, 'ID:', pendingId, 'Name:', name);
+		console.log('  - Total processing time:', endTime - startTime, 'ms');
+		console.log('  - Final memory usage:', Math.round(endMemory.heapUsed / 1024 / 1024), 'MB');
+		console.log('  - Memory change:', Math.round((endMemory.heapUsed - startMemory.heapUsed) / 1024 / 1024), 'MB');
+
+		const responseData = {
 			success: true,
 			message: 'Rekisteröinti lähetetty onnistuneesti! Saat vahvistuksen sähköpostitse, kun rekisteröinti on käsitelty.',
 			registrationId: pendingId
-		});
+		};
+
+		console.log('📤 SENDING SUCCESS RESPONSE for IP:', clientIP, '- Status: 200');
+		console.log('  - Response size:', JSON.stringify(responseData).length, 'chars');
+
+		res.json(responseData);
 
 	} catch (error) {
-		console.error('Error processing sauna registration:', error);
+		const endTime = Date.now();
+		const endMemory = process.memoryUsage();
+
+		console.error('❌ REGISTRATION ERROR for IP:', clientIP, '- Error type:', error.name);
+		console.error('  - Error message:', error.message);
+		console.error('  - Error stack:', error.stack);
+		console.error('  - Error code:', error.code);
+		console.error('  - Error errno:', error.errno);
+		console.error('  - Error syscall:', error.syscall);
+		console.error('  - Total processing time before error:', endTime - startTime, 'ms');
+		console.error('  - Memory at error:', Math.round(endMemory.heapUsed / 1024 / 1024), 'MB');
+
+		console.log('📤 SENDING ERROR RESPONSE for IP:', clientIP, '- Status: 500');
+
 		res.status(500).json({
 			success: false,
 			message: 'Palvelimella tapahtui virhe rekisteröinnin käsittelyssä'
@@ -1460,7 +1638,35 @@ app.delete('/api/admin/pending/:id/reject', authenticateToken, async (req, res) 
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-	console.error('Unhandled error:', err);
+	const clientIP = req.ip || req.connection.remoteAddress;
+	const timestamp = new Date().toISOString();
+
+	console.error('💥 UNHANDLED ERROR:', timestamp);
+	console.error('  - Client IP:', clientIP);
+	console.error('  - Path:', req.path);
+	console.error('  - Method:', req.method);
+	console.error('  - User-Agent:', req.get('User-Agent'));
+	console.error('  - Error type:', err.name);
+	console.error('  - Error message:', err.message);
+	console.error('  - Error stack:', err.stack);
+
+	// Special handling for multer errors (file upload issues)
+	if (err.code === 'LIMIT_FILE_SIZE') {
+		console.error('  - FILE SIZE ERROR: File too large');
+		return res.status(400).json({
+			success: false,
+			message: 'Kuvatiedosto on liian suuri'
+		});
+	}
+
+	if (err.code === 'LIMIT_FILE_COUNT') {
+		console.error('  - FILE COUNT ERROR: Too many files');
+		return res.status(400).json({
+			success: false,
+			message: 'Liian monta kuvatiedostoa'
+		});
+	}
+
 	res.status(500).json({
 		success: false,
 		message: 'Palvelimella tapahtui odottamaton virhe'

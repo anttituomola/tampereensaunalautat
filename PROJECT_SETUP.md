@@ -849,4 +849,43 @@ npm run build
 ---
 
 *Last Updated: January 2025*  
-*Status: Phase 6 Admin Management Interface - COMPLETED ✅. Full admin management system implemented including comprehensive sauna management with show/hide/delete functionality, user management interface, pending registration approval workflow, add sauna interface with multi-step wizard, complete backend API extensions, and dashboard integration. All technical infrastructure completed including database schema updates, TypeScript type safety, error handling, toast notifications, loading states, and confirmation dialogs. Platform is now feature-complete for self-service sauna management with comprehensive admin oversight capabilities. Ready for additional enhancements like multi-language support, booking integration, and advanced features.* 
+*Status: Phase 6 Admin Management Interface - COMPLETED ✅. Full admin management system implemented including comprehensive sauna management with show/hide/delete functionality, user management interface, pending registration approval workflow, add sauna interface with multi-step wizard, complete backend API extensions, and dashboard integration. All technical infrastructure completed including database schema updates, TypeScript type safety, error handling, toast notifications, loading states, and confirmation dialogs. Platform is now feature-complete for self-service sauna management with comprehensive admin oversight capabilities.*
+
+## ✅ Post-Launch Support & Debugging (January 2025)
+
+### ✅ ValidationError Resolution (Round 2) - COMPLETED
+**Issue**: Customer (Jussi from Syvinki risteilyt) reported "Load failed" error during registration on July 11, 2025 at 00:23. Same ValidationError from express-rate-limit returned.
+
+**Root Cause**: NODE_ENV was reset to undefined in PM2 process, causing ValidationError to trigger intermittently during rate limiting operations.
+
+**Solution Applied**:
+- ✅ **PM2 Environment Fix**: Complete restart cycle with `NODE_ENV=production` properly set
+- ✅ **Rate Limit Increases**: Made more generous for customer testing:
+  - General API: 100 → 500 requests per 15 minutes  
+  - Auth endpoints: 20 → 100 requests per 15 minutes
+- ✅ **Enhanced Logging**: Added complete form data logging for manual account creation fallback
+- ✅ **System Verification**: All health checks pass, ValidationError eliminated
+
+**Status**: ✅ **RESOLVED** - System operational and ready for customer retry
+
+### ✅ Comprehensive Registration Debugging - COMPLETED
+**Debug Features Added**:
+- ✅ Complete form payload logging for manual account creation
+- ✅ Detailed error tracking with IP addresses and timestamps
+- ✅ Rate limit monitoring and IP detection logging
+- ✅ Email sending confirmation and error handling
+- ✅ Database operation status tracking
+
+**Commands for Real-time Monitoring**:
+```bash
+# Monitor registration attempts
+ssh upcloud "pm2 logs sauna-api --lines 50"
+
+# Check for ValidationError
+ssh upcloud "pm2 logs sauna-api | grep -i 'validation\|error'"
+
+# Verify environment
+ssh upcloud "pm2 show sauna-api | grep -A 5 'node env'"
+```
+
+*Ready for additional enhancements like multi-language support, booking integration, and advanced features.* 

@@ -14,7 +14,7 @@ JWT_SECRET=your-super-secret-jwt-key-change-this-immediately
 AWS_REGION=eu-west-1
 AWS_ACCESS_KEY_ID=your-aws-access-key
 AWS_SECRET_ACCESS_KEY=your-aws-secret-key
-FROM_EMAIL=noreply@tampereensaunalautat.fi
+FROM_EMAIL=info@tampereensaunalautat.fi
 
 # Database Configuration
 DATABASE_PATH=./saunas.db
@@ -33,7 +33,7 @@ REFRESH_TOKEN_EXPIRES_DAYS=7
 JWT_EXPIRES_IN=24h
 
 # Admin Configuration
-ADMIN_EMAIL=admin@tampereensaunalautat.fi
+ADMIN_EMAIL=info@tampereensaunalautat.fi
 
 # Logging
 LOG_LEVEL=info 
