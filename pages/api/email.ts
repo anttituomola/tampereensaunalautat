@@ -54,8 +54,15 @@ export default function handler(
     ? `\nLisätietoja asiakkaalta:\n${message.additionalInfo}`
     : '';
 
-  // Treat date as a simple date without timezone conversion
-  const formattedDate = dayjs(message.date).format('DD.MM.YYYY');
+  // Handle timezone-shifted dates: if the serialized date has a non-zero time component,
+  // it likely means the customer selected a future date that got shifted during serialization
+  const dateObj = dayjs.utc(message.date);
+  const hasTimeComponent = dateObj.hour() !== 0 || dateObj.minute() !== 0;
+
+  // If there's a time component in what should be a pure date, assume it was timezone-shifted
+  // and use the next day to preserve the customer's intended calendar date
+  const adjustedDate = hasTimeComponent ? dateObj.add(1, 'day') : dateObj;
+  const formattedDate = adjustedDate.format('DD.MM.YYYY');
 
   var params = {
     Destination: {
