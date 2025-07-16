@@ -287,8 +287,9 @@ app.use((req, res, next) => {
 });
 
 // Body parsing middleware
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+// Increased limits to accommodate bulk image uploads (up to 15 images)
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 // Database setup
 const db = new sqlite3.Database('./saunas.db', (err) => {

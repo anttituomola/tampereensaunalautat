@@ -9,6 +9,39 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - End-to-end testing with Cypress
 - Email sending with Amazon SES
 
+## Server Access & Database Queries
+
+### Quick Access
+```bash
+# SSH into server
+ssh upcloud  # or ssh root@80.69.173.166
+
+# Check API status
+pm2 status
+
+# View API logs
+pm2 logs sauna-api
+
+# Restart API if needed
+pm2 restart sauna-api
+```
+
+### Database Queries
+```bash
+# Get all visible sauna emails (customer-facing)
+ssh upcloud "sqlite3 /var/www/sauna-api/saunas.db \"SELECT name, email FROM saunas WHERE visible = 1 OR visible IS NULL ORDER BY name;\""
+
+# Check sauna count
+ssh upcloud "sqlite3 /var/www/sauna-api/saunas.db \"SELECT COUNT(*) FROM saunas WHERE visible = 1 OR visible IS NULL;\""
+
+# Get all saunas (including hidden)
+ssh upcloud "sqlite3 /var/www/sauna-api/saunas.db \"SELECT name, email, visible FROM saunas ORDER BY name;\""
+```
+
+**Server**: `api.tampereensaunalautat.fi` (80.69.173.166)  
+**Database**: `/var/www/sauna-api/saunas.db` (SQLite)  
+**Images**: `/var/www/sauna-api/images/`
+
 ## TODO
 - add another page explaining saunalautta experience in general
 - add captcha
