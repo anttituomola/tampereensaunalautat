@@ -9,6 +9,45 @@ Halusin järjestää ystävilleni illan saunalautalla. Huomasin, ettei mistään
 - End-to-end testing with Cypress
 - Email sending with Amazon SES
 
+## Deployment Guide
+
+### Two-Part Architecture
+- **Frontend (Next.js)**: Auto-deploys to **Vercel** on Git push
+- **Backend (Express API)**: Manual deploy to **UpCloud** using deployment script
+
+### Backend Deployment
+
+#### Prerequisites
+Ensure SSH access to UpCloud is configured:
+```bash
+# Check SSH config
+cat ~/.ssh/config
+
+# Should contain:
+# Host upcloud
+#     HostName 80.69.173.166
+#     User root
+#     IdentityFile ~/.ssh/id_upcloud
+```
+
+#### Deploy Backend Changes
+```bash
+# Navigate to backend directory
+cd backend/
+
+# Run deployment script
+./deploy-backend.sh
+```
+
+#### Verify Deployment
+```bash
+# Test API health
+curl https://api.tampereensaunalautat.fi/api/health
+
+# Check server status
+ssh upcloud "pm2 status sauna-api"
+```
+
 ## Server Access & Database Queries
 
 ### Quick Access
