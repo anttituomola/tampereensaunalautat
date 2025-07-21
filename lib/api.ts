@@ -497,17 +497,14 @@ export const authAPI = {
   },
 
   // Reorder images for a sauna
-  async reorderImages(
-    saunaId: string,
-    imageOrder: string[]
-  ): Promise<string[]> {
+  async reorderImages(saunaId: string, images: string[]): Promise<string[]> {
     try {
       const response = await fetch(
-        `${API_BASE}/api/sauna/${saunaId}/images/order`,
+        `${API_BASE}/api/sauna/${saunaId}/images/reorder`,
         {
           method: 'PUT',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ imageOrder }),
+          body: JSON.stringify({ images }),
         }
       );
 
@@ -518,7 +515,7 @@ export const authAPI = {
       const data = await response.json();
 
       if (data.success) {
-        return data.imageOrder;
+        return data.images;
       }
 
       throw new Error(data.message || 'Failed to reorder images');

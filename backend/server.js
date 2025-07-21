@@ -305,6 +305,38 @@ const dbGet = promisify(db.get.bind(db));
 const dbRun = promisify(db.run.bind(db));
 const dbAll = promisify(db.all.bind(db));
 
+// Helper function to trigger Next.js revalidation
+async function revalidatePages(paths) {
+	const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tampereensaunalautat.fi';
+	const REVALIDATION_SECRET = process.env.REVALIDATION_SECRET;
+
+	if (!REVALIDATION_SECRET) {
+		console.warn('⚠️  REVALIDATION_SECRET not set, skipping page revalidation');
+		return;
+	}
+
+	try {
+		console.log('🔄 Triggering revalidation for paths:', paths);
+
+		const response = await fetch(`${FRONTEND_URL}/api/revalidate?secret=${REVALIDATION_SECRET}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ paths }),
+		});
+
+		if (response.ok) {
+			const result = await response.json();
+			console.log('✅ Pages revalidated successfully:', result);
+		} else {
+			console.error('❌ Failed to revalidate pages:', response.status, await response.text());
+		}
+	} catch (error) {
+		console.error('❌ Error triggering page revalidation:', error);
+	}
+}
+
 // Image upload configuration
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -820,6 +852,15 @@ app.put('/api/sauna/:id', authenticateToken, async (req, res) => {
 			winter: updatedSauna.winter === 1
 		};
 
+		// Trigger page revalidation
+		const pathsToRevalidate = [
+			'/',
+			`/saunat/${transformedSauna.url_name}`
+		];
+		revalidatePages(pathsToRevalidate).catch(err =>
+			console.error('Revalidation error:', err)
+		);
+
 		res.json({
 			success: true,
 			message: 'Sauna päivitetty onnistuneesti',
@@ -962,6 +1003,15 @@ app.post('/api/sauna/:id/images/upload', authenticateToken, upload.array('images
 			WHERE id = ?
 		`, [JSON.stringify(updatedImages), processedImages[0], id]);
 
+		// Trigger page revalidation
+		const pathsToRevalidate = [
+			'/',
+			`/saunat/${sauna.url_name}`
+		];
+		revalidatePages(pathsToRevalidate).catch(err =>
+			console.error('Revalidation error:', err)
+		);
+
 		res.json({
 			success: true,
 			message: `${processedImages.length} kuvaa ladattu onnistuneesti`,
@@ -1044,6 +1094,15 @@ app.delete('/api/sauna/:id/images/:filename', authenticateToken, async (req, res
 		} catch (fileError) {
 			console.warn('Could not delete physical file:', filename, fileError.message);
 		}
+
+		// Trigger page revalidation
+		const pathsToRevalidate = [
+			'/',
+			`/saunat/${sauna.url_name}`
+		];
+		revalidatePages(pathsToRevalidate).catch(err =>
+			console.error('Revalidation error:', err)
+		);
 
 		res.json({
 			success: true,
@@ -1179,13 +1238,31 @@ app.put('/api/sauna/:id/images/main', authenticateToken, async (req, res) => {
 			});
 		}
 
-		// Update database
+		// Reorder images array to put main image first
+		const reorderedImages = [mainImage];
+		currentImages.forEach(img => {
+			if (img !== mainImage) {
+				reorderedImages.push(img);
+			}
+		});
+
+		// Update database with new main image and reordered images array
 		await dbRun(`
 			UPDATE saunas SET
 				main_image = ?,
+				images = ?,
 				updated_at = datetime('now')
 			WHERE id = ?
-		`, [mainImage, id]);
+		`, [mainImage, JSON.stringify(reorderedImages), id]);
+
+		// Trigger page revalidation
+		const pathsToRevalidate = [
+			'/',
+			`/saunat/${sauna.url_name}`
+		];
+		revalidatePages(pathsToRevalidate).catch(err =>
+			console.error('Revalidation error:', err)
+		);
 
 		res.json({
 			success: true,
@@ -1398,6 +1475,91 @@ app.get('/api/admin/users', authenticateToken, async (req, res) => {
 		res.status(500).json({
 			success: false,
 			message: 'Palvelimella tapahtui virhe'
+		});
+	}
+});
+
+// Reorder images for a sauna
+app.put('/api/sauna/:id/images/reorder', authenticateToken, async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { images } = req.body;
+		const userId = req.user.userId;
+		const isAdmin = req.user.isAdmin;
+
+		// Validate input
+		if (!Array.isArray(images)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Kuvien lista on pakollinen'
+			});
+		}
+
+		// Check if user owns this sauna or is admin
+		if (!isAdmin) {
+			const ownership = await dbGet(`
+				SELECT us.* FROM user_saunas us 
+				WHERE us.sauna_id = ? AND us.user_id = ? AND us.role IN ('owner', 'manager')
+			`, [id, userId]);
+
+			if (!ownership) {
+				return res.status(403).json({
+					success: false,
+					message: 'Ei oikeuksia muokata tätä saunaa'
+				});
+			}
+		}
+
+		// Get current sauna data
+		const sauna = await dbGet('SELECT * FROM saunas WHERE id = ?', [id]);
+		if (!sauna) {
+			return res.status(404).json({
+				success: false,
+				message: 'Saunaa ei löytynyt'
+			});
+		}
+
+		// Get current images
+		const currentImages = sauna.images ? JSON.parse(sauna.images) : [];
+
+		// Validate that all provided images exist in current images
+		for (const image of images) {
+			if (!currentImages.includes(image)) {
+				return res.status(400).json({
+					success: false,
+					message: `Kuva ${image} ei löydy saunan kuvista`
+				});
+			}
+		}
+
+		// Update database with new images order
+		await dbRun(`
+			UPDATE saunas SET
+				images = ?,
+				updated_at = datetime('now')
+			WHERE id = ?
+		`, [JSON.stringify(images), id]);
+
+		// Trigger page revalidation
+		const pathsToRevalidate = [
+			'/',
+			`/saunat/${sauna.url_name}`
+		];
+		revalidatePages(pathsToRevalidate).catch(err =>
+			console.error('Revalidation error:', err)
+		);
+
+		res.json({
+			success: true,
+			message: 'Kuvien järjestys päivitetty onnistuneesti',
+			images: images
+		});
+
+	} catch (error) {
+		console.error('Error reordering images:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Virhe kuvien järjestämisessä'
 		});
 	}
 });
