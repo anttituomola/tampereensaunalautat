@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import LoadingOverlay from 'components/LoadingOverlay';
 import { AuthProvider } from '../contexts/AuthContext';
+import * as Sentry from '@sentry/nextjs';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -23,15 +24,22 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
     };
     const handleComplete = () => setLoading(false);
+    const handleError = (error: Error, url: string) => {
+      setLoading(false);
+      Sentry.captureException(error, {
+        tags: { section: 'navigation' },
+        extra: { url, currentPath: router.asPath },
+      });
+    };
 
     router.events.on('routeChangeStart', handleStart);
     router.events.on('routeChangeComplete', handleComplete);
-    router.events.on('routeChangeError', handleComplete);
+    router.events.on('routeChangeError', handleError);
 
     return () => {
       router.events.off('routeChangeStart', handleStart);
       router.events.off('routeChangeComplete', handleComplete);
-      router.events.off('routeChangeError', handleComplete);
+      router.events.off('routeChangeError', handleError);
     };
   }, [router]);
 

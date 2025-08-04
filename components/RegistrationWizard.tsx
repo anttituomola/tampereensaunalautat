@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import {
   Box,
   Stepper,
@@ -486,11 +487,44 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         );
       }
 
+      // Track successful registration
+      Sentry.addBreadcrumb({
+        message: 'Registration submitted successfully',
+        category: 'registration',
+        data: {
+          name: formData.name,
+          location: formData.location,
+          image_count: formData.images.length,
+        },
+      });
+
       // Clear saved draft on successful submission
       clearLocalStorage();
       onSubmissionComplete();
     } catch (error) {
       console.error('Registration submission error:', error);
+
+      // Track registration failures in Sentry with context
+      Sentry.captureException(error, {
+        tags: {
+          section: 'registration',
+          step: 'submission',
+          has_images: formData.images.length > 0,
+        },
+        extra: {
+          form_data_summary: {
+            name: formData.name,
+            location: formData.location,
+            capacity: formData.capacity,
+            image_count: formData.images.length,
+            total_file_size: formData.images.reduce(
+              (sum, img) => sum + img.size,
+              0
+            ),
+          },
+        },
+      });
+
       onSubmissionError(
         error instanceof Error
           ? error.message

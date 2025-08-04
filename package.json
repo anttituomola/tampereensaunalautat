@@ -24,6 +24,7 @@
     "@mui/material": "^7.2.0",
     "@mui/system": "^7.2.0",
     "@mui/x-date-pickers": "^8.7.0",
+    "@sentry/nextjs": "^10.0.0",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@vercel/analytics": "^1.4.1",
     "aws-sdk": "^2.1692.0",
