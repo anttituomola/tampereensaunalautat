@@ -492,7 +492,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         message: 'Registration submitted successfully',
         category: 'registration',
         data: {
-          name: formData.name,
+          name: formData.saunaName,
           location: formData.location,
           image_count: formData.images.length,
         },
@@ -513,7 +513,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         },
         extra: {
           form_data_summary: {
-            name: formData.name,
+            name: formData.saunaName,
             location: formData.location,
             capacity: formData.capacity,
             image_count: formData.images.length,
