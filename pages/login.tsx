@@ -57,7 +57,7 @@ const Login: React.FC = () => {
     [verifyToken, returnUrl, router, isVerifying]
   );
 
-  // Handle magic link verification - only depend on token to prevent multiple calls
+  // Handle magic link verification
   useEffect(() => {
     if (
       token &&
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [token]); // Removed handleTokenVerification dependency to prevent multiple calls
+  }, [token, handleTokenVerification, isVerifying, isAuthenticated]);
 
   // Cleanup function to prevent memory leaks
   useEffect(() => {

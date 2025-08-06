@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -67,20 +67,24 @@ const ImageManager: React.FC<ImageManagerProps> = ({
 
   const MAX_IMAGES = 15;
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
-  const ACCEPTED_TYPES = [
-    'image/jpeg',
-    'image/jpg',
-    'image/jfif',
-    'image/png',
-    'image/webp',
-    'image/avif',
-    'image/heic',
-    'image/heif',
-    'image/tiff',
-    'image/tif',
-    'image/bmp',
-    'image/gif',
-  ];
+
+  const ACCEPTED_TYPES = useMemo(
+    () => [
+      'image/jpeg',
+      'image/jpg',
+      'image/jfif',
+      'image/png',
+      'image/webp',
+      'image/avif',
+      'image/heic',
+      'image/heif',
+      'image/tiff',
+      'image/tif',
+      'image/bmp',
+      'image/gif',
+    ],
+    []
+  );
 
   const validateFiles = useCallback(
     (files: File[]): { valid: File[]; errors: string[] } => {
