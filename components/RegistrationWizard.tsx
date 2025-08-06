@@ -69,8 +69,6 @@ const EQUIPMENT_OPTIONS: SaunaEquipment[] = [
   'Kylmäsäilytys',
   'Pukuhuone',
   'Puulämmitteinen kiuas',
-  'Jääkaappi',
-  'Kaasugrilli',
   'Poreallas',
   'Jääpalakone',
   'Takka',

@@ -75,7 +75,10 @@ const getEquipmentIcon = (equipment: string) => {
     case 'jääkaappi':
       return <KitchenIcon />;
     case 'grilli':
+    case 'kaasugrilli':
       return <OutdoorGrillIcon />;
+    case 'puulämmitteinen kiuas':
+      return <FireplaceIcon />;
     case 'tv':
       return <TvIcon />;
     case 'äänentoisto':

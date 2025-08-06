@@ -92,3 +92,4 @@ ssh upcloud "sqlite3 /var/www/sauna-api/saunas.db \"SELECT name, email, visible 
 - Add "Aikatauluni on joustava" option to replace the exact start time?
 
 ## NEXT
+[ ] Let's merge the following varusteet: grilli + kaasugrilli, jääkaappi + kylmäsäilytys. They will still exist in some venues database, but let's just hide them on the UI, both in registration, admin edit view, as well as end user UI. Also, let's add an icon to Puulämmitteinen kiuas.
