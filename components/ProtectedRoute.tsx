@@ -12,10 +12,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      // Store the intended destination
-      const returnUrl = router.asPath;
-      router.push(`${redirectTo}?returnUrl=${encodeURIComponent(returnUrl)}`);
+    if (!isLoading && !isAuthenticated && router.isReady) {
+      // Only redirect if we're not already on the login page to prevent loops
+      if (router.pathname !== redirectTo) {
+        // Store the intended destination
+        const returnUrl = router.asPath;
+        router.push(`${redirectTo}?returnUrl=${encodeURIComponent(returnUrl)}`);
+      }
     }
   }, [isAuthenticated, isLoading, router, redirectTo]);
 

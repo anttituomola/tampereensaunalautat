@@ -22,17 +22,17 @@ const Login: React.FC = () => {
   const router = useRouter();
   const { token, returnUrl } = router.query;
 
-  // Redirect if already authenticated
+  // Track if token verification is already in progress to prevent duplicate calls
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  // Redirect if already authenticated - but only if not verifying a token
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !token && !isVerifying) {
       const destination =
         typeof returnUrl === 'string' ? returnUrl : '/dashboard';
       router.push(destination);
     }
-  }, [isAuthenticated, router, returnUrl]);
-
-  // Track if token verification is already in progress to prevent duplicate calls
-  const [isVerifying, setIsVerifying] = useState(false);
+  }, [isAuthenticated, router, returnUrl, token, isVerifying]);
 
   const handleTokenVerification = useCallback(
     async (magicToken: string) => {
@@ -43,9 +43,13 @@ const Login: React.FC = () => {
       try {
         const success = await verifyToken(magicToken);
         if (success) {
-          const destination =
-            typeof returnUrl === 'string' ? returnUrl : '/dashboard';
-          router.push(destination);
+          // Add a small delay to ensure authentication state is fully updated
+          // before attempting navigation
+          setTimeout(() => {
+            const destination =
+              typeof returnUrl === 'string' ? returnUrl : '/dashboard';
+            router.push(destination);
+          }, 250);
         }
       } catch (error) {
         toast.error('Virhe kirjautumisessa. Yritä uudelleen.');

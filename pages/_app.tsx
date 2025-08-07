@@ -26,10 +26,26 @@ function MyApp({ Component, pageProps }: AppProps) {
     const handleComplete = () => setLoading(false);
     const handleError = (error: Error, url: string) => {
       setLoading(false);
-      Sentry.captureException(error, {
-        tags: { section: 'navigation' },
-        extra: { url, currentPath: router.asPath },
+      console.warn('Route change error:', error.message, {
+        url,
+        currentPath: router.asPath,
       });
+
+      // Only capture route cancellation errors if they're not expected
+      if (
+        error.message !== 'Route Cancelled' ||
+        process.env.NODE_ENV === 'development'
+      ) {
+        Sentry.captureException(error, {
+          tags: { section: 'navigation' },
+          extra: {
+            url,
+            currentPath: router.asPath,
+            errorMessage: error.message,
+            timestamp: new Date().toISOString(),
+          },
+        });
+      }
     };
 
     router.events.on('routeChangeStart', handleStart);
