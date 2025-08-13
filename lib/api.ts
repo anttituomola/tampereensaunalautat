@@ -51,14 +51,6 @@ export const getImageUrl = (filename: string): string => {
   // This ensures uploads and displays use the same backend
   const imageUrl = `${API_BASE}/images/${filename}`;
 
-  // Add debug logging to track URL construction
-  console.log('🖼️ Image URL constructed:', {
-    filename,
-    API_BASE,
-    imageUrl,
-    environment: process.env.NODE_ENV,
-  });
-
   return imageUrl;
 };
 

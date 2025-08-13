@@ -9,7 +9,12 @@ Sentry.init({
 
   // Add optional integrations for additional features
   integrations: [
-    Sentry.replayIntegration(),
+    Sentry.replayIntegration({
+      // Disable content masking for session replay
+      maskAllText: false,
+      maskAllInputs: false,
+      blockAllMedia: false,
+    }),
   ],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
