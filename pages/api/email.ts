@@ -47,22 +47,67 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { emailTo, emailFrom, customerEmail, message }: Req = req.body;
+  // Only allow POST method
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      message: 'Method Not Allowed. Only POST requests are accepted.',
+      status: 'error'
+    });
+  }
+
+  // Validate request body exists
+  if (!req.body) {
+    return res.status(400).json({
+      message: 'Request body is required.',
+      status: 'error'
+    });
+  }
+
+  // Validate required fields
+  const { emailTo, emailFrom, customerEmail, message } = req.body;
+  
+  if (!emailTo || !emailFrom || !customerEmail || !message) {
+    return res.status(400).json({
+      message: 'Missing required fields: emailTo, emailFrom, customerEmail, and message are required.',
+      status: 'error'
+    });
+  }
+
+  // Validate message object structure
+  if (typeof message !== 'object' || !message.date || !message.time || !message.pax || !message.sauna) {
+    return res.status(400).json({
+      message: 'Invalid message structure. Required fields: date, time, pax, sauna.',
+      status: 'error'
+    });
+  }
+
   console.log('req', req.body);
 
-  const additionalInfoSection = message.additionalInfo
+  // Safe access to additionalInfo with proper validation
+  const additionalInfoSection = message.additionalInfo && typeof message.additionalInfo === 'string'
     ? `\nLisätietoja asiakkaalta:\n${message.additionalInfo}`
     : '';
 
   // Handle timezone-shifted dates: if the serialized date has a non-zero time component,
   // it likely means the customer selected a future date that got shifted during serialization
-  const dateObj = dayjs.utc(message.date);
-  const hasTimeComponent = dateObj.hour() !== 0 || dateObj.minute() !== 0;
+  let formattedDate: string;
+  try {
+    const dateObj = dayjs.utc(message.date);
+    if (!dateObj.isValid()) {
+      throw new Error('Invalid date format');
+    }
+    const hasTimeComponent = dateObj.hour() !== 0 || dateObj.minute() !== 0;
 
-  // If there's a time component in what should be a pure date, assume it was timezone-shifted
-  // and use the next day to preserve the customer's intended calendar date
-  const adjustedDate = hasTimeComponent ? dateObj.add(1, 'day') : dateObj;
-  const formattedDate = adjustedDate.format('DD.MM.YYYY');
+    // If there's a time component in what should be a pure date, assume it was timezone-shifted
+    // and use the next day to preserve the customer's intended calendar date
+    const adjustedDate = hasTimeComponent ? dateObj.add(1, 'day') : dateObj;
+    formattedDate = adjustedDate.format('DD.MM.YYYY');
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Invalid date format provided.',
+      status: 'error'
+    });
+  }
 
   var params = {
     Destination: {

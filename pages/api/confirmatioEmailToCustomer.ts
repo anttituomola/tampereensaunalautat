@@ -43,22 +43,76 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { customerEmail, tenderSummary }: Req = req.body;
+  // Only allow POST method
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      message: 'Method Not Allowed. Only POST requests are accepted.',
+      status: 'error'
+    });
+  }
 
+  // Validate request body exists
+  if (!req.body) {
+    return res.status(400).json({
+      message: 'Request body is required.',
+      status: 'error'
+    });
+  }
+
+  // Validate required fields
+  const { customerEmail, tenderSummary } = req.body;
+  
+  if (!customerEmail || !tenderSummary) {
+    return res.status(400).json({
+      message: 'Missing required fields: customerEmail and tenderSummary are required.',
+      status: 'error'
+    });
+  }
+
+  // Validate tenderSummary object structure
+  if (typeof tenderSummary !== 'object' || !tenderSummary.date || !tenderSummary.time || !Array.isArray(tenderSummary.saunaNames)) {
+    return res.status(400).json({
+      message: 'Invalid tenderSummary structure. Required fields: date, time, saunaNames (array).',
+      status: 'error'
+    });
+  }
+
+  // Validate saunaNames array is not empty
+  if (tenderSummary.saunaNames.length === 0) {
+    return res.status(400).json({
+      message: 'saunaNames array cannot be empty.',
+      status: 'error'
+    });
+  }
+
+  // Safe access to saunaNames with proper validation (already validated above)
   const saunaNames = tenderSummary.saunaNames.join(', ');
-  const additionalInfoSection = tenderSummary.additionalInfo
+  
+  // Safe access to additionalInfo with proper validation
+  const additionalInfoSection = tenderSummary.additionalInfo && typeof tenderSummary.additionalInfo === 'string'
     ? `\nLisätietosi:\n${tenderSummary.additionalInfo}`
     : '';
 
   // Handle timezone-shifted dates: if the serialized date has a non-zero time component,
   // it likely means the customer selected a future date that got shifted during serialization
-  const dateObj = dayjs.utc(tenderSummary.date);
-  const hasTimeComponent = dateObj.hour() !== 0 || dateObj.minute() !== 0;
+  let formattedDate: string;
+  try {
+    const dateObj = dayjs.utc(tenderSummary.date);
+    if (!dateObj.isValid()) {
+      throw new Error('Invalid date format');
+    }
+    const hasTimeComponent = dateObj.hour() !== 0 || dateObj.minute() !== 0;
 
-  // If there's a time component in what should be a pure date, assume it was timezone-shifted
-  // and use the next day to preserve the customer's intended calendar date
-  const adjustedDate = hasTimeComponent ? dateObj.add(1, 'day') : dateObj;
-  const formattedDate = adjustedDate.format('DD.MM.YYYY');
+    // If there's a time component in what should be a pure date, assume it was timezone-shifted
+    // and use the next day to preserve the customer's intended calendar date
+    const adjustedDate = hasTimeComponent ? dateObj.add(1, 'day') : dateObj;
+    formattedDate = adjustedDate.format('DD.MM.YYYY');
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Invalid date format provided.',
+      status: 'error'
+    });
+  }
 
   var params = {
     Destination: {
