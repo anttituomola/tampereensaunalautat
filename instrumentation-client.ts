@@ -32,6 +32,45 @@ Sentry.init({
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
+
+  // Filter out errors from browser extensions and third-party scripts
+  beforeSend(event, hint) {
+    const error = hint.originalException;
+    const errorMessage = typeof error === 'string' ? error : (error as Error)?.message;
+    
+    // List of error patterns to ignore (from browser extensions/third-party scripts)
+    const ignorePatterns = [
+      /runtime\.sendMessage/i,
+      /extensions\//i,
+      /^chrome:\/\//i,
+      /^moz-extension:\/\//i,
+      /^safari-extension:\/\//i,
+      // Add more patterns as needed for other common browser extension errors
+    ];
+
+    // Check if error message matches any ignore pattern
+    if (errorMessage && ignorePatterns.some(pattern => pattern.test(errorMessage))) {
+      return null; // Don't send to Sentry
+    }
+
+    // Check if error originates from extension scripts
+    if (event.exception?.values?.[0]?.stacktrace?.frames) {
+      const frames = event.exception.values[0].stacktrace.frames;
+      const hasExtensionFrame = frames.some(frame => 
+        frame.filename && (
+          frame.filename.includes('extension://') ||
+          frame.filename.includes('moz-extension://') ||
+          frame.filename.includes('safari-extension://')
+        )
+      );
+      
+      if (hasExtensionFrame) {
+        return null; // Don't send to Sentry
+      }
+    }
+
+    return event;
+  },
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
