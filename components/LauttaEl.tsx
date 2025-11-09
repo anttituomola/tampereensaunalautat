@@ -29,6 +29,8 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   );
   const [isClient, setIsClient] = useState(false);
   const imageHolderRef = useRef<HTMLDivElement>(null);
+  // Use ref to track preloaded images to avoid dependency cycles in useCallback
+  const preloadedImagesRef = useRef<Set<string>>(new Set());
 
   // Check if the device is mobile (only on client side to prevent hydration issues)
   useEffect(() => {
@@ -44,22 +46,29 @@ const LauttaEl = ({ sauna, setSaunasOnState, saunasOnState }: Props) => {
   }, []);
 
   // Helper function to preload an image
-  const preloadImage = useCallback(
-    (imageSrc: string) => {
-      if (preloadedImages.has(imageSrc)) return;
+  // Use ref to track preloaded images to avoid dependency on state
+  // This prevents infinite loops in useEffect dependencies
+  const preloadImage = useCallback((imageSrc: string) => {
+    // Check if already preloaded using ref (doesn't cause re-renders)
+    if (preloadedImagesRef.current.has(imageSrc)) {
+      return;
+    }
 
-      const img = new (window.Image as any)();
-      img.src = getImageUrl(imageSrc);
-      img.onload = () => {
-        setPreloadedImages((prev) => {
-          const newSet = new Set(prev);
-          newSet.add(imageSrc);
-          return newSet;
-        });
-      };
-    },
-    [preloadedImages]
-  );
+    // Mark as preloading immediately
+    preloadedImagesRef.current.add(imageSrc);
+
+    // Preload the image
+    const img = new (window.Image as any)();
+    img.src = getImageUrl(imageSrc);
+    img.onload = () => {
+      // Update state for tracking purposes (optional, for debugging)
+      setPreloadedImages((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(imageSrc);
+        return newSet;
+      });
+    };
+  }, []); // No dependencies - uses ref instead of state
 
   // Initialize images array with mainImage and all other images
   useEffect(() => {

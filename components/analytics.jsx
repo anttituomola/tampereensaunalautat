@@ -1,5 +1,13 @@
 'use client';
-import { Analytics } from '@vercel/analytics/react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Analytics with SSR disabled to avoid TrackerStorageType errors
+const Analytics = dynamic(
+  () => import('@vercel/analytics/react').then((mod) => mod.Analytics),
+  {
+    ssr: false,
+  }
+);
 
 export function AnalyticsWrapper() {
   return <Analytics />;
