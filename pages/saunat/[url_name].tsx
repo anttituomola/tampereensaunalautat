@@ -6,6 +6,7 @@ import { Saunalautta } from 'types';
 import { fetchSaunas, getImageUrl } from 'lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import * as Sentry from '@sentry/nextjs';
 import {
   ImageList,
   ImageListItem,
@@ -103,6 +104,36 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [saunasOnState, setSaunasOnState] = useState<Saunalautta[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  // Image error handler with Sentry reporting
+  const handleImageError = useCallback((imageSrc: string, imageType: 'main' | 'gallery' | 'modal') => {
+    const imageUrl = getImageUrl(imageSrc);
+    
+    console.error(`❌ Image load error (${imageType}):`, imageUrl);
+    
+    // Track failed images to show fallback
+    setImageErrors(prev => new Set(prev).add(imageSrc));
+    
+    // Report to Sentry with context
+    Sentry.captureException(new Error(`Image load failed: ${imageUrl}`), {
+      tags: {
+        error_type: 'image_load_error',
+        image_type: imageType,
+        sauna_url_name: router.query.url_name as string,
+      },
+      extra: {
+        image_src: imageSrc,
+        image_url: imageUrl,
+        sauna_name: sauna?.name,
+        sauna_id: sauna?.id,
+        current_url: typeof window !== 'undefined' ? window.location.href : '',
+        user_agent: typeof window !== 'undefined' ? navigator.userAgent : '',
+        timestamp: new Date().toISOString(),
+      },
+      level: 'warning',
+    });
+  }, [sauna, router.query.url_name]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -229,13 +260,14 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
         </Typography>
 
         <div className={styles.mainImageHolder}>
-          {sauna.mainImage ? (
+          {sauna.mainImage && !imageErrors.has(sauna.mainImage) ? (
             <Image
               src={getImageUrl(sauna.mainImage)}
               alt={sauna.name}
               className={styles.mainImage}
               fill={true}
               sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+              onError={() => handleImageError(sauna.mainImage, 'main')}
             />
           ) : (
             <div className={styles.placeholderImage}>
@@ -404,17 +436,26 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
                   <ImageListItem
                     key={image}
                     className={styles.galleryItem}
-                    onClick={() => handleOpen(image)}
+                    onClick={() => !imageErrors.has(image) && handleOpen(image)}
                   >
-                    <Image
-                      src={getImageUrl(image)}
-                      alt={sauna.name}
-                      loading='lazy'
-                      className={styles.galleryImage}
-                      width={0}
-                      height={0}
-                      sizes='100vw'
-                    />
+                    {!imageErrors.has(image) ? (
+                      <Image
+                        src={getImageUrl(image)}
+                        alt={sauna.name}
+                        loading='lazy'
+                        className={styles.galleryImage}
+                        width={0}
+                        height={0}
+                        sizes='100vw'
+                        onError={() => handleImageError(image, 'gallery')}
+                      />
+                    ) : (
+                      <div className={styles.placeholderImage} style={{ width: '100%', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          Kuva ei saatavilla
+                        </Typography>
+                      </div>
+                    )}
                   </ImageListItem>
                 ))}
               </ImageList>
@@ -462,13 +503,22 @@ const LauttaPage: NextPage<Props> = ({ sauna }) => {
             className={styles.modalImageWrapper}
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
-              src={getImageUrl(modalImage)}
-              alt={sauna.name}
-              className={styles.modalImage}
-              fill={true}
-              sizes='100vw'
-            />
+            {!imageErrors.has(modalImage) ? (
+              <Image
+                src={getImageUrl(modalImage)}
+                alt={sauna.name}
+                className={styles.modalImage}
+                fill={true}
+                sizes='100vw'
+                onError={() => handleImageError(modalImage, 'modal')}
+              />
+            ) : (
+              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Typography variant='body1' color='text.secondary'>
+                  Kuva ei saatavilla
+                </Typography>
+              </div>
+            )}
           </div>
 
           <Typography className={styles.imageCounter}>

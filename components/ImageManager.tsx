@@ -32,6 +32,7 @@ import {
 } from 'react-beautiful-dnd';
 import { authAPI, getImageUrl } from '../lib/api';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/nextjs';
 
 interface ImageManagerProps {
   saunaId: string;
@@ -300,30 +301,55 @@ const ImageManager: React.FC<ImageManagerProps> = ({
     closeDeleteDialog();
   };
 
-  // Image error handler for debugging CORS issues
-  const handleImageError = (filename: string, error: any) => {
+  // Image error handler for debugging CORS issues with Sentry reporting
+  const handleImageError = useCallback((filename: string, error: any) => {
+    const imageUrl = getImageUrl(filename);
+    
     console.error('❌ Image load error for:', filename, error);
     console.log('🔍 Debugging info:', {
       filename,
-      imageUrl: getImageUrl(filename),
+      imageUrl,
       timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
+      userAgent: typeof window !== 'undefined' ? navigator.userAgent : '',
     });
 
-    // Try to reload the image after a delay
-    setTimeout(() => {
-      console.log('🔄 Attempting to reload image:', filename);
-      const img = document.querySelector(
-        `img[src*="${filename}"]`
-      ) as HTMLImageElement;
-      if (img) {
-        // Force reload by adding timestamp
-        const newSrc = `${getImageUrl(filename)}?t=${Date.now()}`;
-        console.log('🔗 Reloading with cache-busting URL:', newSrc);
-        img.src = newSrc;
-      }
-    }, 2000);
-  };
+    // Report to Sentry with comprehensive context
+    Sentry.captureException(error instanceof Error ? error : new Error(`Image load failed: ${imageUrl}`), {
+      tags: {
+        error_type: 'image_load_error',
+        image_type: 'admin_manager',
+        component: 'ImageManager',
+      },
+      extra: {
+        filename,
+        image_url: imageUrl,
+        sauna_id: saunaId,
+        error_details: error,
+        timestamp: new Date().toISOString(),
+        user_agent: typeof window !== 'undefined' ? navigator.userAgent : '',
+        current_url: typeof window !== 'undefined' ? window.location.href : '',
+        image_count: images.length,
+        main_image: mainImage,
+      },
+      level: 'warning',
+    });
+
+    // Try to reload the image after a delay (only in non-production)
+    if (process.env.NODE_ENV !== 'production') {
+      setTimeout(() => {
+        console.log('🔄 Attempting to reload image:', filename);
+        const img = document.querySelector(
+          `img[src*="${filename}"]`
+        ) as HTMLImageElement;
+        if (img) {
+          // Force reload by adding timestamp
+          const newSrc = `${imageUrl}?t=${Date.now()}`;
+          console.log('🔗 Reloading with cache-busting URL:', newSrc);
+          img.src = newSrc;
+        }
+      }, 2000);
+    }
+  }, [saunaId, images.length, mainImage]);
 
   return (
     <Box>
