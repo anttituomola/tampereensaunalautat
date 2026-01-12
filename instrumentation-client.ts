@@ -45,6 +45,7 @@ Sentry.init({
       /^chrome:\/\//i,
       /^moz-extension:\/\//i,
       /^safari-extension:\/\//i,
+      /TrackerStorageType/i, // Ignore TrackerStorageType errors from third-party scripts (e.g., Iubenda cookie consent)
       // Add more patterns as needed for other common browser extension errors
     ];
 
@@ -53,7 +54,7 @@ Sentry.init({
       return null; // Don't send to Sentry
     }
 
-    // Check if error originates from extension scripts
+    // Check if error originates from extension scripts or contains TrackerStorageType
     if (event.exception?.values?.[0]?.stacktrace?.frames) {
       const frames = event.exception.values[0].stacktrace.frames;
       const hasExtensionFrame = frames.some(frame => 
@@ -64,9 +65,21 @@ Sentry.init({
         )
       );
       
-      if (hasExtensionFrame) {
+      // Also check for TrackerStorageType in stack trace
+      const hasTrackerStorageType = frames.some(frame =>
+        (frame.filename && /TrackerStorageType/i.test(frame.filename)) ||
+        (frame.function && /TrackerStorageType/i.test(frame.function))
+      );
+      
+      if (hasExtensionFrame || hasTrackerStorageType) {
         return null; // Don't send to Sentry
       }
+    }
+    
+    // Also check the error message and stack trace string directly
+    const errorStack = (error as Error)?.stack || '';
+    if (errorStack && /TrackerStorageType/i.test(errorStack)) {
+      return null; // Don't send to Sentry
     }
 
     // Enhance image-related errors with additional context
@@ -126,48 +139,67 @@ if (typeof window !== 'undefined') {
   window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
     const error = event.reason;
     const errorMessage = typeof error === 'string' ? error : (error as Error)?.message;
+    const errorStack = (error as Error)?.stack || '';
     
-    // Only capture if it's not already being handled
-    if (errorMessage) {
-      // Check if it's an image-related error
-      const isImageError = /invalid origin/i.test(errorMessage) ||
-        /CORS/i.test(errorMessage) ||
-        /cross-origin/i.test(errorMessage) ||
-        /image/i.test(errorMessage) ||
-        /Failed to load resource/i.test(errorMessage);
-      
-      if (isImageError) {
-        Sentry.captureException(error, {
-          tags: {
-            error_type: 'unhandled_promise_rejection',
-            image_related: 'true',
+    // Ignore TrackerStorageType errors from third-party scripts (e.g., Iubenda cookie consent)
+    if (errorMessage && /TrackerStorageType/i.test(errorMessage)) {
+      event.preventDefault();
+      return; // Silently ignore these errors
+    }
+    
+    if (errorStack && /TrackerStorageType/i.test(errorStack)) {
+      event.preventDefault();
+      return; // Silently ignore these errors
+    }
+    
+    // Capture all unhandled rejections, even if they don't have a message
+    // This ensures we can debug production issues caused by promise rejections without error messages
+    const errorMessageForCapture = errorMessage || (typeof error === 'string' ? error : 'Unhandled promise rejection without message');
+    
+    // Check if it's an image-related error
+    const isImageError = errorMessage && (
+      /invalid origin/i.test(errorMessage) ||
+      /CORS/i.test(errorMessage) ||
+      /cross-origin/i.test(errorMessage) ||
+      /image/i.test(errorMessage) ||
+      /Failed to load resource/i.test(errorMessage)
+    );
+    
+    if (isImageError) {
+      Sentry.captureException(error, {
+        tags: {
+          error_type: 'unhandled_promise_rejection',
+          image_related: 'true',
+        },
+        extra: {
+          promise_rejection: true,
+          error_message: errorMessageForCapture,
+          error_type: typeof error,
+          error_stringified: String(error),
+          current_url: window.location.href,
+          user_agent: navigator.userAgent,
+          timestamp: new Date().toISOString(),
+        },
+        contexts: {
+          browser: {
+            name: navigator.userAgent,
           },
-          extra: {
-            promise_rejection: true,
-            error_message: errorMessage,
-            current_url: window.location.href,
-            user_agent: navigator.userAgent,
-            timestamp: new Date().toISOString(),
-          },
-          contexts: {
-            browser: {
-              name: navigator.userAgent,
-            },
-          },
-        });
-      } else {
-        // Capture other unhandled rejections with context
-        Sentry.captureException(error, {
-          tags: {
-            error_type: 'unhandled_promise_rejection',
-          },
-          extra: {
-            promise_rejection: true,
-            error_message: errorMessage,
-            current_url: window.location.href,
-          },
-        });
-      }
+        },
+      });
+    } else {
+      // Capture other unhandled rejections with context
+      Sentry.captureException(error, {
+        tags: {
+          error_type: 'unhandled_promise_rejection',
+        },
+        extra: {
+          promise_rejection: true,
+          error_message: errorMessageForCapture,
+          error_type: typeof error,
+          error_stringified: String(error),
+          current_url: window.location.href,
+        },
+      });
     }
   });
 }
